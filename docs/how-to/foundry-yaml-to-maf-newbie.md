@@ -2,6 +2,10 @@
 
 [Indeks dokumentasi](../README.md) / [Panduan](README.md)
 
+Untuk melihat ketiga opsi dulu, buka
+[pelajaran HTML: migrasi workflow Foundry](https://sandy-gunawan.github.io/migrationworkflow/).
+Halaman ini melengkapi pelajaran itu dengan detail teknis dua jalur MAF.
+
 Migrasi di demo ini memindahkan **aturan alur kerja**, bukan mengunggah YAML ke
 portal MAF. Microsoft Agent Framework (MAF) adalah library yang dipakai aplikasi
 untuk menjalankan agent dan workflow.

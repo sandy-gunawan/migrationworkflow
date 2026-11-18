@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="id" data-register="blueprint">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Belajar tiga cara memindahkan orkestrasi workflow Microsoft Foundry: mapping ke Python MAF, workflow YAML MAF, atau Azure Logic Apps.">
+  <title>Tiga opsi migrasi workflow Foundry</title>
+  <link rel="stylesheet" href="kit.css" data-ve-kit>
+  <style>
+    body { font-family: "IBM Plex Sans", "Segoe UI", "Trebuchet MS", sans-serif; }
+    :where(code, pre) { font-family: "IBM Plex Mono", Consolas, "Courier New", monospace; }
+    .path-grid, .readback {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--s-4);
+    }
+    .trace-layout { display: flex; flex-direction: column; gap: var(--s-4); }
+    .path-grid article, .readback > div {
+      border: 1px solid var(--border-bright);
+      border-radius: var(--r-2);
+      background: var(--surface);
+      padding: var(--s-4);
+    }
+    .path-grid h3 { margin-top: 0; }
+    .flow-origin {
+      border: 1px dashed var(--border-bright);
+      border-radius: var(--r-2);
+      padding: var(--s-3) var(--s-4);
+      margin: 0 0 var(--s-4);
+    }
+    .flow-part {
+      border: 1px solid var(--border-bright);
+      border-radius: var(--r-1);
+      padding: var(--s-2) var(--s-3);
+    }
+    .flow-part b, .flow-part small { display: block; }
+    .flow-part small, .handoff { color: var(--text-dim); }
+    .flow-part.key { border-color: var(--accent); background: var(--accent-dim); }
+    .handoff { padding: var(--s-2) 0; font-size: var(--t-small); }
+    .handoff span { color: var(--accent); margin-right: var(--s-2); }
+    .path-link { display: inline-block; margin-top: var(--s-3); padding: var(--s-2) 0; }
+    .choices { display: grid; gap: var(--s-5); }
+    .choices article { border-top: 1px solid var(--border); padding-top: var(--s-4); }
+    .choices h3 { margin-top: 0; }
+    .choice-note { color: var(--text-dim); }
+    .trace-layout .frame { margin: 0; }
+    .trace-layout .ve-svg { display: block; width: 100%; max-width: 430px; margin-inline: auto; }
+    .trace-layout .ve-n text { text-anchor: start; }
+    .trace-layout .ve-player { position: static; order: -1; min-width: 0; }
+    .trace-layout .ve-cap { margin: 0 0 var(--s-3); }
+    .trace-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+    .trace-actions input { max-width: 100%; }
+    .trace-note { margin-top: var(--s-4); }
+    .readback > div { min-width: 0; }
+    .readback b { display: block; margin-top: var(--s-2); overflow-wrap: anywhere; }
+    :where(h2, h3, section, article)[id] { scroll-margin-top: 6rem; }
+    :where(code, summary, a) { overflow-wrap: anywhere; }
+    pre { max-width: 100%; overflow-x: auto; }
+    @media (max-width: 760px) {
+      .path-grid, .readback { grid-template-columns: minmax(0, 1fr); }
+      .trace-layout .ve-svg { max-width: 390px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="ve-toc" aria-label="Bagian pelajaran">
+    <div><a href="#opsi">Tiga opsi</a><a href="#bandingkan">Bandingkan</a><a href="#alur">Ikuti request</a><a href="#cek">Cek hasil</a><a href="#referensi">Referensi</a></div>
+    <span class="pos"></span>
+  </nav>
+  <main>
+    <header>
+      <p class="eyebrow">Panduan HTML · Data sintetis</p>
+      <h1>Tiga opsi migrasi workflow Foundry</h1>
+      <p class="lead">Pilih mapping ke Python MAF, workflow YAML MAF, atau Logic Apps. Yang pindah aturan alurnya; agent tetap bekerja di Foundry.</p>
+    </header>
+
+    <section id="opsi" aria-label="Tiga pilihan migrasi">
+      <figure>
+        <div class="flow-origin"><b>Awalnya sama:</b> definisi workflow dari Microsoft Foundry. <b>Pilih satu</b> jalur untuk menjalankannya di tempat baru.</div>
+        <div class="path-grid">
+          <article>
+            <h3>MAF: mapping ke kode Python</h3>
+            <div class="handoff"><span aria-hidden="true">↓</span>Baca source, buat mapping</div>
+            <div class="flow-part"><b>Mapping</b><small>Route, kondisi, dan langkah</small></div>
+            <div class="handoff"><span aria-hidden="true">↓</span>Bangun graph</div>
+            <div class="flow-part key"><b>Python · WorkflowBuilder</b><small>Aplikasi menjalankan alur</small></div>
+            <a class="path-link" href="#mapping-python">Pelajari mapping Python</a>
+          </article>
+          <article>
+            <h3>MAF: pakai workflow YAML</h3>
+            <div class="handoff"><span aria-hidden="true">↓</span>Siapkan YAML yang kompatibel</div>
+            <div class="flow-part"><b>File workflow YAML</b><small>Definisi langkah dan kondisi</small></div>
+            <div class="handoff"><span aria-hidden="true">↓</span>Muat definisi</div>
+            <div class="flow-part key"><b>Python · WorkflowFactory</b><small>Loader menjalankan alur dari YAML</small></div>
+            <a class="path-link" href="#workflow-yaml">Pelajari workflow YAML</a>
+          </article>
+          <article>
+            <h3>Azure Logic Apps</h3>
+            <div class="handoff"><span aria-hidden="true">↓</span>Petakan ke action Azure</div>
+            <div class="flow-part"><b>Definisi Logic Apps</b><small>Workflow Definition Language (WDL)</small></div>
+            <div class="handoff"><span aria-hidden="true">↓</span>Deploy workflow</div>
+            <div class="flow-part key"><b>Runtime Azure Logic Apps</b><small>Azure menjalankan Request, Switch, dan Response</small></div>
+            <a class="path-link" href="#logic-apps">Pelajari Logic Apps</a>
+          </article>
+        </div>
+        <figcaption>Tiga cara memindahkan pengaturan alur, bukan tiga langkah yang dijalankan berurutan.</figcaption>
+      </figure>
+      <p>Microsoft Agent Framework (MAF) adalah SDK untuk aplikasi. Dua opsi MAF sama-sama memakai Python; bedanya ada pada <strong>cara alur dibuat</strong>.</p>
+    </section>
+
+    <section id="bandingkan">
+      <p class="eyebrow">Persiapan</p>
+      <h2>Bedanya ada di yang kamu siapkan dan siapa yang menjalankan</h2>
+      <div class="choices">
+        <article id="mapping-python">
+          <h3>MAF mapping ke kode: Python membangun graph</h3>
+          <p>Compiler demo membaca YAML Foundry dan memetakan langkah yang didukung. Kode Python membaca mapping, lalu membuat executor dan kondisi lewat <code>WorkflowBuilder</code>.</p>
+          <p class="choice-note"><b>Pilih saat</b> logika perlu mudah ditinjau dan diuji di kode. Compiler ini terbatas pada subset demo; tidak otomatis mengubah semua workflow Foundry.</p>
+          <details>
+            <summary>Lihat mapping yang dibaca dan kode yang menjalankannya</summary>
+            <p><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/src/maf_service/resources/mapping.json">Mapping runtime (JSON)</a> menyimpan route dan branch. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/src/maf_service/workflow.py">Kode graph Python</a> memasang kondisi setiap branch.</p>
+            <p>YAML di <code>targets/maf</code> menyajikan hasil mapping. Itu bukan input untuk loader YAML pada jalur ini.</p>
+          </details>
+        </article>
+        <article id="workflow-yaml">
+          <h3>MAF pakai workflow: loader membaca langkah dari YAML</h3>
+          <p>Alur tetap sebagai file YAML yang kompatibel. Python menyiapkan agent yang dipakai, lalu <code>WorkflowFactory</code> membuat graph langsung dari definisi.</p>
+          <p class="choice-note"><b>Pilih saat</b> kamu ingin aturan tetap terbaca sebagai YAML. Demo ini jalur terpisah dari baseline kode; file dan versi SDK harus cocok.</p>
+          <details>
+            <summary>Lihat YAML yang dimuat dan loader Python</summary>
+            <p><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/official-migration/b-declarative/source.workflow.yaml">File workflow YAML</a> berisi langkah dan kondisi. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/declarative_ui/loader.py">WorkflowFile.create</a> memasangkan definisi dengan agent yang sudah disiapkan.</p>
+            <p>YAML dibaca saat startup UI demo. Buat snapshot baru lewat restart kalau file berubah. Batas hash di repo adalah penjagaan demo, bukan syarat umum loader.</p>
+          </details>
+        </article>
+        <article id="logic-apps">
+          <h3>Logic Apps: Azure menjalankan workflow native</h3>
+          <p>Definisi dipetakan ke action Logic Apps, seperti Request, Switch, dan HTTP. Azure menjalankan alurnya; Python di UI demo hanya meneruskan request dan membaca run.</p>
+          <p class="choice-note"><b>Pilih saat</b> tim perlu melihat node, Parameters, dan Run history di portal. Siapkan workflow, autentikasi, dan izin sebelum uji live.</p>
+          <details>
+            <summary>Lihat definisi workflow dan video Designer</summary>
+            <p><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/targets/logicapps/workflow.json">Definisi WDL (JSON)</a> berisi action dan urutannya. Node Switch membaca <code>body('router_decision')?['route']</code>. Normalizer Python memeriksa bukti; ia tidak memilih cabang.</p>
+            <p><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/videos/README.md#4-logic-apps-designer-satu-jalur-mcp">Video Designer: kotak node, Parameters, dan hasil MCP</a>.</p>
+          </details>
+        </article>
+      </div>
+      <p>Yang tidak otomatis ikut pindah: agent, model, koneksi tool, izin, dan data. Menyiapkannya berbeda dari menjalankan satu request.</p>
+    </section>
+
+    <section id="alur">
+      <p class="eyebrow">Saat dijalankan</p>
+      <h2>Ikuti satu pertanyaan sampai jawabannya kembali</h2>
+      <figure class="ve-steps">
+        <div class="trace-layout">
+          <div class="frame">
+            <svg class="ve-svg" viewBox="0 0 380 560" role="img" aria-labelledby="trace-title trace-description">
+              <title id="trace-title">Jalur pertanyaan TRK001 hingga jawaban WO001</title>
+              <desc id="trace-description">Klien mengirim pertanyaan ke orkestrator pilihan. Orkestrator memanggil router dan specialist di Foundry. Specialist membaca work order lewat tool MCP. Hasil kembali lewat Foundry untuk diperiksa sebelum dikirim ke klien.</desc>
+              <path class="ve-e" data-s="0 1" d="M92 68V112"/>
+              <path class="ve-e" data-s="0 2" d="M92 166V210"/>
+              <path class="ve-e" data-s="0 3" d="M92 264V308"/>
+              <path class="ve-e" data-s="0 4" d="M92 362V406"/>
+              <path class="ve-e" data-s="0 5" d="M92 460V504"/>
+              <text class="ve-el r" x="108" y="91">Kirim pertanyaan</text>
+              <text class="ve-el r" x="108" y="189">Panggil agent</text>
+              <text class="ve-el r" x="108" y="287">Baca work order</text>
+              <text class="ve-el r" x="108" y="385">Kembalikan data via Foundry</text>
+              <text class="ve-el r" x="108" y="483">Kirim hasil dan sumber</text>
+              <g class="ve-n" data-s="0 1">
+                <rect class="sh" x="24" y="14" width="332" height="54" rx="6"/>
+                <text x="44" y="34" text-anchor="start">Klien / browser</text>
+                <text class="sub" x="44" y="53" text-anchor="start">Pertanyaan tentang TRK001</text>
+              </g>
+              <g class="ve-n" data-s="0 1 2">
+                <rect class="sh" x="24" y="112" width="332" height="54" rx="6"/>
+                <text x="44" y="132" text-anchor="start">Orkestrator pilihan</text>
+                <text class="sub" x="44" y="151" text-anchor="start">Terima input, pilih branch mcp</text>
+              </g>
+              <g class="ve-n" data-s="0 2 3">
+                <rect class="sh" x="24" y="210" width="332" height="54" rx="6"/>
+                <text x="44" y="230" text-anchor="start">Agent di Foundry</text>
+                <text class="sub" x="44" y="249" text-anchor="start">Router pilih route → specialist</text>
+              </g>
+              <g class="ve-n" data-s="0 3 4">
+                <rect class="sh" x="24" y="308" width="332" height="54" rx="6"/>
+                <text x="44" y="328" text-anchor="start">Tool MCP</text>
+                <text class="sub" x="44" y="347" text-anchor="start">Temukan WO001 untuk TRK001</text>
+              </g>
+              <g class="ve-n" data-s="0 4 5">
+                <rect class="sh" x="24" y="406" width="332" height="54" rx="6"/>
+                <text x="44" y="426" text-anchor="start">Orkestrator dan normalizer</text>
+                <text class="sub" x="44" y="445" text-anchor="start">Periksa fakta, status, dan sumber</text>
+              </g>
+              <g class="ve-n" data-s="0 5">
+                <rect class="sh" x="24" y="504" width="332" height="54" rx="6"/>
+                <text x="44" y="524" text-anchor="start">Klien / browser</text>
+                <text class="sub" x="44" y="543" text-anchor="start">Tampilkan jawaban dan sumbernya</text>
+              </g>
+            </svg>
+          </div>
+          <div class="ve-player">
+            <ol class="ve-cap" aria-live="polite">
+              <li data-n="1/5"><b>Klien mengirim pertanyaan.</b> Alur menerima <code>question</code>. Di Logic Apps, request masuk lewat trigger HTTP.</li>
+              <li data-n="2/5"><b>Router memilih topik.</b> Agent router di Foundry mengembalikan <code>route: mcp</code>. Orkestrator memakai route itu untuk memilih specialist.</li>
+              <li data-n="3/5"><b>Specialist membaca data.</b> Agent Foundry memanggil <code>get_work_orders</code> dengan <code>TRK001</code> melalui Model Context Protocol (MCP).</li>
+              <li data-n="4/5"><b>Jawaban diperiksa.</b> Bukti work order dan sumber kembali lewat Foundry. Normalizer memeriksa apakah hasil sesuai dengan pertanyaan.</li>
+              <li data-n="5/5"><b>Hasil kembali ke klien.</b> Untuk contoh ini, jawabannya <code>WO001</code> dan sumber maintenance untuk <code>TRK001</code>.</li>
+            </ol>
+            <div class="trace-actions">
+              <button type="button" data-go="-1">Sebelumnya</button>
+              <button type="button" data-play>Putar alur</button>
+              <input type="range" min="0" max="4" value="4" aria-label="Langkah request">
+              <button type="button" data-go="1">Berikutnya</button>
+            </div>
+            <p class="trace-note">Tekan <b>Putar alur</b> atau geser langkah. Ini ilustrasi lokal; tombolnya tidak menjalankan Azure.</p>
+          </div>
+        </div>
+        <figcaption>Orkestrator memilih urutan; specialist Foundry yang menggunakan tool MCP. Hasil dibaca kembali lewat orkestrator yang dipilih.</figcaption>
+      </figure>
+    </section>
+
+    <section id="cek">
+      <p class="eyebrow">Cek perilaku</p>
+      <h2>Pakai input yang sama untuk membandingkan hasil</h2>
+      <p>Kirim contoh ini hanya jika lingkungan demo sudah siap dan kamu berizin. Membuka halaman ini tidak menjalankan tes atau menambah biaya cloud.</p>
+      <pre><code>{"question":"Show work orders for equipment TRK001."}</code></pre>
+      <figure>
+        <div class="readback">
+          <div><span class="ve-label">Route</span><b><code>mcp</code></b></div>
+          <div><span class="ve-label">Jawaban</span><b><code>WO001</code> untuk <code>TRK001</code></b></div>
+          <div><span class="ve-label">Sumber</span><b><code>urn:kppdemo:maintenance/TRK001</code></b></div>
+        </div>
+        <figcaption>Yang dicek untuk MCP01 adalah status sukses, route, fakta, dan sumber. Susunan kalimat boleh berbeda.</figcaption>
+      </figure>
+      <p>Kalau cabang atau sumber berbeda, telusuri input dan output tiap langkah. Tanda hijau pada satu action belum membuktikan hasilnya benar.</p>
+    </section>
+
+    <section id="referensi" class="sources" aria-label="Referensi">
+      <p class="eyebrow">Bacaan lanjutan</p>
+      <h2>Buka kode atau bukti setelah memahami gambar</h2>
+      <ul>
+        <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/README.md">README: ringkasan tiga opsi dan video demo</a>.</li>
+        <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/source/foundry/workflow.yaml">Definisi Foundry yang jadi sumber pembanding</a>.</li>
+        <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/how-to/setup-and-source.md">Persiapan dan batas uji live</a>.</li>
+        <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/how-to/test-prompts.md">Input contoh dan katalog pengujian</a>.</li>
+      </ul>
+      <p>Diagram ini adalah bahan belajar, bukan screenshot portal atau log run. Tautan kode, panduan, dan video membutuhkan internet.</p>
+      <details>
+        <summary>Lisensi kit Visual Explainer (MIT)</summary>
+        <pre>MIT License
+
+Copyright (c) 2025 Nico Bailon
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre>
+      </details>
+    </section>
+  </main>
+</body>
+</html>

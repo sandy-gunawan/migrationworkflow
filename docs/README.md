@@ -2,14 +2,16 @@
 
 [Beranda repository](../README.md)
 
-Mulai dari kebutuhanmu, bukan dari nama file. Semua tautan utama di halaman ini
-menuju materi publik yang bisa dibaca langsung di GitHub.
+**[Mulai belajar dari HTML: tiga opsi migrasi Foundry](https://sandy-gunawan.github.io/migrationworkflow/).**
+Bandingkan MAF mapping ke kode Python, MAF yang memuat workflow YAML, dan
+Azure Logic Apps. Pakai indeks ini untuk mencari referensi teknisnya.
 
 ## 1. Kenali demo
 
 | Materi | Yang akan dipahami |
 |---|---|
-| [Alur belajar](training/README.md) | Urutan bacaan dari konsep sampai pengujian. |
+| [Materi HTML](https://sandy-gunawan.github.io/migrationworkflow/) | Tiga jalur migrasi dan langkah interaktif dari pertanyaan sampai jawaban. |
+| [Alur belajar](training/README.md) | Urutan bacaan pendamping dari konsep sampai pengujian. |
 | [Persiapan dan batas demo](how-to/setup-and-source.md) | Isi salinan publik, kebutuhan Python, dan prasyarat lingkungan live. |
 | [YAML Foundry ke MAF](how-to/foundry-yaml-to-maf-newbie.md) | Pilihan migrasi dan bagian yang tidak otomatis ikut pindah. |
 | [Video demo](videos/README.md) | Tiga UI dan [alur MCP di Logic Apps Designer](videos/README.md#4-logic-apps-designer-satu-jalur-mcp), dari posisi node sampai hasil di Run history. |
@@ -45,6 +47,7 @@ Membuka dokumentasi atau melihat health belum membuktikan retrieval data.
 ```text
 docs/
   README.md                 Indeks utama
+  index.html                Materi belajar visual, juga bisa dibuka offline
   how-to/                   Panduan konsep terapan dan langkah praktik
   reference/                Peta repository dan cara membaca bukti
   roadmap/                  Rencana, bukan fitur yang sudah selesai

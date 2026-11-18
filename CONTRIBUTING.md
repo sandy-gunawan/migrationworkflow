@@ -93,6 +93,18 @@ Aktifkan secret scanning/push protection GitHub bila tersedia. Jangan memakai
 `git push --mirror`, menyalin folder Git lama, atau menerbitkan refs checkpoint
 agent: checkpoint dapat menyimpan file lokal yang memang tidak untuk publik.
 
+### Materi belajar HTML publik
+
+Edit [index.src.html](docs/index.src.html), lalu render dengan Visual Explainer
+ke [index.html](docs/index.html). Simpan CSS dan JavaScript di file hasil render.
+Hapus tautan Google Fonts yang ditambahkan renderer agar halaman memakai font
+lokal dan tetap bisa dibuka offline. Cek diagram di desktop dan ponsel; file
+`index.sheet*.png` adalah hasil pemeriksaan, bukan materi publik.
+
+GitHub Pages menyajikan `main:/docs` sebagai situs statis; pertahankan
+[.nojekyll](docs/.nojekyll). Materi ini tidak boleh memuat konfigurasi, capture,
+atau bukti mentah dari workshop lokal.
+
 Lihat daftar kandidat tanpa menambahkan file:
 
 ```powershell
