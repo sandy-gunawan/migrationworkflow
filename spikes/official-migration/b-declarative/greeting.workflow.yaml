@@ -1,0 +1,23 @@
+name: greeting-workflow
+description: Independent smoke test copied from the official Python declarative guide.
+inputs:
+  name:
+    type: string
+    description: The name of the person to greet.
+actions:
+  - kind: SetVariable
+    id: set_greeting
+    variable: Local.greeting
+    value: Hello
+  - kind: SetVariable
+    id: build_message
+    variable: Local.message
+    value: =Concat(Local.greeting, ", ", Workflow.Inputs.name, "!")
+  - kind: SendActivity
+    id: send_greeting
+    activity:
+      text: =Local.message
+  - kind: SetVariable
+    id: set_output
+    variable: Workflow.Outputs.greeting
+    value: =Local.message

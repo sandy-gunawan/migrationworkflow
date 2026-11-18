@@ -1,0 +1,8 @@
+relationship equipment_site
+	fromColumn: equipment.site_id
+	toColumn: sites.site_id
+
+relationship order_equipment
+	fromColumn: work_orders.equipment_id
+	toColumn: equipment.equipment_id
+

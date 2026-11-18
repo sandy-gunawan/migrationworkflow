@@ -1,0 +1,54 @@
+1
+00:00:00,000 --> 00:00:06,000
+MAF declarative YAML
+Satu pertanyaan, satu alur yang nyata.
+
+2
+00:00:06,000 --> 00:00:12,000
+Di sini, alur tetap ditulis dalam YAML.
+Loader resmi mengubahnya menjadi graph.
+
+3
+00:00:12,000 --> 00:00:20,160
+Snapshot YAML dibaca saat server mulai.
+Membaca file ini belum memanggil agent.
+
+4
+00:00:20,160 --> 00:00:28,160
+Pertanyaan TRK001 dikirim dari browser.
+Setiap request mendapat graph baru.
+
+5
+00:00:28,160 --> 00:00:48,160
+MAF menjalankan kondisi dari YAML.
+Specialist membaca work order lewat MCP.
+
+6
+00:00:48,160 --> 00:01:05,320
+WO001 dan TRK001 muncul pada jawaban.
+Sumber aslinya juga diperiksa.
+
+7
+00:01:05,320 --> 00:01:17,360
+Pilih langkah dan periksa source-nya.
+Python mengikat agent ke referensi YAML.
+
+8
+00:01:17,360 --> 00:01:27,480
+YAML tetap terpisah dari kode Python.
+Ubah snapshot: restart lalu uji ulang.
+
+9
+00:01:27,480 --> 00:01:37,520
+Trace mencatat agent dan respons native.
+Satu kasus ini bukan uji ulang 50 kasus.
+
+10
+00:01:37,520 --> 00:01:44,520
+Agent dan model tetap ada di Foundry.
+Yang berubah adalah pengatur alurnya.
+
+11
+00:01:44,520 --> 00:01:50,520
+Lanjutkan lewat panduan di README.
+MCP01 saja; bukan full50 atau Fabric.

@@ -1,0 +1,135 @@
+1
+00:00:00,000 --> 00:00:04,000
+Ikuti alur TRK001 sampai jawabannya.
+Mulai dari kotak node, baru Parameters.
+
+2
+00:00:04,000 --> 00:00:07,000
+Buka Designer, bukan Run draft.
+Di sini kita melihat, bukan mengedit.
+
+3
+00:00:07,000 --> 00:00:10,000
+Ini pintu masuk workflow.
+Panah turun ke Validate request.
+
+4
+00:00:10,000 --> 00:00:16,000
+Schema menjelaskan bentuk data.
+Pertanyaan aslinya dikirim di Body.
+
+5
+00:00:16,000 --> 00:00:19,000
+Body diperiksa sebelum agent dipanggil.
+
+6
+00:00:19,000 --> 00:00:24,000
+Yang diperiksa adalah isi Body POST,
+bukan jawaban agent.
+
+7
+00:00:24,000 --> 00:00:27,000
+Jalur valid masuk ke capture question.
+
+8
+00:00:27,000 --> 00:00:33,000
+Langkah berikutnya memakai question
+dan run_id yang sama.
+
+9
+00:00:33,000 --> 00:00:36,000
+Sebelum router, buat percakapan dulu.
+
+10
+00:00:36,000 --> 00:00:42,000
+run_id melacak request.
+ID percakapan menyimpan konteks agent.
+
+11
+00:00:42,000 --> 00:00:45,000
+Router memilih arah, bukan jawaban.
+
+12
+00:00:45,000 --> 00:00:51,000
+Parse router mengambil keputusan route.
+Hasil kasus ini: mcp.
+
+13
+00:00:51,000 --> 00:00:55,000
+Lihat panah dari Switch ke case mcp.
+Cabang lain bukan jalur TRK001.
+
+14
+00:00:55,000 --> 00:01:00,000
+On membaca field route.
+Jika nilainya mcp, masuk case mcp.
+
+15
+00:01:00,000 --> 00:01:03,000
+Di cabang mcp, tandai percakapannya.
+
+16
+00:01:03,000 --> 00:01:08,000
+KPP_ROUTE:mcp hanya penanda.
+Tool belum dipanggil pada langkah ini.
+
+17
+00:01:08,000 --> 00:01:12,000
+Ini node HTTP, bukan node tool MCP.
+Tool dipanggil oleh agent Foundry.
+
+18
+00:01:12,000 --> 00:01:19,000
+Logic Apps meneruskan input dan konteks.
+Foundry memilih dan memanggil tool.
+
+19
+00:01:19,000 --> 00:01:24,000
+Managed identity mengakses Foundry.
+Tidak perlu menaruh API key di Body.
+
+20
+00:01:24,000 --> 00:01:30,000
+Ini dari run MCP01 yang sudah selesai.
+Bukan panggilan langsung dari Logic Apps.
+
+21
+00:01:30,000 --> 00:01:33,000
+Respons Foundry belum jadi jawaban akhir.
+
+22
+00:01:33,000 --> 00:01:39,000
+Normalizer memeriksa bukti dan sumber.
+Ia tidak memilih cabang baru.
+
+23
+00:01:39,000 --> 00:01:42,000
+Hasil cabang mcp siap dikembalikan.
+
+24
+00:01:42,000 --> 00:01:47,000
+Body dari normalizer masuk ke Result.
+
+25
+00:01:47,000 --> 00:01:50,000
+Node Response ada di luar cabang mcp.
+
+26
+00:01:50,000 --> 00:01:56,000
+Response mengirim Result ke client.
+HTTP 200 saja belum membuktikan hasil.
+
+27
+00:01:56,000 --> 00:02:03,000
+Sekarang baca nilai dari run yang sama.
+Ini hasil run, bukan konfigurasi Designer.
+
+28
+00:02:03,000 --> 00:02:09,000
+Cocokkan WO001 dan sumber TRK001.
+Bukti bukan cuma tanda hijau.
+
+29
+00:02:09,000 --> 00:02:13,000
+Lihat bab per langkah di README.
+Tidak ada publish atau run baru.

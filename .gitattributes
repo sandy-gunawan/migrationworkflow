@@ -1,0 +1,9 @@
+# These files are checked against byte-level snapshot hashes.
+/data/seed/mining.json -text
+/requirements.txt -text
+/source/foundry/*.yaml -text
+/source/foundry/normalization.v1.py -text
+/spikes/official-migration/b-declarative/source.workflow.yaml -text
+/src/demo_common/normalization.py -text
+/src/maf_service/resources/source.workflow.yaml -text
+/tests/golden/cases.json -text

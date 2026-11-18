@@ -1,0 +1,50 @@
+{
+  "demo_id": "48254cc6",
+  "source": {
+    "demo_id": "48254cc6",
+    "project_endpoint": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo",
+    "name": "kppdemo-mining-workflow",
+    "version": "2",
+    "export": "source\\foundry\\mining-router.v2.workflow.yaml",
+    "sha256": "8a1b3b54903f26864bf81fad662e847cc97df18a945f536db9ff78b90aa4a8e1",
+    "seed_sha256": "b396bfdd758fdb531c72c5834993f1b3d152c857885471392e2d131ba63173ca",
+    "agent_versions": {
+      "router": {
+        "name": "kppdemo-router",
+        "version": "1"
+      },
+      "mcp": {
+        "name": "kppdemo-mcp",
+        "version": "1"
+      },
+      "fabric_data": {
+        "name": "kppdemo-fabric-data",
+        "version": "1"
+      },
+      "rest_api": {
+        "name": "kppdemo-rest",
+        "version": "4"
+      },
+      "knowledge": {
+        "name": "kppdemo-knowledge",
+        "version": "2"
+      },
+      "foundry_iq": {
+        "name": "kppdemo-foundry-iq",
+        "version": "2"
+      }
+    },
+    "runtime_status": "PASS_NINE_NATIVE_BRANCHES",
+    "retirement": "2026-12-01",
+    "canonical_export": "source\\foundry\\workflow.yaml"
+  },
+  "corpus": "tests\\golden\\cases.json",
+  "corpus_sha256": "b4faabfcff03c37b2e99a3c890d309b5f9e8e42b2d53d85e0a83b87e1ed86c77",
+  "normalization_sha256": "fc0840e592857ca3c1e826864c4d70fb08e808ed3a786e11e17618070cfabf53",
+  "fabric_provider": "config\\fabric-us-data-agent.json",
+  "fabric_provider_sha256": "dee5f5f24e58c386d1de1a22ac681cfa3c5ab731f5a04bac5a068a7a7d367dd5",
+  "result_schema": "contracts/demo.schema.json",
+  "source_outcomes": "evidence\\foundry\\source-baseline.json",
+  "core_status": "PASS",
+  "full_seven_provider_status": "BLOCKED"
+}

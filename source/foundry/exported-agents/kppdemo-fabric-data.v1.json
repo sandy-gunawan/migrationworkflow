@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "demo_id": "48254cc6",
+    "route": "fabric_data"
+  },
+  "object": "agent.version",
+  "id": "kppdemo-fabric-data:1",
+  "name": "kppdemo-fabric-data",
+  "version": "1",
+  "description": "Synthetic US Fabric DataAgent specialist. No existing systems.",
+  "created_at": 1794496436,
+  "definition": {
+    "kind": "prompt",
+    "model": "gpt-5-mini",
+    "instructions": "You answer synthetic mining production questions only. Always call the configured native Fabric DataAgent tool. It is restricted to the new US dummy lakehouse. Never access or discover any other workspace, source, workplace content, or live system. Report exact retrieved facts and the tool's source identifiers. Never invent an answer or mask an authentication/tool failure. If the question is not covered by the synthetic tables, state no data. Include source kind fabric_data_agent and the table/record identifiers in your response.",
+    "reasoning": {
+      "effort": "low"
+    },
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "kpp-fabric-data",
+        "server_url": "https://api.fabric.microsoft.com/v1/mcp/workspaces/d4c8c862-17ae-47ef-8b96-5c763494d2b8/dataagents/f2fa47cc-92d9-4326-b80a-5ba9bb1b4b52/agent",
+        "allowed_tools": {
+          "tool_names": [
+            "DataAgent_kpp_mining_data_us_48254cc6"
+          ]
+        },
+        "require_approval": "never",
+        "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-fabric-data-mi"
+      }
+    ]
+  },
+  "draft": false,
+  "status": "active",
+  "instance_identity": {
+    "principal_id": "80ecf71a-52a6-48e1-8709-973f98689be3",
+    "client_id": "80ecf71a-52a6-48e1-8709-973f98689be3"
+  },
+  "blueprint": {
+    "principal_id": "7eb3f8bd-3ce9-44e1-b5ed-1e7acac36321",
+    "client_id": "5c1191d5-77a1-456c-aa70-bf99ddc27a18"
+  },
+  "blueprint_reference": {
+    "type": "ManagedAgentIdentityBlueprint",
+    "blueprint_id": "kppdemo-fabric-data-fc73b"
+  },
+  "agent_guid": "fc73bac7-09fa-4b18-ac86-5e565cbd286e"
+}

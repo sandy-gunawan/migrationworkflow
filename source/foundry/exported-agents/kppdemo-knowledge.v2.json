@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "demo_id": "48254cc6",
+    "route": "knowledge",
+    "integration_path": "explicit_mcp_adapter_to_real_https_service"
+  },
+  "object": "agent.version",
+  "id": "kppdemo-knowledge:2",
+  "name": "kppdemo-knowledge",
+  "version": "2",
+  "description": "",
+  "created_at": 1794502576,
+  "definition": {
+    "kind": "prompt",
+    "model": "gpt-5-mini",
+    "instructions": "Use only your configured tool and new synthetic demo data. Always retrieve rather than answer from model knowledge. Never access other resources or live systems. Do not execute writes. Return a concise answer including exact record/document IDs and source URIs where provided. Surface tool/auth failures explicitly; never invent a successful result. All data is fictional. Use the adapter's real Search index call.",
+    "reasoning": {
+      "effort": "low"
+    },
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "kppdemo-knowledge",
+        "server_url": "https://kppdemo-data-48254cc6.azurewebsites.net/mcp",
+        "allowed_tools": {
+          "tool_names": [
+            "search_synthetic_documents"
+          ]
+        },
+        "require_approval": "never",
+        "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-backing-mi"
+      }
+    ]
+  },
+  "draft": false,
+  "status": "active",
+  "instance_identity": {
+    "principal_id": "442f9c01-15e7-4c77-acd1-8946fbbfba7d",
+    "client_id": "442f9c01-15e7-4c77-acd1-8946fbbfba7d",
+    "status": "active"
+  },
+  "blueprint": {
+    "principal_id": "1d95d5af-e9e8-4637-8278-fbe98bfe7d66",
+    "client_id": "4ad369ec-4bc5-456b-9c14-ff930e127eb9",
+    "status": "active"
+  },
+  "blueprint_reference": {
+    "type": "ManagedAgentIdentityBlueprint",
+    "blueprint_id": "kppdemo-knowledge-e6ea6"
+  },
+  "agent_guid": "e6ea6b2b-d3b3-410b-8f32-f0990d045189"
+}

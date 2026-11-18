@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "demo_id": "48254cc6",
+    "route": "knowledge"
+  },
+  "object": "agent.version",
+  "id": "kppdemo-knowledge:1",
+  "name": "kppdemo-knowledge",
+  "version": "1",
+  "description": "",
+  "created_at": 1794496599,
+  "definition": {
+    "kind": "prompt",
+    "model": "gpt-5-mini",
+    "instructions": "Search only the configured new synthetic mining index. Retrieve the answer instead of using model memory. Never access or discover other resources or real workplace/business content. Cite the DMO-DOC document IDs and source URI returned in the search results. Surface retrieval errors; do not invent facts or citations.",
+    "reasoning": {
+      "effort": "low"
+    },
+    "tools": [
+      {
+        "type": "azure_ai_search",
+        "azure_ai_search": {
+          "indexes": [
+            {
+              "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-search-mi",
+              "index_name": "kppdemo-documents",
+              "query_type": "simple",
+              "top_k": 3,
+              "filter": "demo_id eq '48254cc6' and synthetic eq true"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "draft": false,
+  "status": "active",
+  "instance_identity": {
+    "principal_id": "442f9c01-15e7-4c77-acd1-8946fbbfba7d",
+    "client_id": "442f9c01-15e7-4c77-acd1-8946fbbfba7d"
+  },
+  "blueprint": {
+    "principal_id": "1d95d5af-e9e8-4637-8278-fbe98bfe7d66",
+    "client_id": "4ad369ec-4bc5-456b-9c14-ff930e127eb9"
+  },
+  "blueprint_reference": {
+    "type": "ManagedAgentIdentityBlueprint",
+    "blueprint_id": "kppdemo-knowledge-e6ea6"
+  },
+  "agent_guid": "e6ea6b2b-d3b3-410b-8f32-f0990d045189"
+}

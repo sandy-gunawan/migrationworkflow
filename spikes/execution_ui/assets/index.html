@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mining execution bench</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M4 30h32M8 24h24M12 18h16M16 12h8' fill='none' stroke='%23b26a35' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/assets/base.css">
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 30h32M8 24h24M12 18h16M16 12h8"/></svg>
+      <div><strong>Mining execution bench</strong><span id="engine">Memuat runtime</span></div>
+    </div>
+    <nav class="header-links" aria-label="Panduan dan identitas">
+      <span id="identity-mode">Memuat identity</span>
+      <a href="/guide" target="_blank" rel="noopener">Buka panduan HTML</a>
+    </nav>
+  </header>
+  <div id="fixture-warning" class="fixture-warning" role="alert" hidden>Contract fixture, bukan retrieval live Azure.</div>
+  <main class="workbench">
+    <aside class="ask-panel">
+      <h1>Tanya datanya.<br>Ikuti prosesnya.</h1>
+      <p class="intro" id="runtime-description"></p>
+      <form id="question-form">
+        <label for="question">Pertanyaan mining dummy</label>
+        <textarea id="question" rows="5" maxlength="4000" required placeholder="Show work orders for equipment TRK001."></textarea>
+        <div class="input-help"><span>Ctrl + Enter untuk menjalankan</span><span id="character-count">0 / 4000</span></div>
+        <button id="run-button" class="primary" type="submit" disabled>Memuat runtime</button>
+      </form>
+      <div id="form-error" class="notice error" role="alert" hidden></div>
+      <div class="safety-note">
+        <strong>Hanya demo dan data sintetis</strong>
+        <p>Token Azure tetap di backend Python. Ontology dan Work IQ tetap blocked. UI ini tidak membuat resource atau mengaktifkan capacity Fabric.</p>
+      </div>
+      <details class="definition-summary">
+        <summary>File workflow yang dipakai</summary>
+        <p id="definition-path"></p>
+        <p id="definition-hash"></p>
+        <button id="definition-button" type="button">Baca snapshot file</button>
+        <p>Snapshot dibaca saat server mulai. Mengubah file tidak mengubah run yang sudah berjalan.</p>
+      </details>
+      <section class="prompt-section">
+        <h2>Mulai dari contoh</h2>
+        <div id="presets" class="presets"></div>
+        <p id="expected" class="expected"></p>
+        <details class="catalog">
+          <summary>Semua 50 pertanyaan baseline</summary>
+          <label for="case-select">Pilih case</label>
+          <select id="case-select"><option value="">Pilih pertanyaan</option></select>
+        </details>
+      </section>
+    </aside>
+    <section class="execution-panel" aria-labelledby="execution-title">
+      <div class="section-heading">
+        <div><h2 id="execution-title">Jalur eksekusi</h2><p>Observasi aktual, tanpa persentase buatan.</p></div>
+        <span id="run-badge" class="badge neutral">Belum ada run</span>
+      </div>
+      <div class="running-summary" aria-live="polite">
+        <span id="run-status">Siap menerima pertanyaan.</span><time id="elapsed">0.0 detik</time>
+      </div>
+      <div class="agent-summary"><span id="active-agent-label">Agent teramati</span><strong id="active-agent">Belum ada event agent</strong></div>
+      <label class="follow-option"><input id="show-skipped" type="checkbox"> Tampilkan action native yang dilewati</label>
+      <div id="empty-state" class="empty-state">
+        <p><strong>Satu pertanyaan, satu tujuan.</strong><br>Pilih contoh untuk mengisi pertanyaan. Agent baru dipanggil setelah Anda menekan tombol Jalankan.</p>
+      </div>
+      <ol id="steps" class="steps" aria-label="Langkah yang benar-benar diamati"></ol>
+      <p id="waiting-note" class="progress-note"></p>
+      <section class="result-panel" aria-labelledby="result-title">
+        <div class="section-heading"><h2 id="result-title">Jawaban dan sumber</h2><span id="result-badge" class="badge neutral">Menunggu run</span></div>
+        <p id="result-answer" class="answer">Belum ada retrieval.</p>
+        <div id="result-error" class="notice error" role="alert" hidden></div>
+        <ul id="sources" class="sources"></ul>
+        <details id="trace-details" class="trace" hidden><summary>Run ID, native evidence dan trace</summary><pre id="trace-output"></pre></details>
+      </section>
+    </section>
+    <aside class="code-panel" aria-labelledby="code-title">
+      <div class="section-heading"><h2 id="code-title">Di balik langkah ini</h2></div>
+      <label class="follow-option"><input id="follow-active" type="checkbox" checked> Ikuti langkah aktif</label>
+      <h3 id="explanation-title">Belajar alur sebelum menjalankan</h3>
+      <p id="explanation">Pilih langkah untuk melihat tindakan dan source aktualnya.</p>
+      <div class="code-location">
+        <span id="code-path"></span><strong id="code-symbol"></strong>
+        <a id="code-range" href="#source-code"></a>
+      </div>
+      <label for="code-select">Source aktual: Python atau definisi</label>
+      <select id="code-select" disabled></select>
+      <nav id="source-lessons" class="source-lessons" aria-label="Penjelasan kode"></nav>
+      <section class="source-lesson" aria-live="polite">
+        <h4 id="lesson-title">Penjelasan untuk pemula</h4>
+        <p id="lesson-explanation"></p><p id="lesson-analogy" class="lesson-analogy"></p>
+      </section>
+      <pre id="source-code" class="source-code" tabindex="0" aria-label="Source dari langkah terpilih"></pre>
+      <details id="definition-details" class="definition-full">
+        <summary>Snapshot definisi lengkap</summary>
+        <pre id="definition-text" tabindex="0"></pre>
+      </details>
+      <p class="code-note">Membaca kode atau panduan tidak menjalankan agent. Source ini bukan editor workflow.</p>
+    </aside>
+  </main>
+  <footer>
+    <span id="runtime-proof"></span>
+    <a href="http://127.0.0.1:8765/" target="_blank" rel="noopener">UI MAF awal tetap terpisah</a>
+  </footer>
+</body>
+</html>

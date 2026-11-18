@@ -1,0 +1,41 @@
+{
+  "maf": {
+    "title": "MAF code-first",
+    "subtitle": "Graph Python yang mengatur urutan kerja",
+    "chain": ["Browser", "Python MAF", "Agent Foundry", "Tool MCP"],
+    "overview": ["Kita mulai dari satu pertanyaan.", "Python MAF yang mengatur alurnya."],
+    "question": ["Cari work order untuk equipment TRK001.", "Data yang dipakai adalah data sintetis."],
+    "running": ["Router memilih satu jalur yang cocok.", "Specialist mengambil data lewat MCP."],
+    "answer": ["Hasilnya: WO001 untuk equipment TRK001.", "Sumber maintenance ikut ditampilkan."],
+    "inspector": ["Klik langkah untuk melihat kode aslinya.", "UI tidak menampilkan pikiran model."],
+    "trace": ["Trace mencatat agent, versi, dan ID run.", "Jawaban tanpa sumber tidak dianggap sah."],
+    "closing": ["Yang pindah adalah aturan alur kerja.", "Router dan specialist tetap di Foundry."]
+  },
+  "logicapps": {
+    "title": "Logic Apps native",
+    "subtitle": "Workflow Azure yang menjalankan orkestrasi",
+    "chain": ["Browser", "Gateway Python", "Logic Apps", "Agent dan MCP"],
+    "overview": ["Tampilannya mirip, pelaksananya berbeda.", "Alur berjalan di Logic Apps Azure."],
+    "question": ["Kita kirim pertanyaan TRK001 yang sama.", "Python lokal hanya menjadi gateway."],
+    "running": ["Logic Apps memilih cabang dan agent.", "UI membaca status action yang nyata."],
+    "answer": ["WO001 kembali bersama sumber datanya.", "Request live, dengan data sintetis."],
+    "inspector": ["Pilih langkah untuk melihat definisinya.", "Gateway tidak mengambil alih routing."],
+    "nativeSource": ["JSON ini adalah workflow native Azure.", "HTTP dan Switch dijalankan Logic Apps."],
+    "trace": ["Trace mengaitkan UI dengan run native.", "Normalizer hanya memeriksa evidence."],
+    "closing": ["Ini alternatif dari orkestrasi MAF.", "Bukan langkah setelah MAF selesai."]
+  },
+  "declarative": {
+    "title": "MAF declarative YAML",
+    "subtitle": "File YAML dimuat oleh loader resmi",
+    "chain": ["Browser", "YAML dan loader", "Graph MAF", "Agent Foundry"],
+    "overview": ["Di sini, alur tetap ditulis dalam YAML.", "Loader resmi mengubahnya menjadi graph."],
+    "definition": ["Snapshot YAML dibaca saat server mulai.", "Membaca file ini belum memanggil agent."],
+    "question": ["Pertanyaan TRK001 dikirim dari browser.", "Setiap request mendapat graph baru."],
+    "running": ["MAF menjalankan kondisi dari YAML.", "Specialist membaca work order lewat MCP."],
+    "answer": ["WO001 dan TRK001 muncul pada jawaban.", "Sumber aslinya juga diperiksa."],
+    "inspector": ["Pilih langkah dan periksa source-nya.", "Python mengikat agent ke referensi YAML."],
+    "nativeSource": ["YAML tetap terpisah dari kode Python.", "Ubah snapshot: restart lalu uji ulang."],
+    "trace": ["Trace mencatat agent dan respons native.", "Satu kasus ini bukan uji ulang 50 kasus."],
+    "closing": ["Agent dan model tetap ada di Foundry.", "Yang berubah adalah pengatur alurnya."]
+  }
+}

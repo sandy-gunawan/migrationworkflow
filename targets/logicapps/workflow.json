@@ -1,0 +1,1196 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "triggers": {
+    "kpp_mining_start": {
+      "type": "Request",
+      "kind": "Http",
+      "inputs": {
+        "method": "POST",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "question": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Question",
+              "type": "string"
+            },
+            "run_id": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "question"
+          ],
+          "title": "DemoRequest",
+          "type": "object"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs"
+          ]
+        }
+      }
+    }
+  },
+  "actions": {
+    "Validate_request": {
+      "type": "ParseJson",
+      "runAfter": {},
+      "inputs": {
+        "content": "@triggerBody()",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "question": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Question",
+              "type": "string"
+            },
+            "run_id": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "question"
+          ],
+          "title": "DemoRequest",
+          "type": "object"
+        }
+      }
+    },
+    "Reject_invalid_request": {
+      "type": "Response",
+      "kind": "Http",
+      "runAfter": {
+        "Validate_request": [
+          "Failed",
+          "TimedOut"
+        ]
+      },
+      "inputs": {
+        "statusCode": 400,
+        "body": {
+          "error": {
+            "code": "invalid_request",
+            "message": "Supply a question and optional run_id only; route overrides are rejected."
+          }
+        }
+      }
+    },
+    "capture_question": {
+      "type": "Compose",
+      "runAfter": {
+        "Validate_request": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "question": "@triggerBody()?['question']",
+        "run_id": "@coalesce(triggerBody()?['run_id'],guid())"
+      }
+    },
+    "Initialize_result": {
+      "type": "InitializeVariable",
+      "runAfter": {
+        "capture_question": [
+          "Succeeded"
+        ]
+      },
+      "inputs": {
+        "variables": [
+          {
+            "name": "NativeResponses",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "name": "Result",
+            "type": "object",
+            "value": {
+              "run_id": "@outputs('capture_question')?['run_id']",
+              "route": "unsupported",
+              "status": "failed",
+              "answer": null,
+              "sources": [],
+              "error": "A native Logic Apps action failed. Inspect the correlated run."
+            }
+          }
+        ]
+      }
+    },
+    "Execute": {
+      "type": "Scope",
+      "actions": {
+        "create_conversation": {
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations",
+            "headers": {
+              "Foundry-Features": "WorkflowAgents=V1Preview"
+            },
+            "body": {
+              "metadata": {
+                "demo_id": "48254cc6",
+                "run_id": "@outputs('capture_question')?['run_id']",
+                "orchestrator": "logic_apps"
+              },
+              "items": [
+                {
+                  "type": "message",
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "input_text",
+                      "text": "@outputs('capture_question')?['question']"
+                    }
+                  ]
+                }
+              ]
+            },
+            "authentication": {
+              "type": "ManagedServiceIdentity",
+              "audience": "https://ai.azure.com"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {}
+        },
+        "classify_question": {
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/responses",
+            "headers": {
+              "Foundry-Features": "WorkflowAgents=V1Preview"
+            },
+            "body": {
+              "input": "@outputs('capture_question')?['question']",
+              "stream": false,
+              "max_output_tokens": 2048,
+              "conversation": "@body('create_conversation')?['id']",
+              "agent_reference": {
+                "type": "agent_reference",
+                "name": "kppdemo-router",
+                "version": "1"
+              }
+            },
+            "authentication": {
+              "type": "ManagedServiceIdentity",
+              "audience": "https://ai.azure.com"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {
+            "create_conversation": [
+              "Succeeded"
+            ]
+          }
+        },
+        "record_router_response": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "NativeResponses",
+            "value": "@body('classify_question')?['id']"
+          },
+          "runAfter": {
+            "classify_question": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Parse_router": {
+          "type": "Scope",
+          "runAfter": {
+            "record_router_response": [
+              "Succeeded"
+            ]
+          },
+          "actions": {
+            "require_completed_router": {
+              "type": "ParseJson",
+              "runAfter": {},
+              "inputs": {
+                "content": "@body('classify_question')",
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "output"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "completed"
+                      ]
+                    },
+                    "output": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            },
+            "router_messages": {
+              "type": "Query",
+              "runAfter": {
+                "require_completed_router": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "from": "@body('require_completed_router')?['output']",
+                "where": "@equals(item()?['type'],'message')"
+              }
+            },
+            "router_decision": {
+              "type": "ParseJson",
+              "runAfter": {
+                "router_messages": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "content": "@first(first(body('router_messages'))?['content'])?['text']",
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "route"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "route": {
+                      "type": "string",
+                      "enum": [
+                        "mcp",
+                        "rest_api",
+                        "knowledge",
+                        "foundry_iq",
+                        "fabric_data",
+                        "fabric_iq",
+                        "work_iq",
+                        "clarification",
+                        "unsupported"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "invalid_router_result": {
+          "type": "SetVariable",
+          "inputs": {
+            "name": "Result",
+            "value": {
+              "run_id": "@outputs('capture_question')?['run_id']",
+              "route": "unsupported",
+              "status": "failed",
+              "answer": null,
+              "sources": [],
+              "error": "The router returned an unrecognized route. No specialist was invoked."
+            }
+          },
+          "runAfter": {
+            "Parse_router": [
+              "Failed",
+              "TimedOut"
+            ]
+          }
+        },
+        "route_question": {
+          "type": "Switch",
+          "expression": "@body('router_decision')?['route']",
+          "cases": {
+            "mcp": {
+              "case": "mcp",
+              "actions": {
+                "mark_mcp": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:mcp"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "invoke_mcp": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/responses",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "input": "@outputs('capture_question')?['question']",
+                      "stream": false,
+                      "max_output_tokens": 2048,
+                      "conversation": "@body('create_conversation')?['id']",
+                      "agent_reference": {
+                        "type": "agent_reference",
+                        "name": "kppdemo-mcp",
+                        "version": "1"
+                      }
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "mark_mcp": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "normalize_mcp": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppdemo-maf-48254cc6.azurewebsites.net/api/normalize-result",
+                    "headers": {},
+                    "body": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "mcp",
+                      "response": "@body('invoke_mcp')"
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "api://551b356f-3265-4a3e-8b87-95704b5f503c"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "invoke_mcp": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "record_mcp_response": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "NativeResponses",
+                    "value": "@concat(body('classify_question')?['id'],',',body('invoke_mcp')?['id'])"
+                  },
+                  "runAfter": {
+                    "normalize_mcp": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "set_result_mcp": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": "@body('normalize_mcp')"
+                  },
+                  "runAfter": {
+                    "record_mcp_response": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "rest_api": {
+              "case": "rest_api",
+              "actions": {
+                "mark_rest_api": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:rest_api"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "invoke_rest_api": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/responses",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "input": "@outputs('capture_question')?['question']",
+                      "stream": false,
+                      "max_output_tokens": 2048,
+                      "conversation": "@body('create_conversation')?['id']",
+                      "agent_reference": {
+                        "type": "agent_reference",
+                        "name": "kppdemo-rest",
+                        "version": "4"
+                      }
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "mark_rest_api": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "normalize_rest_api": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppdemo-maf-48254cc6.azurewebsites.net/api/normalize-result",
+                    "headers": {},
+                    "body": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "rest_api",
+                      "response": "@body('invoke_rest_api')"
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "api://551b356f-3265-4a3e-8b87-95704b5f503c"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "invoke_rest_api": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "record_rest_api_response": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "NativeResponses",
+                    "value": "@concat(body('classify_question')?['id'],',',body('invoke_rest_api')?['id'])"
+                  },
+                  "runAfter": {
+                    "normalize_rest_api": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "set_result_rest_api": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": "@body('normalize_rest_api')"
+                  },
+                  "runAfter": {
+                    "record_rest_api_response": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "knowledge": {
+              "case": "knowledge",
+              "actions": {
+                "mark_knowledge": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:knowledge"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "invoke_knowledge": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/responses",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "input": "@outputs('capture_question')?['question']",
+                      "stream": false,
+                      "max_output_tokens": 2048,
+                      "conversation": "@body('create_conversation')?['id']",
+                      "agent_reference": {
+                        "type": "agent_reference",
+                        "name": "kppdemo-knowledge",
+                        "version": "2"
+                      }
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "mark_knowledge": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "normalize_knowledge": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppdemo-maf-48254cc6.azurewebsites.net/api/normalize-result",
+                    "headers": {},
+                    "body": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "knowledge",
+                      "response": "@body('invoke_knowledge')"
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "api://551b356f-3265-4a3e-8b87-95704b5f503c"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "invoke_knowledge": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "record_knowledge_response": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "NativeResponses",
+                    "value": "@concat(body('classify_question')?['id'],',',body('invoke_knowledge')?['id'])"
+                  },
+                  "runAfter": {
+                    "normalize_knowledge": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "set_result_knowledge": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": "@body('normalize_knowledge')"
+                  },
+                  "runAfter": {
+                    "record_knowledge_response": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "foundry_iq": {
+              "case": "foundry_iq",
+              "actions": {
+                "mark_foundry_iq": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:foundry_iq"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "invoke_foundry_iq": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/responses",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "input": "@outputs('capture_question')?['question']",
+                      "stream": false,
+                      "max_output_tokens": 2048,
+                      "conversation": "@body('create_conversation')?['id']",
+                      "agent_reference": {
+                        "type": "agent_reference",
+                        "name": "kppdemo-foundry-iq",
+                        "version": "2"
+                      }
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "mark_foundry_iq": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "normalize_foundry_iq": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppdemo-maf-48254cc6.azurewebsites.net/api/normalize-result",
+                    "headers": {},
+                    "body": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "foundry_iq",
+                      "response": "@body('invoke_foundry_iq')"
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "api://551b356f-3265-4a3e-8b87-95704b5f503c"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "invoke_foundry_iq": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "record_foundry_iq_response": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "NativeResponses",
+                    "value": "@concat(body('classify_question')?['id'],',',body('invoke_foundry_iq')?['id'])"
+                  },
+                  "runAfter": {
+                    "normalize_foundry_iq": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "set_result_foundry_iq": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": "@body('normalize_foundry_iq')"
+                  },
+                  "runAfter": {
+                    "record_foundry_iq_response": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "fabric_data": {
+              "case": "fabric_data",
+              "actions": {
+                "mark_fabric_data": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:fabric_data"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "invoke_fabric_data": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/responses",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "input": "@outputs('capture_question')?['question']",
+                      "stream": false,
+                      "max_output_tokens": 2048,
+                      "conversation": "@body('create_conversation')?['id']",
+                      "agent_reference": {
+                        "type": "agent_reference",
+                        "name": "kppdemo-fabric-data",
+                        "version": "1"
+                      }
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "mark_fabric_data": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "normalize_fabric_data": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "https://kppdemo-maf-48254cc6.azurewebsites.net/api/normalize-result",
+                    "headers": {},
+                    "body": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "fabric_data",
+                      "response": "@body('invoke_fabric_data')"
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "api://551b356f-3265-4a3e-8b87-95704b5f503c"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "invoke_fabric_data": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "record_fabric_data_response": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "NativeResponses",
+                    "value": "@concat(body('classify_question')?['id'],',',body('invoke_fabric_data')?['id'])"
+                  },
+                  "runAfter": {
+                    "normalize_fabric_data": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "set_result_fabric_data": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": "@body('normalize_fabric_data')"
+                  },
+                  "runAfter": {
+                    "record_fabric_data_response": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "fabric_iq": {
+              "case": "fabric_iq",
+              "actions": {
+                "blocked_fabric_iq": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:fabric_iq\nKPP_STATUS:blocked\nNative Fabric ontology is unavailable: FeatureNotAvailable."
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "set_result_fabric_iq": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "fabric_iq",
+                      "status": "blocked",
+                      "answer": null,
+                      "sources": [],
+                      "error": "Native Fabric ontology is unavailable: FeatureNotAvailable."
+                    }
+                  },
+                  "runAfter": {
+                    "blocked_fabric_iq": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "work_iq": {
+              "case": "work_iq",
+              "actions": {
+                "blocked_work_iq": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:work_iq\nKPP_STATUS:blocked\nA separate Work IQ sandbox has not been supplied. No workplace data was accessed."
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "set_result_work_iq": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "work_iq",
+                      "status": "blocked",
+                      "answer": null,
+                      "sources": [],
+                      "error": "A separate Work IQ sandbox has not been supplied. No workplace data was accessed."
+                    }
+                  },
+                  "runAfter": {
+                    "blocked_work_iq": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "clarification": {
+              "case": "clarification",
+              "actions": {
+                "ask_clarification": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:clarification\nKPP_STATUS:clarification\nPlease specify one topic: production, maintenance, stock, document lookup, or native knowledge retrieval."
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "set_result_clarification": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "clarification",
+                      "status": "clarification",
+                      "answer": "Please specify one topic: production, maintenance, stock, document lookup, or native knowledge retrieval.",
+                      "sources": [],
+                      "error": null
+                    }
+                  },
+                  "runAfter": {
+                    "ask_clarification": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            },
+            "unsupported": {
+              "case": "unsupported",
+              "actions": {
+                "reject_unsupported": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@concat('https://kppfoundry48254cc6.services.ai.azure.com/api/projects/kpp-mining-demo/openai/v1/conversations/',body('create_conversation')?['id'],'/items')",
+                    "headers": {
+                      "Foundry-Features": "WorkflowAgents=V1Preview"
+                    },
+                    "body": {
+                      "items": [
+                        {
+                          "type": "message",
+                          "role": "assistant",
+                          "content": [
+                            {
+                              "type": "output_text",
+                              "text": "KPP_ROUTE:unsupported\nKPP_STATUS:unsupported\nOnly read-only questions about the new synthetic mining demo are supported. Live systems and writes are not accessed."
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "authentication": {
+                      "type": "ManagedServiceIdentity",
+                      "audience": "https://ai.azure.com"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "set_result_unsupported": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Result",
+                    "value": {
+                      "run_id": "@outputs('capture_question')?['run_id']",
+                      "route": "unsupported",
+                      "status": "unsupported",
+                      "answer": "Only read-only questions about the new synthetic mining demo are supported. Live systems and writes are not accessed.",
+                      "sources": [],
+                      "error": null
+                    }
+                  },
+                  "runAfter": {
+                    "reject_unsupported": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "actions": {
+              "default_invalid_route": {
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "Result",
+                  "value": {
+                    "run_id": "@outputs('capture_question')?['run_id']",
+                    "route": "unsupported",
+                    "status": "failed",
+                    "answer": null,
+                    "sources": [],
+                    "error": "The router returned an unrecognized route. No specialist was invoked."
+                  }
+                },
+                "runAfter": {}
+              }
+            }
+          },
+          "runAfter": {
+            "Parse_router": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "runAfter": {
+        "Initialize_result": [
+          "Succeeded"
+        ]
+      }
+    },
+    "kpp_mining_end": {
+      "type": "Response",
+      "kind": "Http",
+      "runAfter": {
+        "Execute": [
+          "Succeeded",
+          "Failed",
+          "TimedOut"
+        ]
+      },
+      "inputs": {
+        "statusCode": "@if(equals(variables('Result')?['status'],'failed'),502,200)",
+        "body": "@variables('Result')",
+        "headers": {
+          "Content-Type": "application/json",
+          "x-kpp-orchestrator": "logic_apps",
+          "x-kpp-source-sha256": "8a1b3b54903f26864bf81fad662e847cc97df18a945f536db9ff78b90aa4a8e1",
+          "x-kpp-logic-run": "@workflow()['run']['name']",
+          "x-kpp-native-responses": "@variables('NativeResponses')",
+          "x-kpp-route": "@variables('Result')?['route']"
+        }
+      }
+    }
+  },
+  "outputs": {}
+}

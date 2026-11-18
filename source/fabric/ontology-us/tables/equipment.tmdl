@@ -1,0 +1,30 @@
+table equipment
+	lineageTag: c5ab25d9-448b-5d93-ab25-6d07091c0687
+
+	column equipment_id
+		dataType: string
+		lineageTag: e26c7d32-1559-52e8-9018-3fb4441e7e12
+		sourceColumn: equipment_id
+
+	column site_id
+		dataType: string
+		lineageTag: 73fb5725-d40e-54a9-bbad-31c6764da68d
+		sourceColumn: site_id
+
+	column category
+		dataType: string
+		lineageTag: 4a247d94-0011-5875-8db0-a32514bcbd3d
+		sourceColumn: category
+
+	column status
+		dataType: string
+		lineageTag: 253566ba-212b-5e43-a59c-211acbdef3ff
+		sourceColumn: status
+
+	partition equipment = entity
+		mode: directLake
+		source
+			entityName: equipment
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

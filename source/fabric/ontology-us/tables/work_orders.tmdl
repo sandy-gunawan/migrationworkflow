@@ -1,0 +1,30 @@
+table work_orders
+	lineageTag: 796192bd-48f1-5c8f-9208-b41aab7c826f
+
+	column order_id
+		dataType: string
+		lineageTag: 92dfee71-4a95-59ff-8df2-951d5b7d5611
+		sourceColumn: order_id
+
+	column equipment_id
+		dataType: string
+		lineageTag: 48ee57f8-f3fd-5e99-a146-e697b9976c33
+		sourceColumn: equipment_id
+
+	column priority
+		dataType: string
+		lineageTag: cb29c0d8-0061-5e6b-b8cb-ee3fa1688810
+		sourceColumn: priority
+
+	column status
+		dataType: string
+		lineageTag: 67052383-c395-5e6f-b44a-204bedffca07
+		sourceColumn: status
+
+	partition work_orders = entity
+		mode: directLake
+		source
+			entityName: work_orders
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

@@ -1,0 +1,74 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KPP native knowledge base",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://kppsearch48254cc6.search.windows.net"
+    }
+  ],
+  "paths": {
+    "/knowledgebases/kppdemo-mining-knowledge/retrieve": {
+      "post": {
+        "operationId": "retrieve_synthetic_native_knowledge",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "2026-04-01"
+              ],
+              "default": "2026-04-01"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "intents"
+                ],
+                "properties": {
+                  "intents": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "search"
+                      ],
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "semantic"
+                          ]
+                        },
+                        "search": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Native extractive answer and references."
+          }
+        }
+      }
+    }
+  }
+}

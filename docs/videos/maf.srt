@@ -1,0 +1,44 @@
+1
+00:00:00,000 --> 00:00:06,000
+MAF code-first
+Satu pertanyaan, satu alur yang nyata.
+
+2
+00:00:06,000 --> 00:00:12,040
+Kita mulai dari satu pertanyaan.
+Python MAF yang mengatur alurnya.
+
+3
+00:00:12,040 --> 00:00:20,040
+Cari work order untuk equipment TRK001.
+Data yang dipakai adalah data sintetis.
+
+4
+00:00:20,040 --> 00:00:40,040
+Router memilih satu jalur yang cocok.
+Specialist mengambil data lewat MCP.
+
+5
+00:00:40,040 --> 00:00:57,160
+Hasilnya: WO001 untuk equipment TRK001.
+Sumber maintenance ikut ditampilkan.
+
+6
+00:00:57,160 --> 00:01:09,320
+Klik langkah untuk melihat kode aslinya.
+UI tidak menampilkan pikiran model.
+
+7
+00:01:09,320 --> 00:01:19,320
+Trace mencatat agent, versi, dan ID run.
+Jawaban tanpa sumber tidak dianggap sah.
+
+8
+00:01:19,320 --> 00:01:26,320
+Yang pindah adalah aturan alur kerja.
+Router dan specialist tetap di Foundry.
+
+9
+00:01:26,320 --> 00:01:32,320
+Lanjutkan lewat panduan di README.
+MCP01 saja; bukan full50 atau Fabric.

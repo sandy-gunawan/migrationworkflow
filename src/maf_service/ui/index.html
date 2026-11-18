@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MAF execution bench | Mining demo</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 30h32M8 24h24M12 18h16M16 12h8" /></svg>
+      <div><strong>Mining execution bench</strong><span>Microsoft Agent Framework</span></div>
+    </div>
+    <div class="environment"><span class="signal"></span><span id="identity-mode">Memuat konteks lokal</span></div>
+  </header>
+
+  <main class="workbench">
+    <aside class="ask-panel" aria-labelledby="ask-title">
+      <h1 id="ask-title">Tanya datanya.<br> Ikuti agent-nya.</h1>
+      <p class="intro">Satu pertanyaan, satu branch. Lihat proses nyata dari router sampai sumber jawaban.</p>
+      <form id="question-form">
+        <label for="question">Pertanyaan mining dummy</label>
+        <textarea id="question" rows="5" maxlength="4000" required placeholder="Show work orders for equipment TRK001."></textarea>
+        <div class="input-help"><span>Ctrl + Enter untuk menjalankan</span><span id="character-count">0 / 4000</span></div>
+        <button id="run-button" class="primary" type="submit" disabled>Jalankan MAF</button>
+      </form>
+      <div id="form-error" class="notice error" role="alert" hidden></div>
+      <div class="safety-note">
+        <strong>Hanya platform dan data dummy</strong>
+        <p>Ini UI lokal dengan Azure CLI identity. Cloud production tetap memakai MI. Tidak ada akses Work IQ atau sistem klien live.</p>
+      </div>
+      <section class="prompt-section" aria-labelledby="preset-title">
+        <h2 id="preset-title">Mulai dari contoh</h2>
+        <div id="presets" class="presets"></div>
+        <p id="expected" class="expected">Pilih contoh untuk melihat hasil yang seharusnya.</p>
+        <details class="catalog">
+          <summary>Semua 50 pertanyaan pengujian</summary>
+          <label for="case-select">Pilih case</label>
+          <select id="case-select"><option value="">Pilih pertanyaan</option></select>
+        </details>
+      </section>
+    </aside>
+
+    <section class="execution-panel" aria-labelledby="execution-title">
+      <div class="section-heading">
+        <div><h2 id="execution-title">Jalur eksekusi</h2><p>Event asli dari graph, bukan simulasi progress.</p></div>
+        <span id="run-badge" class="badge neutral">Belum ada run</span>
+      </div>
+      <div class="running-summary" aria-live="polite">
+        <span id="run-status">Siap menerima pertanyaan.</span>
+        <time id="elapsed">0.0 detik</time>
+      </div>
+      <div class="agent-summary">
+        <span id="active-agent-label">Agent aktif</span><strong id="active-agent">Belum dipilih</strong>
+      </div>
+      <div id="empty-state" class="empty-state">
+        <svg viewBox="0 0 280 86" aria-hidden="true"><path d="M18 43h244"/><circle cx="32" cy="43" r="16"/><circle cx="104" cy="43" r="16"/><circle cx="176" cy="43" r="16"/><circle cx="248" cy="43" r="16"/></svg>
+        <p><strong>Pertanyaan menentukan jalur.</strong><br>Router membaca topik, MAF memilih branch, specialist mengambil data, lalu evidence diverifikasi.</p>
+      </div>
+      <ol id="steps" class="steps" aria-label="Langkah eksekusi aktual"></ol>
+      <p class="progress-note">Saat agent Foundry menunggu respons, UI belum mengetahui tool internal yang sedang berjalan. Tool aktual ditampilkan setelah native response kembali.</p>
+
+      <section class="result-panel" aria-labelledby="result-title">
+        <div class="section-heading"><h2 id="result-title">Jawaban dan sumber</h2><span id="result-badge" class="badge neutral">Menunggu run</span></div>
+        <p id="result-answer" class="answer">Belum ada retrieval. Jalankan pertanyaan atau pilih contoh.</p>
+        <div id="result-error" class="notice error" role="alert" hidden></div>
+        <ul id="sources" class="sources" aria-label="Sumber aktual"></ul>
+        <details id="trace-details" class="trace" hidden>
+          <summary>Trace, executor dan native response ID</summary>
+          <pre id="trace-output"></pre>
+        </details>
+      </section>
+    </section>
+
+    <aside class="code-panel" aria-labelledby="code-title">
+      <div class="section-heading"><h2 id="code-title">Di balik langkah ini</h2></div>
+      <label class="follow-option"><input id="follow-active" type="checkbox" checked> Ikuti langkah aktif</label>
+      <h3 id="explanation-title">MAF menjalankan workflow</h3>
+      <p id="explanation">Pilih langkah di jalur eksekusi untuk melihat agent, tindakan dan fungsi yang benar-benar menjalankannya.</p>
+      <div class="code-location">
+        <span id="code-path">src/maf_service/workflow.py</span>
+        <strong id="code-symbol">MiningWorkflow.run</strong>
+        <a id="code-range" href="#source-code">Memuat lokasi kode</a>
+      </div>
+      <nav id="source-lessons" class="source-lessons" aria-label="Penjelasan bagian kode"></nav>
+      <section class="source-lesson" aria-labelledby="lesson-title" aria-live="polite">
+        <h4 id="lesson-title">Penjelasan untuk pemula</h4>
+        <p id="lesson-explanation">Memuat penjelasan bagian kode.</p>
+        <p id="lesson-analogy" class="lesson-analogy"></p>
+        <a id="lesson-range" href="#source-code">Lihat baris yang disorot</a>
+      </section>
+      <pre id="source-code" class="source-code" tabindex="0" aria-label="Kode sumber langkah yang dipilih"></pre>
+      <p class="code-note">Klik tautan bagian atau nomor baris berwarna untuk highlight dan penjelasan. Tautan dapat dibuka kembali tanpa menjalankan agent. Pilihan ini tidak mengubah workflow.</p>
+    </aside>
+  </main>
+
+  <footer>
+    <span id="framework-info">Core 1.11.0 / source dibekukan</span>
+    <span>Ontology dan Work IQ tetap blocked. Fabric US otomatis resume/pause hanya untuk route produksi.</span>
+  </footer>
+</body>
+</html>

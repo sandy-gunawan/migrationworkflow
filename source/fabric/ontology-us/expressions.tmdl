@@ -1,0 +1,4 @@
+expression DatabaseQuery =
+		Sql.Database("4iaqeaxjbjwejcmbkwrl33gabu-mlemrvfoc7xupc4wlr3djfgsxa.datawarehouse.fabric.microsoft.com", "kpp_mining_us_48254cc6")
+	lineageTag: 569af731-cee4-5835-99b3-c46c1d3aaddd
+

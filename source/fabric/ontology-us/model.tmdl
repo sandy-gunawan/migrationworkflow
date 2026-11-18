@@ -1,0 +1,10 @@
+model Model
+
+ref table sites
+ref entity MineSite
+ref table equipment
+ref entity Equipment
+ref table work_orders
+ref entity MaintenanceOrder
+ref namespace default
+

@@ -1,0 +1,49 @@
+1
+00:00:00,000 --> 00:00:06,000
+Logic Apps native
+Satu pertanyaan, satu alur yang nyata.
+
+2
+00:00:06,000 --> 00:00:12,040
+Tampilannya mirip, pelaksananya berbeda.
+Alur berjalan di Logic Apps Azure.
+
+3
+00:00:12,040 --> 00:00:20,120
+Kita kirim pertanyaan TRK001 yang sama.
+Python lokal hanya menjadi gateway.
+
+4
+00:00:20,120 --> 00:00:40,120
+Logic Apps memilih cabang dan agent.
+UI membaca status action yang nyata.
+
+5
+00:00:40,120 --> 00:00:57,280
+WO001 kembali bersama sumber datanya.
+Request live, dengan data sintetis.
+
+6
+00:00:57,280 --> 00:01:09,320
+Pilih langkah untuk melihat definisinya.
+Gateway tidak mengambil alih routing.
+
+7
+00:01:09,320 --> 00:01:19,440
+JSON ini adalah workflow native Azure.
+HTTP dan Switch dijalankan Logic Apps.
+
+8
+00:01:19,440 --> 00:01:29,480
+Trace mengaitkan UI dengan run native.
+Normalizer hanya memeriksa evidence.
+
+9
+00:01:29,480 --> 00:01:36,480
+Ini alternatif dari orkestrasi MAF.
+Bukan langkah setelah MAF selesai.
+
+10
+00:01:36,480 --> 00:01:42,480
+Lanjutkan lewat panduan di README.
+MCP01 saja; bukan full50 atau Fabric.

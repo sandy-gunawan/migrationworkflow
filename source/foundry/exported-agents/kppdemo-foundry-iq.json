@@ -1,0 +1,130 @@
+{
+  "metadata": {
+    "demo_id": "48254cc6",
+    "route": "foundry_iq",
+    "retrieval_mode": "native_minimal_extractive"
+  },
+  "object": "agent.version",
+  "id": "kppdemo-foundry-iq:1",
+  "name": "kppdemo-foundry-iq",
+  "version": "1",
+  "description": "",
+  "created_at": 1794496616,
+  "definition": {
+    "kind": "prompt",
+    "model": "gpt-5-mini",
+    "instructions": "Use only the configured native knowledge-base retrieval tool over the new synthetic mining documents. Set api-version to 2026-04-01 and send intents=[{type:semantic,search:the user's question}]. Report exact retrieved facts with DMO-DOC IDs and citations/references from the tool. This is GA minimal extractive Foundry IQ retrieval, not LLM planning or answer synthesis. Never access other resources, real data, or invent an answer; surface tool/auth errors explicitly.",
+    "reasoning": {
+      "effort": "low"
+    },
+    "tools": [
+      {
+        "type": "remote_tool",
+        "tool_arguments": [
+          {
+            "name": "openapi",
+            "arguments": {
+              "name": "synthetic_native_knowledge",
+              "description": "Call the native knowledge-base retrieve method on new synthetic documents only.",
+              "auth": {
+                "type": "project_connection",
+                "security_scheme": {
+                  "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-knowledge-mi"
+                }
+              },
+              "spec": {
+                "openapi": "3.0.1",
+                "info": {
+                  "title": "KPP native synthetic knowledge",
+                  "version": "1.0.0"
+                },
+                "servers": [
+                  {
+                    "url": "https://kppsearch48254cc6.search.windows.net"
+                  }
+                ],
+                "paths": {
+                  "/knowledgebases/kppdemo-mining-knowledge/retrieve": {
+                    "post": {
+                      "operationId": "retrieve_synthetic_native_knowledge",
+                      "parameters": [
+                        {
+                          "name": "api-version",
+                          "in": "query",
+                          "required": true,
+                          "schema": {
+                            "type": "string",
+                            "enum": [
+                              "2026-04-01"
+                            ],
+                            "default": "2026-04-01"
+                          }
+                        }
+                      ],
+                      "requestBody": {
+                        "required": true,
+                        "content": {
+                          "application/json": {
+                            "schema": {
+                              "type": "object",
+                              "properties": {
+                                "intents": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "enum": [
+                                          "semantic"
+                                        ]
+                                      },
+                                      "search": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "search"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "intents"
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "responses": {
+                        "200": {
+                          "description": "Native extractive response with source references."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "draft": false,
+  "status": "active",
+  "instance_identity": {
+    "principal_id": "29c60334-86f1-4534-a565-1e9ed98cf393",
+    "client_id": "29c60334-86f1-4534-a565-1e9ed98cf393"
+  },
+  "blueprint": {
+    "principal_id": "05a8a336-d7a1-454c-94eb-37be5a62fb01",
+    "client_id": "0f459d14-8e02-4543-9080-2dc640c1a7be"
+  },
+  "blueprint_reference": {
+    "type": "ManagedAgentIdentityBlueprint",
+    "blueprint_id": "kppdemo-foundry-iq-3c326"
+  },
+  "agent_guid": "3c3266d3-3b2e-4cbf-86ac-7fec65bc5e0d"
+}

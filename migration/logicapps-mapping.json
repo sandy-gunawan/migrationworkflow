@@ -1,0 +1,29 @@
+{
+  "demo_id": "48254cc6",
+  "runtime": "azure_logic_apps_consumption",
+  "source": "source\\foundry\\workflow.yaml",
+  "source_sha256": "8a1b3b54903f26864bf81fad662e847cc97df18a945f536db9ff78b90aa4a8e1",
+  "source_branches": 9,
+  "unknown_semantics": "REJECT",
+  "specialists_remain_foundry_hosted": true,
+  "routing_and_native_invocation": "Logic Apps built-in HTTP and Switch actions",
+  "normalization_boundary": "pure API; no routing, workflow execution or provider calls",
+  "async_policy": "Pinned synchronous Responses API; queued/incomplete outputs fail closed. No classic Thread/Run API or hidden agent loop.",
+  "lowering": {
+    "capture_question": "Compose original question/run ID",
+    "classify_question": "MI HTTP named/versioned native prompt call",
+    "route_question": "strict JSON route then mutually exclusive Switch",
+    "kpp_mining_end": "native Response with comparable DTO and correlated run IDs",
+    "invoke_mcp": "case mcp: native HTTP + pure normalization",
+    "invoke_rest_api": "case rest_api: native HTTP + pure normalization",
+    "invoke_knowledge": "case knowledge: native HTTP + pure normalization",
+    "invoke_foundry_iq": "case foundry_iq: native HTTP + pure normalization",
+    "invoke_fabric_data": "case fabric_data: native HTTP + pure normalization",
+    "blocked_fabric_iq": "case fabric_iq: explicit source outcome",
+    "blocked_work_iq": "case work_iq: explicit source outcome",
+    "ask_clarification": "case clarification: explicit source outcome",
+    "reject_unsupported": "case unsupported: explicit source outcome"
+  },
+  "generic_lossless_converter": false,
+  "scope": "verified_demo_source_subset_only"
+}

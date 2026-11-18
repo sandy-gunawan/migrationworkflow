@@ -1,0 +1,16 @@
+entityRelationship 'Equipment At Site'
+	lineageTag: 6fe872f5-409d-5734-b5b1-853fff55da95
+	fromEntity: Equipment
+	toEntity: MineSite
+
+	backingConfiguration
+		relationship: equipment_site
+
+entityRelationship 'Order For Equipment'
+	lineageTag: fdfbe5b7-2cbf-55a3-918f-a73a9a3b94f3
+	fromEntity: MaintenanceOrder
+	toEntity: Equipment
+
+	backingConfiguration
+		relationship: order_equipment
+

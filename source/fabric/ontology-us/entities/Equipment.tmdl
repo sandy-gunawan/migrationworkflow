@@ -1,0 +1,33 @@
+entity Equipment
+	lineageTag: 27d4441d-7f9a-5ea4-a1a0-56bb3b47324a
+	backingTable: equipment
+	keyProperty: equipment_id
+
+	property equipment_id
+		dataType: string
+		lineageTag: 2e886d6f-2591-5487-968e-511264fd6692
+
+		backingConfiguration
+			valueColumn: equipment.equipment_id
+
+	property site_id
+		dataType: string
+		lineageTag: d80ce116-1735-5281-9d40-0cbe74dad08d
+
+		backingConfiguration
+			valueColumn: equipment.site_id
+
+	property category
+		dataType: string
+		lineageTag: 7bac1ef7-eab5-5318-8e00-0e79d2fb1d4d
+
+		backingConfiguration
+			valueColumn: equipment.category
+
+	property status
+		dataType: string
+		lineageTag: 179ed01d-6998-51a0-baf4-d89d52e5053d
+
+		backingConfiguration
+			valueColumn: equipment.status
+

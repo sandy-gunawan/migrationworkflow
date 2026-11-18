@@ -1,0 +1,154 @@
+kind: workflow
+trigger:
+  kind: OnConversationStart
+  id: kpp_mining_start
+  actions:
+    - kind: SetVariable
+      id: capture_question
+      variable: Local.Question
+      value: =System.LastMessage.Text
+    - kind: InvokeAzureAgent
+      id: classify_question
+      agent:
+        name: kppdemo-router
+        version: "1"
+      conversationId: =System.ConversationId
+      input:
+        messages: =UserMessage(Local.Question)
+      output:
+        responseObject: Local.RouterDecision
+        messages: Local.RouterMessages
+        autoSend: false
+    - kind: ConditionGroup
+      id: route_question
+      conditions:
+        - id: route_mcp
+          condition: =Local.RouterDecision.route = "mcp"
+          actions:
+            - kind: SendActivity
+              id: mark_mcp
+              activity: "KPP_ROUTE:mcp"
+            - kind: InvokeAzureAgent
+              id: invoke_mcp
+              agent:
+                name: kppdemo-mcp
+                version: "1"
+              conversationId: =System.ConversationId
+              input:
+                messages: =UserMessage(Local.Question)
+              output:
+                messages: Local.SpecialistMessages
+                autoSend: true
+        - id: route_rest_api
+          condition: =Local.RouterDecision.route = "rest_api"
+          actions:
+            - kind: SendActivity
+              id: mark_rest_api
+              activity: "KPP_ROUTE:rest_api"
+            - kind: InvokeAzureAgent
+              id: invoke_rest_api
+              agent:
+                name: kppdemo-rest
+                version: "4"
+              conversationId: =System.ConversationId
+              input:
+                messages: =UserMessage(Local.Question)
+              output:
+                messages: Local.SpecialistMessages
+                autoSend: true
+        - id: route_knowledge
+          condition: =Local.RouterDecision.route = "knowledge"
+          actions:
+            - kind: SendActivity
+              id: mark_knowledge
+              activity: "KPP_ROUTE:knowledge"
+            - kind: InvokeAzureAgent
+              id: invoke_knowledge
+              agent:
+                name: kppdemo-knowledge
+                version: "2"
+              conversationId: =System.ConversationId
+              input:
+                messages: =UserMessage(Local.Question)
+              output:
+                messages: Local.SpecialistMessages
+                autoSend: true
+        - id: route_foundry_iq
+          condition: =Local.RouterDecision.route = "foundry_iq"
+          actions:
+            - kind: SendActivity
+              id: mark_foundry_iq
+              activity: "KPP_ROUTE:foundry_iq"
+            - kind: InvokeAzureAgent
+              id: invoke_foundry_iq
+              agent:
+                name: kppdemo-foundry-iq
+                version: "2"
+              conversationId: =System.ConversationId
+              input:
+                messages: =UserMessage(Local.Question)
+              output:
+                messages: Local.SpecialistMessages
+                autoSend: true
+        - id: route_fabric_data
+          condition: =Local.RouterDecision.route = "fabric_data"
+          actions:
+            - kind: SendActivity
+              id: mark_fabric_data
+              activity: "KPP_ROUTE:fabric_data"
+            - kind: InvokeAzureAgent
+              id: invoke_fabric_data
+              agent:
+                name: kppdemo-fabric-data
+                version: "1"
+              conversationId: =System.ConversationId
+              input:
+                messages: =UserMessage(Local.Question)
+              output:
+                messages: Local.SpecialistMessages
+                autoSend: true
+        - id: route_fabric_iq
+          condition: =Local.RouterDecision.route = "fabric_iq"
+          actions:
+            - kind: SendActivity
+              id: blocked_fabric_iq
+              activity: |
+                KPP_ROUTE:fabric_iq
+                KPP_STATUS:blocked
+                Native Fabric ontology is unavailable: FeatureNotAvailable.
+        - id: route_work_iq
+          condition: =Local.RouterDecision.route = "work_iq"
+          actions:
+            - kind: SendActivity
+              id: blocked_work_iq
+              activity: |
+                KPP_ROUTE:work_iq
+                KPP_STATUS:blocked
+                A separate Work IQ sandbox has not been supplied. No workplace data was accessed.
+        - id: route_clarification
+          condition: =Local.RouterDecision.route = "clarification"
+          actions:
+            - kind: SendActivity
+              id: ask_clarification
+              activity: |
+                KPP_ROUTE:clarification
+                KPP_STATUS:clarification
+                Please specify one topic: production, maintenance, stock, document lookup, or native knowledge retrieval.
+        - id: route_unsupported
+          condition: =Local.RouterDecision.route = "unsupported"
+          actions:
+            - kind: SendActivity
+              id: reject_unsupported
+              activity: |
+                KPP_ROUTE:unsupported
+                KPP_STATUS:unsupported
+                Only read-only questions about the new synthetic mining demo are supported. Live systems and writes are not accessed.
+      elseActions:
+        - kind: SendActivity
+          id: invalid_router_result
+          activity: |
+            KPP_ROUTE:unsupported
+            KPP_STATUS:failed
+            The router returned an unrecognized route. No specialist was invoked.
+    - kind: EndConversation
+      id: kpp_mining_end

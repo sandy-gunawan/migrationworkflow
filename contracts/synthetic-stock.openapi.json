@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KPP synthetic stock API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://kppdemo-data-48254cc6.azurewebsites.net"
+    }
+  ],
+  "paths": {
+    "/api/stock/{site_id}/{item_id}": {
+      "get": {
+        "operationId": "read_synthetic_stock",
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic stock record and source ID."
+          }
+        }
+      }
+    }
+  }
+}

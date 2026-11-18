@@ -1,0 +1,13 @@
+{
+  "name": "kpp-execution-workbench-browser-tests",
+  "private": true,
+  "scripts": {
+    "build": "node --check ..\\..\\assets\\app.js && node --check helpers.cjs && node --check workbench.test.cjs && node --check lessons.test.cjs && node --check live.test.cjs && node --check training-helpers.cjs && node --check training.test.cjs && node --check training-cost.test.cjs && node --check training-layout.test.cjs && node --check ..\\..\\..\\..\\docs\\training\\workflow-migration\\app.js && node --check ..\\..\\..\\..\\docs\\training\\workflow-migration\\cost.js",
+    "test": "node --test --test-concurrency=1 workbench.test.cjs lessons.test.cjs && npm run test:training",
+    "test:training": "node --test --test-concurrency=1 training.test.cjs training-cost.test.cjs training-layout.test.cjs",
+    "test:live": "node --test --test-concurrency=1 live.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.0"
+  }
+}

@@ -1,0 +1,6 @@
+agent-framework-core==1.26.0
+agent-framework-declarative==1.5.1
+agent-framework-foundry==1.16.2
+azure-identity==1.27.0
+debugpy
+pytest>=8.4,<10

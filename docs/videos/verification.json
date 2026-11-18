@@ -1,0 +1,53 @@
+[
+  {
+    "kind": "maf",
+    "file": "maf.mp4",
+    "width": 1920,
+    "height": 1080,
+    "fps": 25,
+    "duration_seconds": 92.32,
+    "bytes": 7187943,
+    "audio": "none",
+    "decode": "PASS",
+    "live_requests": 1,
+    "case": "MCP01",
+    "route": "mcp",
+    "result": "success",
+    "actual_live_seconds": 90.72,
+    "accelerated_wait_labeled": true
+  },
+  {
+    "kind": "logicapps",
+    "file": "logicapps.mp4",
+    "width": 1920,
+    "height": 1080,
+    "fps": 25,
+    "duration_seconds": 102.48,
+    "bytes": 7845952,
+    "audio": "none",
+    "decode": "PASS",
+    "live_requests": 1,
+    "case": "MCP01",
+    "route": "mcp",
+    "result": "success",
+    "actual_live_seconds": 86.44,
+    "accelerated_wait_labeled": true
+  },
+  {
+    "kind": "declarative",
+    "file": "declarative.mp4",
+    "width": 1920,
+    "height": 1080,
+    "fps": 25,
+    "duration_seconds": 110.52,
+    "bytes": 8434547,
+    "audio": "none",
+    "decode": "PASS",
+    "live_requests": 1,
+    "case": "MCP01",
+    "route": "mcp",
+    "result": "success",
+    "actual_live_seconds": 21.67,
+    "accelerated_wait_labeled": true
+  }
+]

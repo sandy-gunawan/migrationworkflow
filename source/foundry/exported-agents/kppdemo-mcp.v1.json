@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "demo_id": "48254cc6",
+    "route": "mcp"
+  },
+  "object": "agent.version",
+  "id": "kppdemo-mcp:1",
+  "name": "kppdemo-mcp",
+  "version": "1",
+  "description": "",
+  "created_at": 1794496578,
+  "definition": {
+    "kind": "prompt",
+    "model": "gpt-5-mini",
+    "instructions": "Answer only fictional mining equipment and maintenance questions. Always use the configured MCP tools on the new synthetic demo service. Never access/discover other resources, live business systems, real workplace data, or execute writes. Return exact tool-retrieved record facts and include record/source URIs when supplied. Tool/auth failures must be explicit, not disguised as successful answers. Do not invent data.",
+    "reasoning": {
+      "effort": "low"
+    },
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "kpp-mining-mcp",
+        "server_url": "https://kppdemo-data-48254cc6.azurewebsites.net/mcp",
+        "allowed_tools": {
+          "tool_names": [
+            "get_equipment",
+            "get_work_orders"
+          ]
+        },
+        "require_approval": "never",
+        "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-backing-mi"
+      }
+    ]
+  },
+  "draft": false,
+  "status": "active",
+  "instance_identity": {
+    "principal_id": "afd2167b-d10b-4d34-a0b7-f4a193f209a3",
+    "client_id": "afd2167b-d10b-4d34-a0b7-f4a193f209a3"
+  },
+  "blueprint": {
+    "principal_id": "f7515089-32ca-4487-b22b-6c158bcc6ff4",
+    "client_id": "ca1a0232-0152-42f8-b86d-6f8dc921373c"
+  },
+  "blueprint_reference": {
+    "type": "ManagedAgentIdentityBlueprint",
+    "blueprint_id": "kppdemo-mcp-884da"
+  },
+  "agent_guid": "884daa51-d9d5-4302-b8a5-6864967845dd"
+}

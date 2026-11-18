@@ -1,0 +1,20 @@
+table sites
+	lineageTag: 9a978aa4-ef74-565e-992d-f6ba44a84c95
+
+	column site_id
+		dataType: string
+		lineageTag: e4d0eb95-a09c-5f60-9e4e-9540e26b327f
+		sourceColumn: site_id
+
+	column name
+		dataType: string
+		lineageTag: 9ebe1a4d-0d0e-5b96-bda8-1bb7fd95742c
+		sourceColumn: name
+
+	partition sites = entity
+		mode: directLake
+		source
+			entityName: sites
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

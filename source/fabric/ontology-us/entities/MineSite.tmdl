@@ -1,0 +1,19 @@
+entity MineSite
+	lineageTag: 7b98371b-8fab-5346-8225-a319afd94530
+	backingTable: sites
+	keyProperty: site_id
+
+	property site_id
+		dataType: string
+		lineageTag: 6049527d-3780-5822-b2b4-b387bc633256
+
+		backingConfiguration
+			valueColumn: sites.site_id
+
+	property name
+		dataType: string
+		lineageTag: bccb36c0-2bfd-58c6-8a59-9700631dd5ec
+
+		backingConfiguration
+			valueColumn: sites.name
+

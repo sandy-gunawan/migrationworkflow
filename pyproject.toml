@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kpp-mining-migration-demo"
+version = "0.1.0"
+description = "Isolated synthetic mining migration demonstration."
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "agent-framework-core==1.11.0",
+  "aiohttp>=3.13,<4",
+  "azure-identity>=1.25,<2",
+  "fastapi>=0.121,<1",
+  "httpx>=0.28,<0.29",
+  "mcp>=1.20,<2",
+  "pydantic>=2.12,<3",
+  "PyJWT[crypto]>=2.10.1,<3",
+  "uvicorn>=0.38,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "PyYAML==6.0.3",
+  "jsonschema>=4,<5",
+  "pytest>=8.4,<10",
+  "ruff>=0.14,<1",
+]
+declarative-spike = ["agent-framework-declarative==1.0.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+maf_service = ["resources/*.json", "resources/*.yaml", "ui/*.html", "ui/*.css", "ui/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = ["live: requires new demo-owned Azure resources"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Ontology",
+    "displayName": "kpp_mining_ontology_us_48254cc6"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2c2ac2c7-21eb-50f4-9334-97aa23f8c9f9"
+  }
+}

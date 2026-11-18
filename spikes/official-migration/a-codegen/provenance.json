@@ -1,0 +1,21 @@
+{
+  "source_workflow": "kppdemo-mining-workflow",
+  "source_version": "2",
+  "source_sha256": "8a1b3b54903f26864bf81fad662e847cc97df18a945f536db9ff78b90aa4a8e1",
+  "guidance_tools_executed": [
+    "foundrytk_convert_declarative_agent_to_code: Python",
+    "foundrytk_get_agent_code_gen_best_practices: Foundry"
+  ],
+  "toolkit_ui_observed": [
+    "My Resources: kpp-mining-demo",
+    "Agents > Workflow",
+    "kppdemo-mining-workflow: v2",
+    "Generate Code > programming-language chooser"
+  ],
+  "ui_chat_handoff": "NOT_SENT_CONFIRMATION_UNAVAILABLE",
+  "generated_code_origin": "Current Copilot conversation following the official Toolkit guidance; not a claimed artifact from a separate UI-submitted Copilot Chat request.",
+  "parent_compiler_used": false,
+  "parent_workflow_used": false,
+  "parent_normalizer_used": "Read-only verification helper only.",
+  "deployment_performed": false
+}

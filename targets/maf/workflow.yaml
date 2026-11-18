@@ -1,0 +1,102 @@
+schema_version: 1
+runtime: agent_framework_workflow_builder
+source_sha256: 8a1b3b54903f26864bf81fad662e847cc97df18a945f536db9ff78b90aa4a8e1
+trigger_id: kpp_mining_start
+capture_action_id: capture_question
+question_variable: Local.Question
+router_action_id: classify_question
+condition_action_id: route_question
+decision_variable: Local.RouterDecision
+router:
+  name: kppdemo-router
+  version: '1'
+branches:
+- route: mcp
+  condition: =Local.RouterDecision.route = "mcp"
+  action_id: invoke_mcp
+  marker_action_id: mark_mcp
+  agent:
+    name: kppdemo-mcp
+    version: '1'
+  outcome: null
+- route: rest_api
+  condition: =Local.RouterDecision.route = "rest_api"
+  action_id: invoke_rest_api
+  marker_action_id: mark_rest_api
+  agent:
+    name: kppdemo-rest
+    version: '4'
+  outcome: null
+- route: knowledge
+  condition: =Local.RouterDecision.route = "knowledge"
+  action_id: invoke_knowledge
+  marker_action_id: mark_knowledge
+  agent:
+    name: kppdemo-knowledge
+    version: '2'
+  outcome: null
+- route: foundry_iq
+  condition: =Local.RouterDecision.route = "foundry_iq"
+  action_id: invoke_foundry_iq
+  marker_action_id: mark_foundry_iq
+  agent:
+    name: kppdemo-foundry-iq
+    version: '2'
+  outcome: null
+- route: fabric_data
+  condition: =Local.RouterDecision.route = "fabric_data"
+  action_id: invoke_fabric_data
+  marker_action_id: mark_fabric_data
+  agent:
+    name: kppdemo-fabric-data
+    version: '1'
+  outcome: null
+- route: fabric_iq
+  condition: =Local.RouterDecision.route = "fabric_iq"
+  action_id: blocked_fabric_iq
+  marker_action_id: null
+  agent: null
+  outcome:
+    route: fabric_iq
+    status: blocked
+    text: 'Native Fabric ontology is unavailable: FeatureNotAvailable.'
+    action_id: blocked_fabric_iq
+- route: work_iq
+  condition: =Local.RouterDecision.route = "work_iq"
+  action_id: blocked_work_iq
+  marker_action_id: null
+  agent: null
+  outcome:
+    route: work_iq
+    status: blocked
+    text: A separate Work IQ sandbox has not been supplied. No workplace data was
+      accessed.
+    action_id: blocked_work_iq
+- route: clarification
+  condition: =Local.RouterDecision.route = "clarification"
+  action_id: ask_clarification
+  marker_action_id: null
+  agent: null
+  outcome:
+    route: clarification
+    status: clarification
+    text: 'Please specify one topic: production, maintenance, stock, document lookup,
+      or native knowledge retrieval.'
+    action_id: ask_clarification
+- route: unsupported
+  condition: =Local.RouterDecision.route = "unsupported"
+  action_id: reject_unsupported
+  marker_action_id: null
+  agent: null
+  outcome:
+    route: unsupported
+    status: unsupported
+    text: Only read-only questions about the new synthetic mining demo are supported.
+      Live systems and writes are not accessed.
+    action_id: reject_unsupported
+fallback:
+  route: unsupported
+  status: failed
+  text: The router returned an unrecognized route. No specialist was invoked.
+  action_id: invalid_router_result
+end_action_id: kpp_mining_end

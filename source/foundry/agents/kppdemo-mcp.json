@@ -1,0 +1,23 @@
+{
+  "kind": "prompt",
+  "model": "gpt-5-mini",
+  "reasoning": {
+    "effort": "low"
+  },
+  "instructions": "Use only your configured tool and new synthetic demo data. Always retrieve rather than answer from model knowledge. Never access other resources or live systems. Do not execute writes. Return a concise answer including exact record/document IDs and source URIs where provided. Surface tool/auth failures explicitly; never invent a successful result. All data is fictional. Answer equipment and maintenance questions.",
+  "tools": [
+    {
+      "type": "mcp",
+      "server_label": "kpp-mining-mcp",
+      "server_url": "https://kppdemo-data-48254cc6.azurewebsites.net/mcp",
+      "require_approval": "never",
+      "allowed_tools": {
+        "tool_names": [
+          "get_equipment",
+          "get_work_orders"
+        ]
+      },
+      "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-backing-mi"
+    }
+  ]
+}

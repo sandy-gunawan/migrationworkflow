@@ -1,0 +1,122 @@
+{
+  "$defs": {
+    "DemoRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "question": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question"
+      ],
+      "title": "DemoRequest",
+      "type": "object"
+    },
+    "DemoResult": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "route": {
+          "$ref": "#/$defs/Route"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "answer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Answer"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceReference"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "run_id",
+        "route",
+        "status"
+      ],
+      "title": "DemoResult",
+      "type": "object"
+    },
+    "Route": {
+      "enum": [
+        "fabric_data",
+        "fabric_iq",
+        "mcp",
+        "rest_api",
+        "knowledge",
+        "foundry_iq",
+        "work_iq",
+        "clarification",
+        "unsupported"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "SourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind"
+      ],
+      "title": "SourceReference",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/DemoRequest"
+    },
+    {
+      "$ref": "#/$defs/DemoResult"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "subscription_id": "00000000-0000-0000-0000-000000000001",
+  "tenant_id": "00000000-0000-0000-0000-000000000006",
+  "resource_group": "example-demo-rg",
+  "foundry_resource_group": "example-foundry-rg",
+  "foundry_account": "example-foundry",
+  "foundry_project": "example-project",
+  "backing_app": "example-demo-data",
+  "maf_app": "example-demo-maf",
+  "search_service": "example-demo-search",
+  "api_audience": "00000000-0000-0000-0000-000000000002",
+  "verification_caller_id": "00000000-0000-0000-0000-000000000007",
+  "fabric_workspace_id": "00000000-0000-0000-0000-000000000003",
+  "fabric_lakehouse_id": "00000000-0000-0000-0000-000000000004",
+  "fabric_us_workspace_id": "00000000-0000-0000-0000-000000000005",
+  "fabric_capacity": "example-demo-fabric",
+  "fabric_us_capacity": "example-demo-fabric-native",
+  "logicapp_name": "example-demo-workflow"
+}

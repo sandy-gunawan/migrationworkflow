@@ -1,0 +1,33 @@
+entity MaintenanceOrder
+	lineageTag: 40e9516e-7dab-54d2-b2f2-93a844e9cb20
+	backingTable: work_orders
+	keyProperty: order_id
+
+	property order_id
+		dataType: string
+		lineageTag: 8b58155e-fcad-5031-8cde-bb0c6d605476
+
+		backingConfiguration
+			valueColumn: work_orders.order_id
+
+	property equipment_id
+		dataType: string
+		lineageTag: d0095cce-91a5-52ea-b44f-f70972067a24
+
+		backingConfiguration
+			valueColumn: work_orders.equipment_id
+
+	property priority
+		dataType: string
+		lineageTag: 5b423ff4-7d87-500f-853c-db3463102f41
+
+		backingConfiguration
+			valueColumn: work_orders.priority
+
+	property status
+		dataType: string
+		lineageTag: d655b18e-6ec4-5693-a582-ef1734396abd
+
+		backingConfiguration
+			valueColumn: work_orders.status
+

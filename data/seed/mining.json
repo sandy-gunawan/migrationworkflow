@@ -1,0 +1,43 @@
+{
+  "demo_id": "48254cc6",
+  "synthetic": true,
+  "version": "2026-11-12.1",
+  "sites": [
+    {"site_id": "MS01", "name": "Demo Copper Ridge"},
+    {"site_id": "MS02", "name": "Demo Iron Valley"}
+  ],
+  "equipment": [
+    {"equipment_id": "TRK001", "site_id": "MS01", "category": "truck", "status": "maintenance"},
+    {"equipment_id": "TRK002", "site_id": "MS01", "category": "truck", "status": "available"},
+    {"equipment_id": "EXC001", "site_id": "MS01", "category": "excavator", "status": "available"},
+    {"equipment_id": "TRK003", "site_id": "MS02", "category": "truck", "status": "available"},
+    {"equipment_id": "EXC002", "site_id": "MS02", "category": "excavator", "status": "maintenance"},
+    {"equipment_id": "DRL001", "site_id": "MS02", "category": "drill", "status": "available"}
+  ],
+  "production": [
+    {"site_id": "MS01", "date": "2026-11-01", "shift": "day", "tonnes": 1250},
+    {"site_id": "MS01", "date": "2026-11-01", "shift": "night", "tonnes": 1100},
+    {"site_id": "MS01", "date": "2026-11-02", "shift": "day", "tonnes": 1300},
+    {"site_id": "MS01", "date": "2026-11-02", "shift": "night", "tonnes": 1050},
+    {"site_id": "MS01", "date": "2026-11-03", "shift": "day", "tonnes": 1200},
+    {"site_id": "MS01", "date": "2026-11-03", "shift": "night", "tonnes": 1150},
+    {"site_id": "MS02", "date": "2026-11-01", "shift": "day", "tonnes": 900},
+    {"site_id": "MS02", "date": "2026-11-01", "shift": "night", "tonnes": 850},
+    {"site_id": "MS02", "date": "2026-11-02", "shift": "day", "tonnes": 950},
+    {"site_id": "MS02", "date": "2026-11-02", "shift": "night", "tonnes": 880},
+    {"site_id": "MS02", "date": "2026-11-03", "shift": "day", "tonnes": 920},
+    {"site_id": "MS02", "date": "2026-11-03", "shift": "night", "tonnes": 870}
+  ],
+  "work_orders": [
+    {"order_id": "WO001", "equipment_id": "TRK001", "priority": "demo-high", "status": "open"},
+    {"order_id": "WO002", "equipment_id": "EXC002", "priority": "demo-medium", "status": "open"},
+    {"order_id": "WO003", "equipment_id": "TRK002", "priority": "demo-low", "status": "closed"},
+    {"order_id": "WO004", "equipment_id": "DRL001", "priority": "demo-low", "status": "closed"}
+  ],
+  "stock": [
+    {"site_id": "MS01", "item_id": "DIESEL", "quantity": 18000, "unit": "litres"},
+    {"site_id": "MS01", "item_id": "FILTER", "quantity": 24, "unit": "items"},
+    {"site_id": "MS02", "item_id": "DIESEL", "quantity": 12000, "unit": "litres"},
+    {"site_id": "MS02", "item_id": "FILTER", "quantity": 16, "unit": "items"}
+  ]
+}

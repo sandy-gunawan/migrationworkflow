@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "demo_id": "48254cc6",
+    "route": "rest_api"
+  },
+  "object": "agent.version",
+  "id": "kppdemo-rest:3",
+  "name": "kppdemo-rest",
+  "version": "3",
+  "description": "",
+  "created_at": 1794497195,
+  "definition": {
+    "kind": "prompt",
+    "model": "gpt-5-mini",
+    "instructions": "Retrieve synthetic stock through the configured REST API only. Always call the tool and preserve uppercase site/item IDs. Never access other resources, live data, or execute writes. Return exact quantity/unit and source ID from the tool. Surface errors, never invent successful data.",
+    "reasoning": {
+      "effort": "low"
+    },
+    "tools": [
+      {
+        "type": "openapi",
+        "openapi": {
+          "name": "synthetic_stock",
+          "description": "Read only a newly seeded synthetic stock record.",
+          "spec": {
+            "openapi": "3.0.1",
+            "info": {
+              "title": "KPP synthetic stock API",
+              "version": "1.0.0"
+            },
+            "servers": [
+              {
+                "url": "https://kppdemo-data-48254cc6.azurewebsites.net"
+              }
+            ],
+            "paths": {
+              "/api/stock/{site_id}/{item_id}": {
+                "get": {
+                  "operationId": "read_synthetic_stock",
+                  "parameters": [
+                    {
+                      "name": "site_id",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "name": "item_id",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "responses": {
+                    "200": {
+                      "description": "Synthetic stock record and source ID."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "auth": {
+            "type": "project_connection",
+            "security_scheme": {
+              "project_connection_id": "/subscriptions/5a7c13bd-9a15-4380-ba67-4d972838bc0b/resourceGroups/foundry/providers/Microsoft.CognitiveServices/accounts/kppfoundry48254cc6/projects/kpp-mining-demo/connections/kppdemo-rest-mi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "draft": false,
+  "status": "active",
+  "instance_identity": {
+    "principal_id": "323df7de-3f41-476c-9990-5ed802f4fef5",
+    "client_id": "323df7de-3f41-476c-9990-5ed802f4fef5",
+    "status": "active"
+  },
+  "blueprint": {
+    "principal_id": "402a728a-1cfd-4c9e-85c8-0063c9f8b167",
+    "client_id": "ebc27666-c38b-42ef-8e61-65dc986e71d2",
+    "status": "active"
+  },
+  "blueprint_reference": {
+    "type": "ManagedAgentIdentityBlueprint",
+    "blueprint_id": "kppdemo-rest-dd6aa"
+  },
+  "agent_guid": "dd6aa387-1bdb-4d6f-9275-cbc319e935b1"
+}

@@ -1,0 +1,12 @@
+{
+  "subscription_id": "00000000-0000-0000-0000-000000000000",
+  "preferred_region": "southeastasia",
+  "demo_resource_group": "example-demo-rg",
+  "foundry_project_endpoint": "https://example-foundry.services.ai.azure.com/api/projects/example-project",
+  "cloud_deletion_allowed": false,
+  "platform_reuse_allowed": false,
+  "existing_business_data_access_allowed": false,
+  "existing_resource_modification_allowed": false,
+  "new_demo_resource_configuration_allowed": false,
+  "synthetic_data_only": true
+}

@@ -1,0 +1,7 @@
+{
+  "source_sha256": "8a1b3b54903f26864bf81fad662e847cc97df18a945f536db9ff78b90aa4a8e1",
+  "normalization_sha256": "517e5e2845c55a9b81d296867eaf6289b6da5e91744dd3290a2d6c4b43019241",
+  "corpus_sha256": "b4faabfcff03c37b2e99a3c890d309b5f9e8e42b2d53d85e0a83b87e1ed86c77",
+  "fabric_provider_sha256": "dee5f5f24e58c386d1de1a22ac681cfa3c5ab731f5a04bac5a068a7a7d367dd5",
+  "core_version": "1.11.0"
+}

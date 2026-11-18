@@ -1,0 +1,833 @@
+[
+  {
+    "kind": "maf",
+    "title": "MAF code-first",
+    "subtitle": "Graph Python yang mengatur urutan kerja",
+    "chain": [
+      "Browser",
+      "Python MAF",
+      "Agent Foundry",
+      "Tool MCP"
+    ],
+    "overview": [
+      "Kita mulai dari satu pertanyaan.",
+      "Python MAF yang mengatur alurnya."
+    ],
+    "question": [
+      "Cari work order untuk equipment TRK001.",
+      "Data yang dipakai adalah data sintetis."
+    ],
+    "running": [
+      "Router memilih satu jalur yang cocok.",
+      "Specialist mengambil data lewat MCP."
+    ],
+    "answer": [
+      "Hasilnya: WO001 untuk equipment TRK001.",
+      "Sumber maintenance ikut ditampilkan."
+    ],
+    "inspector": [
+      "Klik langkah untuk melihat kode aslinya.",
+      "UI tidak menampilkan pikiran model."
+    ],
+    "trace": [
+      "Trace mencatat agent, versi, dan ID run.",
+      "Jawaban tanpa sumber tidak dianggap sah."
+    ],
+    "closing": [
+      "Yang pindah adalah aturan alur kerja.",
+      "Router dan specialist tetap di Foundry."
+    ],
+    "fps": 25,
+    "width": 1920,
+    "height": 1080,
+    "capturedAt": "2026-11-18T06:14:12.594Z",
+    "source": "captures/maf.mp4",
+    "liveRunSeconds": 90.72,
+    "durationInFrames": 2308,
+    "scenes": [
+      {
+        "name": "intro",
+        "from": 0,
+        "durationInFrames": 150,
+        "sourceStart": 22,
+        "sourceEnd": 47,
+        "lines": [
+          "MAF code-first",
+          "Satu pertanyaan, satu alur yang nyata."
+        ],
+        "card": "intro",
+        "playbackRate": 1
+      },
+      {
+        "name": "overview",
+        "from": 150,
+        "durationInFrames": 151,
+        "sourceStart": 22,
+        "sourceEnd": 173,
+        "lines": [
+          "Kita mulai dari satu pertanyaan.",
+          "Python MAF yang mengatur alurnya."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "question",
+        "from": 301,
+        "durationInFrames": 200,
+        "sourceStart": 173,
+        "sourceEnd": 373,
+        "lines": [
+          "Cari work order untuk equipment TRK001.",
+          "Data yang dipakai adalah data sintetis."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "running",
+        "from": 501,
+        "durationInFrames": 500,
+        "sourceStart": 373,
+        "sourceEnd": 2642,
+        "lines": [
+          "Router memilih satu jalur yang cocok.",
+          "Specialist mengambil data lewat MCP."
+        ],
+        "card": null,
+        "playbackRate": 4.538
+      },
+      {
+        "name": "answer",
+        "from": 1001,
+        "durationInFrames": 428,
+        "sourceStart": 2642,
+        "sourceEnd": 3070,
+        "lines": [
+          "Hasilnya: WO001 untuk equipment TRK001.",
+          "Sumber maintenance ikut ditampilkan."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "inspector",
+        "from": 1429,
+        "durationInFrames": 304,
+        "sourceStart": 3070,
+        "sourceEnd": 3374,
+        "lines": [
+          "Klik langkah untuk melihat kode aslinya.",
+          "UI tidak menampilkan pikiran model."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "trace",
+        "from": 1733,
+        "durationInFrames": 250,
+        "sourceStart": 3374,
+        "sourceEnd": 3624,
+        "lines": [
+          "Trace mencatat agent, versi, dan ID run.",
+          "Jawaban tanpa sumber tidak dianggap sah."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "closing",
+        "from": 1983,
+        "durationInFrames": 175,
+        "sourceStart": 3624,
+        "sourceEnd": 3799,
+        "lines": [
+          "Yang pindah adalah aturan alur kerja.",
+          "Router dan specialist tetap di Foundry."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "outro",
+        "from": 2158,
+        "durationInFrames": 150,
+        "sourceStart": 3624,
+        "sourceEnd": 3649,
+        "lines": [
+          "Lanjutkan lewat panduan di README.",
+          "MCP01 saja; bukan full50 atau Fabric."
+        ],
+        "card": "outro",
+        "playbackRate": 1
+      }
+    ],
+    "cues": [
+      {
+        "from": 0,
+        "to": 149,
+        "lines": [
+          "MAF code-first",
+          "Satu pertanyaan, satu alur yang nyata."
+        ]
+      },
+      {
+        "from": 150,
+        "to": 300,
+        "lines": [
+          "Kita mulai dari satu pertanyaan.",
+          "Python MAF yang mengatur alurnya."
+        ]
+      },
+      {
+        "from": 301,
+        "to": 500,
+        "lines": [
+          "Cari work order untuk equipment TRK001.",
+          "Data yang dipakai adalah data sintetis."
+        ]
+      },
+      {
+        "from": 501,
+        "to": 1000,
+        "lines": [
+          "Router memilih satu jalur yang cocok.",
+          "Specialist mengambil data lewat MCP."
+        ]
+      },
+      {
+        "from": 1001,
+        "to": 1428,
+        "lines": [
+          "Hasilnya: WO001 untuk equipment TRK001.",
+          "Sumber maintenance ikut ditampilkan."
+        ]
+      },
+      {
+        "from": 1429,
+        "to": 1732,
+        "lines": [
+          "Klik langkah untuk melihat kode aslinya.",
+          "UI tidak menampilkan pikiran model."
+        ]
+      },
+      {
+        "from": 1733,
+        "to": 1982,
+        "lines": [
+          "Trace mencatat agent, versi, dan ID run.",
+          "Jawaban tanpa sumber tidak dianggap sah."
+        ]
+      },
+      {
+        "from": 1983,
+        "to": 2157,
+        "lines": [
+          "Yang pindah adalah aturan alur kerja.",
+          "Router dan specialist tetap di Foundry."
+        ]
+      },
+      {
+        "from": 2158,
+        "to": 2307,
+        "lines": [
+          "Lanjutkan lewat panduan di README.",
+          "MCP01 saja; bukan full50 atau Fabric."
+        ]
+      }
+    ],
+    "verifiedResult": {
+      "run_id": "8c508d9c-1b9f-4e96-a26d-e7f8880bf202",
+      "route": "mcp",
+      "status": "success",
+      "answer": "Found 1 work order for equipment TRK001:\n\n- order_id: WO001\n  equipment_id: TRK001\n  priority: demo-high\n  status: open\n\nSource: urn:kppdemo:maintenance/TRK001",
+      "sources": [
+        {
+          "id": "urn:kppdemo:maintenance/TRK001",
+          "kind": "demo_fixture"
+        }
+      ]
+    },
+    "narration": "none"
+  },
+  {
+    "kind": "logicapps",
+    "title": "Logic Apps native",
+    "subtitle": "Workflow Azure yang menjalankan orkestrasi",
+    "chain": [
+      "Browser",
+      "Gateway Python",
+      "Logic Apps",
+      "Agent dan MCP"
+    ],
+    "overview": [
+      "Tampilannya mirip, pelaksananya berbeda.",
+      "Alur berjalan di Logic Apps Azure."
+    ],
+    "question": [
+      "Kita kirim pertanyaan TRK001 yang sama.",
+      "Python lokal hanya menjadi gateway."
+    ],
+    "running": [
+      "Logic Apps memilih cabang dan agent.",
+      "UI membaca status action yang nyata."
+    ],
+    "answer": [
+      "WO001 kembali bersama sumber datanya.",
+      "Request live, dengan data sintetis."
+    ],
+    "inspector": [
+      "Pilih langkah untuk melihat definisinya.",
+      "Gateway tidak mengambil alih routing."
+    ],
+    "nativeSource": [
+      "JSON ini adalah workflow native Azure.",
+      "HTTP dan Switch dijalankan Logic Apps."
+    ],
+    "trace": [
+      "Trace mengaitkan UI dengan run native.",
+      "Normalizer hanya memeriksa evidence."
+    ],
+    "closing": [
+      "Ini alternatif dari orkestrasi MAF.",
+      "Bukan langkah setelah MAF selesai."
+    ],
+    "fps": 25,
+    "width": 1920,
+    "height": 1080,
+    "capturedAt": "2026-11-18T06:18:27.165Z",
+    "source": "captures/logicapps.mp4",
+    "liveRunSeconds": 86.44,
+    "durationInFrames": 2562,
+    "scenes": [
+      {
+        "name": "intro",
+        "from": 0,
+        "durationInFrames": 150,
+        "sourceStart": 30,
+        "sourceEnd": 55,
+        "lines": [
+          "Logic Apps native",
+          "Satu pertanyaan, satu alur yang nyata."
+        ],
+        "card": "intro",
+        "playbackRate": 1
+      },
+      {
+        "name": "overview",
+        "from": 150,
+        "durationInFrames": 151,
+        "sourceStart": 30,
+        "sourceEnd": 181,
+        "lines": [
+          "Tampilannya mirip, pelaksananya berbeda.",
+          "Alur berjalan di Logic Apps Azure."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "question",
+        "from": 301,
+        "durationInFrames": 202,
+        "sourceStart": 181,
+        "sourceEnd": 383,
+        "lines": [
+          "Kita kirim pertanyaan TRK001 yang sama.",
+          "Python lokal hanya menjadi gateway."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "running",
+        "from": 503,
+        "durationInFrames": 500,
+        "sourceStart": 383,
+        "sourceEnd": 2544,
+        "lines": [
+          "Logic Apps memilih cabang dan agent.",
+          "UI membaca status action yang nyata."
+        ],
+        "card": null,
+        "playbackRate": 4.322
+      },
+      {
+        "name": "answer",
+        "from": 1003,
+        "durationInFrames": 429,
+        "sourceStart": 2544,
+        "sourceEnd": 2973,
+        "lines": [
+          "WO001 kembali bersama sumber datanya.",
+          "Request live, dengan data sintetis."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "inspector",
+        "from": 1432,
+        "durationInFrames": 301,
+        "sourceStart": 2973,
+        "sourceEnd": 3274,
+        "lines": [
+          "Pilih langkah untuk melihat definisinya.",
+          "Gateway tidak mengambil alih routing."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "nativeSource",
+        "from": 1733,
+        "durationInFrames": 253,
+        "sourceStart": 3274,
+        "sourceEnd": 3527,
+        "lines": [
+          "JSON ini adalah workflow native Azure.",
+          "HTTP dan Switch dijalankan Logic Apps."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "trace",
+        "from": 1986,
+        "durationInFrames": 251,
+        "sourceStart": 3527,
+        "sourceEnd": 3778,
+        "lines": [
+          "Trace mengaitkan UI dengan run native.",
+          "Normalizer hanya memeriksa evidence."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "closing",
+        "from": 2237,
+        "durationInFrames": 175,
+        "sourceStart": 3778,
+        "sourceEnd": 3953,
+        "lines": [
+          "Ini alternatif dari orkestrasi MAF.",
+          "Bukan langkah setelah MAF selesai."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "outro",
+        "from": 2412,
+        "durationInFrames": 150,
+        "sourceStart": 3778,
+        "sourceEnd": 3803,
+        "lines": [
+          "Lanjutkan lewat panduan di README.",
+          "MCP01 saja; bukan full50 atau Fabric."
+        ],
+        "card": "outro",
+        "playbackRate": 1
+      }
+    ],
+    "cues": [
+      {
+        "from": 0,
+        "to": 149,
+        "lines": [
+          "Logic Apps native",
+          "Satu pertanyaan, satu alur yang nyata."
+        ]
+      },
+      {
+        "from": 150,
+        "to": 300,
+        "lines": [
+          "Tampilannya mirip, pelaksananya berbeda.",
+          "Alur berjalan di Logic Apps Azure."
+        ]
+      },
+      {
+        "from": 301,
+        "to": 502,
+        "lines": [
+          "Kita kirim pertanyaan TRK001 yang sama.",
+          "Python lokal hanya menjadi gateway."
+        ]
+      },
+      {
+        "from": 503,
+        "to": 1002,
+        "lines": [
+          "Logic Apps memilih cabang dan agent.",
+          "UI membaca status action yang nyata."
+        ]
+      },
+      {
+        "from": 1003,
+        "to": 1431,
+        "lines": [
+          "WO001 kembali bersama sumber datanya.",
+          "Request live, dengan data sintetis."
+        ]
+      },
+      {
+        "from": 1432,
+        "to": 1732,
+        "lines": [
+          "Pilih langkah untuk melihat definisinya.",
+          "Gateway tidak mengambil alih routing."
+        ]
+      },
+      {
+        "from": 1733,
+        "to": 1985,
+        "lines": [
+          "JSON ini adalah workflow native Azure.",
+          "HTTP dan Switch dijalankan Logic Apps."
+        ]
+      },
+      {
+        "from": 1986,
+        "to": 2236,
+        "lines": [
+          "Trace mengaitkan UI dengan run native.",
+          "Normalizer hanya memeriksa evidence."
+        ]
+      },
+      {
+        "from": 2237,
+        "to": 2411,
+        "lines": [
+          "Ini alternatif dari orkestrasi MAF.",
+          "Bukan langkah setelah MAF selesai."
+        ]
+      },
+      {
+        "from": 2412,
+        "to": 2561,
+        "lines": [
+          "Lanjutkan lewat panduan di README.",
+          "MCP01 saja; bukan full50 atau Fabric."
+        ]
+      }
+    ],
+    "verifiedResult": {
+      "run_id": "fdcf7680-37de-4736-bb2f-3381c5517db9",
+      "route": "mcp",
+      "status": "success",
+      "answer": "I retrieved work orders for equipment TRK001 from the synthetic demo service.\n\nRecords (exact tool output):\n- order_id: WO001\n  equipment_id: TRK001\n  priority: demo-high\n  status: open\n\nSource:\nurn:kppdemo:maintenance/TRK001\n\n(Note: This is synthetic demo data from the MCP fixture.)",
+      "sources": [
+        {
+          "id": "urn:kppdemo:maintenance/TRK001",
+          "kind": "demo_fixture"
+        }
+      ]
+    },
+    "narration": "none"
+  },
+  {
+    "kind": "declarative",
+    "title": "MAF declarative YAML",
+    "subtitle": "File YAML dimuat oleh loader resmi",
+    "chain": [
+      "Browser",
+      "YAML dan loader",
+      "Graph MAF",
+      "Agent Foundry"
+    ],
+    "overview": [
+      "Di sini, alur tetap ditulis dalam YAML.",
+      "Loader resmi mengubahnya menjadi graph."
+    ],
+    "definition": [
+      "Snapshot YAML dibaca saat server mulai.",
+      "Membaca file ini belum memanggil agent."
+    ],
+    "question": [
+      "Pertanyaan TRK001 dikirim dari browser.",
+      "Setiap request mendapat graph baru."
+    ],
+    "running": [
+      "MAF menjalankan kondisi dari YAML.",
+      "Specialist membaca work order lewat MCP."
+    ],
+    "answer": [
+      "WO001 dan TRK001 muncul pada jawaban.",
+      "Sumber aslinya juga diperiksa."
+    ],
+    "inspector": [
+      "Pilih langkah dan periksa source-nya.",
+      "Python mengikat agent ke referensi YAML."
+    ],
+    "nativeSource": [
+      "YAML tetap terpisah dari kode Python.",
+      "Ubah snapshot: restart lalu uji ulang."
+    ],
+    "trace": [
+      "Trace mencatat agent dan respons native.",
+      "Satu kasus ini bukan uji ulang 50 kasus."
+    ],
+    "closing": [
+      "Agent dan model tetap ada di Foundry.",
+      "Yang berubah adalah pengatur alurnya."
+    ],
+    "fps": 25,
+    "width": 1920,
+    "height": 1080,
+    "capturedAt": "2026-11-18T06:22:43.355Z",
+    "source": "captures/declarative.mp4",
+    "liveRunSeconds": 21.67,
+    "durationInFrames": 2763,
+    "scenes": [
+      {
+        "name": "intro",
+        "from": 0,
+        "durationInFrames": 150,
+        "sourceStart": 26,
+        "sourceEnd": 51,
+        "lines": [
+          "MAF declarative YAML",
+          "Satu pertanyaan, satu alur yang nyata."
+        ],
+        "card": "intro",
+        "playbackRate": 1
+      },
+      {
+        "name": "overview",
+        "from": 150,
+        "durationInFrames": 150,
+        "sourceStart": 26,
+        "sourceEnd": 176,
+        "lines": [
+          "Di sini, alur tetap ditulis dalam YAML.",
+          "Loader resmi mengubahnya menjadi graph."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "definition",
+        "from": 300,
+        "durationInFrames": 204,
+        "sourceStart": 176,
+        "sourceEnd": 380,
+        "lines": [
+          "Snapshot YAML dibaca saat server mulai.",
+          "Membaca file ini belum memanggil agent."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "question",
+        "from": 504,
+        "durationInFrames": 200,
+        "sourceStart": 380,
+        "sourceEnd": 580,
+        "lines": [
+          "Pertanyaan TRK001 dikirim dari browser.",
+          "Setiap request mendapat graph baru."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "running",
+        "from": 704,
+        "durationInFrames": 500,
+        "sourceStart": 580,
+        "sourceEnd": 1122,
+        "lines": [
+          "MAF menjalankan kondisi dari YAML.",
+          "Specialist membaca work order lewat MCP."
+        ],
+        "card": null,
+        "playbackRate": 1.084
+      },
+      {
+        "name": "answer",
+        "from": 1204,
+        "durationInFrames": 429,
+        "sourceStart": 1122,
+        "sourceEnd": 1551,
+        "lines": [
+          "WO001 dan TRK001 muncul pada jawaban.",
+          "Sumber aslinya juga diperiksa."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "inspector",
+        "from": 1633,
+        "durationInFrames": 301,
+        "sourceStart": 1551,
+        "sourceEnd": 1852,
+        "lines": [
+          "Pilih langkah dan periksa source-nya.",
+          "Python mengikat agent ke referensi YAML."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "nativeSource",
+        "from": 1934,
+        "durationInFrames": 253,
+        "sourceStart": 1852,
+        "sourceEnd": 2105,
+        "lines": [
+          "YAML tetap terpisah dari kode Python.",
+          "Ubah snapshot: restart lalu uji ulang."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "trace",
+        "from": 2187,
+        "durationInFrames": 251,
+        "sourceStart": 2105,
+        "sourceEnd": 2356,
+        "lines": [
+          "Trace mencatat agent dan respons native.",
+          "Satu kasus ini bukan uji ulang 50 kasus."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "closing",
+        "from": 2438,
+        "durationInFrames": 175,
+        "sourceStart": 2356,
+        "sourceEnd": 2531,
+        "lines": [
+          "Agent dan model tetap ada di Foundry.",
+          "Yang berubah adalah pengatur alurnya."
+        ],
+        "card": null,
+        "playbackRate": 1
+      },
+      {
+        "name": "outro",
+        "from": 2613,
+        "durationInFrames": 150,
+        "sourceStart": 2356,
+        "sourceEnd": 2381,
+        "lines": [
+          "Lanjutkan lewat panduan di README.",
+          "MCP01 saja; bukan full50 atau Fabric."
+        ],
+        "card": "outro",
+        "playbackRate": 1
+      }
+    ],
+    "cues": [
+      {
+        "from": 0,
+        "to": 149,
+        "lines": [
+          "MAF declarative YAML",
+          "Satu pertanyaan, satu alur yang nyata."
+        ]
+      },
+      {
+        "from": 150,
+        "to": 299,
+        "lines": [
+          "Di sini, alur tetap ditulis dalam YAML.",
+          "Loader resmi mengubahnya menjadi graph."
+        ]
+      },
+      {
+        "from": 300,
+        "to": 503,
+        "lines": [
+          "Snapshot YAML dibaca saat server mulai.",
+          "Membaca file ini belum memanggil agent."
+        ]
+      },
+      {
+        "from": 504,
+        "to": 703,
+        "lines": [
+          "Pertanyaan TRK001 dikirim dari browser.",
+          "Setiap request mendapat graph baru."
+        ]
+      },
+      {
+        "from": 704,
+        "to": 1203,
+        "lines": [
+          "MAF menjalankan kondisi dari YAML.",
+          "Specialist membaca work order lewat MCP."
+        ]
+      },
+      {
+        "from": 1204,
+        "to": 1632,
+        "lines": [
+          "WO001 dan TRK001 muncul pada jawaban.",
+          "Sumber aslinya juga diperiksa."
+        ]
+      },
+      {
+        "from": 1633,
+        "to": 1933,
+        "lines": [
+          "Pilih langkah dan periksa source-nya.",
+          "Python mengikat agent ke referensi YAML."
+        ]
+      },
+      {
+        "from": 1934,
+        "to": 2186,
+        "lines": [
+          "YAML tetap terpisah dari kode Python.",
+          "Ubah snapshot: restart lalu uji ulang."
+        ]
+      },
+      {
+        "from": 2187,
+        "to": 2437,
+        "lines": [
+          "Trace mencatat agent dan respons native.",
+          "Satu kasus ini bukan uji ulang 50 kasus."
+        ]
+      },
+      {
+        "from": 2438,
+        "to": 2612,
+        "lines": [
+          "Agent dan model tetap ada di Foundry.",
+          "Yang berubah adalah pengatur alurnya."
+        ]
+      },
+      {
+        "from": 2613,
+        "to": 2762,
+        "lines": [
+          "Lanjutkan lewat panduan di README.",
+          "MCP01 saja; bukan full50 atau Fabric."
+        ]
+      }
+    ],
+    "verifiedResult": {
+      "run_id": "e609bc6c-f298-4b27-87d8-a96611d5377a",
+      "route": "mcp",
+      "status": "success",
+      "answer": "Found 1 synthetic demo work order for equipment TRK001.\n\nWork orders:\n- order_id: WO001\n  equipment_id: TRK001\n  priority: demo-high\n  status: open\n\nSource:\n- urn:kppdemo:maintenance/TRK001\n\n(Record is from synthetic demo fixture; demo_id: 48254cc6)",
+      "sources": [
+        {
+          "id": "urn:kppdemo:maintenance/TRK001",
+          "kind": "demo_fixture"
+        }
+      ]
+    },
+    "narration": "none"
+  }
+]

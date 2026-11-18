@@ -1,0 +1,10 @@
+kind: workflow
+trigger:
+  kind: OnConversationStart
+  id: kpp_readiness_start
+  actions:
+    - kind: SendActivity
+      id: kpp_readiness_reply
+      activity: "KPP native workflow readiness: 48254cc6"
+    - kind: EndConversation
+      id: kpp_readiness_end

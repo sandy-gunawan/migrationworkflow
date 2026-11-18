@@ -1,0 +1,50 @@
+[
+  {
+    "id": "DMO-DOC-01",
+    "title": "Synthetic Copper Ridge reporting code",
+    "content": "Fictional demo content only. The reporting code for Demo Copper Ridge, site MS01, is DEMO-COPPER-17. This is not a real mining procedure.",
+    "source_uri": "urn:kppdemo:knowledge/DMO-DOC-01",
+    "demo_id": "48254cc6",
+    "synthetic": true
+  },
+  {
+    "id": "DMO-DOC-02",
+    "title": "Synthetic Iron Valley reporting code",
+    "content": "Fictional demo content only. The reporting code for Demo Iron Valley, site MS02, is DEMO-IRON-29.",
+    "source_uri": "urn:kppdemo:knowledge/DMO-DOC-02",
+    "demo_id": "48254cc6",
+    "synthetic": true
+  },
+  {
+    "id": "DMO-DOC-03",
+    "title": "Synthetic equipment-to-site mapping",
+    "content": "Fictional demo mapping: truck TRK001 belongs to site MS01, Demo Copper Ridge. Excavator EXC002 belongs to site MS02, Demo Iron Valley.",
+    "source_uri": "urn:kppdemo:knowledge/DMO-DOC-03",
+    "demo_id": "48254cc6",
+    "synthetic": true
+  },
+  {
+    "id": "DMO-DOC-04",
+    "title": "Synthetic status legend",
+    "content": "For this demonstration only, MNT means maintenance and AVL means available. These labels are fictional reporting examples, not operational instructions.",
+    "source_uri": "urn:kppdemo:knowledge/DMO-DOC-04",
+    "demo_id": "48254cc6",
+    "synthetic": true
+  },
+  {
+    "id": "DMO-DOC-05",
+    "title": "Synthetic measurement legend",
+    "content": "The demonstration production tables measure ore quantities in tonnes. The synthetic DIESEL stock fixture uses litres; FILTER stock uses items.",
+    "source_uri": "urn:kppdemo:knowledge/DMO-DOC-05",
+    "demo_id": "48254cc6",
+    "synthetic": true
+  },
+  {
+    "id": "DMO-DOC-06",
+    "title": "Demo data boundary",
+    "content": "All KPP migration demo records are newly created synthetic fixtures identified by demo ID 48254cc6. No real employee, client, mailbox, Teams chat, or existing business system is a data source.",
+    "source_uri": "urn:kppdemo:knowledge/DMO-DOC-06",
+    "demo_id": "48254cc6",
+    "synthetic": true
+  }
+]
