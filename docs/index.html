@@ -51,19 +51,19 @@
         <section class="panel" id="bandingkan">
           <h2>Pilih berdasarkan cara tim mengelola alur</h2>
           <div class="grid">
-            <article class="card" id="mapping-python">
+            <article class="card" id="mapping-python" data-path="code">
               <p class="eyebrow">A · Kode Python</p>
               <h3>MAF code-first</h3>
               <p>Compiler membaca YAML sumber dan membuat mapping. Python membangun graph lewat <code>WorkflowBuilder</code>. Cocok kalau tim perlu kontrol dan pengujian detail di kode.</p>
-              <a href="workshop/maf-code-first-walkthrough.html">Buka workshop MAF code-first</a>
+              <a href="workshop/maf-code-first-walkthrough.html#padanan">Coba padanan YAML ↔ Python</a>
             </article>
-            <article class="card" id="workflow-yaml">
+            <article class="card" id="workflow-yaml" data-path="yaml">
               <p class="eyebrow">B · Workflow YAML</p>
               <h3>MAF declarative</h3>
               <p>Python menyiapkan agent, lalu <code>WorkflowFactory</code> membaca aturan langsung dari YAML. Cocok kalau alur perlu tetap terbaca sebagai file; cek kompatibilitas action dan SDK.</p>
               <a href="workshop/maf-declarative-walkthrough.html">Buka workshop MAF workflow YAML</a>
             </article>
-            <article class="card" id="logic-apps">
+            <article class="card" id="logic-apps" data-path="logic">
               <p class="eyebrow">C · Workflow native Azure</p>
               <h3>Azure Logic Apps</h3>
               <p>Definisi dipetakan ke Workflow Definition Language (WDL). Azure menjalankan Request, Switch, dan Response. Cocok kalau tim perlu membaca node dan Run history di portal.</p>
@@ -106,7 +106,7 @@
             <div><dt>Fakta</dt><dd><code>WO001</code> untuk <code>TRK001</code></dd></div>
             <div><dt>Sumber</dt><dd><code>urn:kppdemo:maintenance/TRK001</code></dd></div>
           </dl>
-          <p>Bandingkan fakta, sumber, dan status, bukan susunan kalimat. HTTP 200 atau action berstatus <em>Succeeded</em> saja belum membuktikan data ditemukan. Uji live butuh sandbox yang sudah siap dan bisa menimbulkan biaya.</p>
+          <p>Bandingkan fakta, sumber, dan status, bukan susunan kalimat. HTTP 200 atau action berstatus <em>Succeeded</em> saja belum membuktikan data ditemukan. Uji live butuh sandbox yang sudah siap dan bisa menimbulkan biaya. <a href="workshop/workflow-migration-overview.html#status-corpus">Lihat grafik status yang diharapkan dari 50 kasus uji</a>.</p>
         </section>
         <section class="panel" id="referensi">
           <h2>Siapkan lingkungan, lalu coba satu jalur</h2>

@@ -28,6 +28,36 @@
     group.append(option);
   }
 
+  const dependencies = new Map(data.nodes.map(node => [node.id, {incoming: [], outgoing: []}]));
+  const parents = new Map();
+  const edge = (from, to, label) => {
+    dependencies.get(from).outgoing.push({id: to, label});
+    dependencies.get(to).incoming.push({id: from, label});
+  };
+  function registerActions(parent, actions, label) {
+    for (const id of Object.keys(actions)) {
+      parents.set(id, {id: parent.id, label});
+      if (!Object.keys(byId.get(id).raw.runAfter ?? {}).length) edge(parent.id, id, label);
+    }
+  }
+  for (const node of data.nodes) {
+    if (node.type === "Scope") registerActions(node, node.raw.actions, "Mulai isi scope");
+    if (node.type === "Switch") {
+      for (const branch of Object.values(node.raw.cases)) {
+        registerActions(node, branch.actions, `Case ${branch.case}`);
+      }
+      registerActions(node, node.raw.default.actions, "Default");
+    }
+  }
+  const trigger = data.nodes.find(node => node.type === "Request");
+  for (const node of data.nodes) {
+    const waits = Object.entries(node.raw.runAfter ?? {});
+    for (const [id, states] of waits) edge(id, node.id, `runAfter: ${states.join(" / ")}`);
+    if (!waits.length && !parents.has(node.id) && node !== trigger) {
+      edge(trigger.id, node.id, "Terima body request");
+    }
+  }
+
   const overview = data.overview;
   const canvas = $("node-canvas");
   const picture = $("node-canvas-image");
@@ -85,6 +115,32 @@
     }));
   }
 
+  function showConnections(node) {
+    const {incoming, outgoing} = dependencies.get(node.id);
+    const parent = parents.get(node.id);
+    $("node-context-current").textContent = node.title;
+    $("node-context-parent").textContent = parent
+      ? `${byId.get(parent.id).title} · ${parent.label === "Mulai isi scope" ? "Di dalam scope" : parent.label}`
+      : node.type;
+    for (const [target, connections, empty] of [
+      ["node-incoming", incoming, "Request memulai workflow."],
+      ["node-outgoing", outgoing, parent ? "Tidak ada action yang menunggu node ini secara langsung; hasil kembali ke alur induk." : "Tidak ada action lanjutan langsung."],
+    ]) {
+      $(target).replaceChildren(...connections.map(({id, label}) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.connectedNode = id;
+        const name = document.createElement("strong");
+        name.textContent = byId.get(id).title;
+        const reason = document.createElement("span");
+        reason.textContent = label;
+        button.append(name, reason);
+        return button;
+      }));
+      if (!connections.length) $(target).textContent = empty;
+    }
+  }
+
   const readable = value => typeof value === "string" ? value : JSON.stringify(value, null, 2);
 
   function showDetail(node) {
@@ -111,6 +167,7 @@
     $("node-output").textContent = readable(example ? example.output : node.output);
     $("node-json").textContent = JSON.stringify(node.raw, null, 2);
     $("node-announcement").textContent = `${node.title} dipilih.`;
+    showConnections(node);
     showCanvas(node);
   }
 
@@ -186,15 +243,60 @@
     select(visibleNodes[index]);
     rail.querySelectorAll("button")[index].focus();
   });
-  group.addEventListener("change", () => {
+  function chooseGroup(label) {
+    group.value = label;
     search.value = "";
-    select(groups.get(group.value)[0]);
+    select(groups.get(label)[0]);
     drawRail();
-  });
+  }
+  group.addEventListener("change", () => chooseGroup(group.value));
   search.addEventListener("input", drawRail);
   prev.addEventListener("click", () => select(visibleNodes[visibleNodes.indexOf(active) - 1]));
   next.addEventListener("click", () => select(visibleNodes[visibleNodes.indexOf(active) + 1]));
   $("node-focus").addEventListener("click", () => $("node-detail").focus());
+  $("node-visuals").addEventListener("click", event => {
+    const button = event.target.closest("button[data-connected-node]");
+    if (!button) return;
+    const node = byId.get(button.dataset.connectedNode);
+    if (!visibleNodes.includes(node)) {
+      search.value = "";
+      drawRail();
+    }
+    select(node);
+    $("node-detail").focus();
+  });
+  const sizes = [...groups].sort((a, b) => b[1].length - a[1].length);
+  const bars = $("node-group-bars");
+  const barKeys = ["main", "alt", "alt", "alt", "alt", "state", "state", "state", "state", "state"];
+  bars.replaceChildren(...sizes.map(([label, nodes], index) => {
+    const row = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.group = label;
+    button.setAttribute("aria-controls", "node-explorer");
+    const title = document.createElement("span");
+    title.textContent = label;
+    const track = document.createElement("span");
+    track.className = "bar-track";
+    track.setAttribute("aria-hidden", "true");
+    const fill = document.createElement("span");
+    fill.dataset.band = barKeys[index] ?? "state";
+    fill.style.width = `${nodes.length / sizes[0][1].length * 100}%`;
+    track.append(fill);
+    const count = document.createElement("strong");
+    count.textContent = `${nodes.length} node`;
+    button.append(title, track, count);
+    row.append(button);
+    return row;
+  }));
+  bars.addEventListener("click", event => {
+    const button = event.target.closest("button[data-group]");
+    if (!button) return;
+    chooseGroup(button.dataset.group);
+    $("jelajah").scrollIntoView();
+    group.focus({preventScroll: true});
+  });
+  $("node-group-chart").hidden = false;
   addEventListener("hashchange", selectFromHash);
   $("node-explorer").hidden = false;
   select(data.nodes[0], false);

@@ -7,6 +7,8 @@
   <title>MAF code-first: dari mapping ke Python</title>
   <link rel="stylesheet" href="workshop.css">
   <script defer src="walkthrough.js"></script>
+  <script defer src="maf-pair-data.js"></script>
+  <script defer src="maf-pair.js"></script>
 </head>
 <body data-track="code">
   <a class="skip" href="#main">Lewati ke materi</a>
@@ -23,15 +25,54 @@
       <p class="eyebrow">Jalur A · MAF code-first</p>
       <h1>Dari mapping Foundry ke graph Python MAF</h1>
       <p class="lead">Pilih code-first kalau tim ingin mengelola kondisi, state, dan pengujian di kode Python. YAML Foundry dipakai untuk membuat mapping; runtime membaca mapping dan menjalankan graph, bukan me-load YAML sumber.</p>
-      <nav class="intro-paths" aria-label="Mulai MAF code-first"><a href="#mapping">Ikuti perubahan YAML ke Python</a><a href="#runtime">Ikuti request TRK001</a></nav>
-      <ol class="steps"><li>1. Baca mapping</li><li>2. Siapkan runtime</li><li>3. Coba satu pertanyaan</li><li>4. Cek dan hentikan UI</li></ol>
+      <nav class="intro-paths" aria-label="Mulai MAF code-first"><a href="#padanan">Klik YAML, lihat padanan Python</a><a href="#runtime">Ikuti request TRK001</a></nav>
+      <ol class="steps"><li>1. Bandingkan YAML dan Python</li><li>2. Baca mapping runtime demo</li><li>3. Coba satu pertanyaan</li></ol>
     </header>
     <div class="layout">
       <nav class="toc" aria-label="Di halaman ini">
         <p class="eyebrow">Di halaman ini</p>
-        <ul><li><a href="#mapping">Dari YAML ke graph</a></li><li><a href="#runtime">Saat request masuk</a></li><li><a href="#setup">Setup Python</a></li><li><a href="#praktik">Praktik UI</a></li><li><a href="#cek">Error dan shutdown</a></li></ul>
+        <ul><li><a href="#padanan">Padanan YAML ↔ Python</a></li><li><a href="#mapping">Mapping runtime demo</a></li><li><a href="#runtime">Saat request masuk</a></li><li><a href="#setup">Setup Python</a></li><li><a href="#praktik">Praktik UI</a></li><li><a href="#cek">Error dan shutdown</a></li></ul>
       </nav>
       <div class="content">
+        <section class="panel" id="padanan">
+          <h2>Klik YAML, lihat kode Python yang menggantikannya</h2>
+          <p>Mulai dari <code>route_mcp</code>: di YAML, kondisi membaca <code>Local.RouterDecision.route</code>. Di Python, <code>Case</code> membaca <code>run.route</code> untuk memilih executor. Pilih baris lain untuk melihat state, router, specialist, atau jalur default.</p>
+          <p class="note">Panel ini membandingkan YAML sumber dengan implementasi code-first <strong>contoh codegen</strong>. Itu padanan perilaku yang bisa diperiksa, bukan konversi otomatis satu baris ke satu baris. UI demo utama tetap memakai <a href="#mapping">mapping JSON dan graph Python</a> yang dibahas setelah panel ini.</p>
+          <div class="source-baseline" id="pair-fallback">
+            <div class="source-pair">
+              <div class="source-window"><h3>YAML · Kondisi</h3><pre><code>- id: route_mcp
+  condition: =Local.RouterDecision.route = "mcp"</code></pre></div>
+              <div class="source-window"><h3>Python · Case</h3><pre><code>Case(
+    condition=lambda run, selected=route: run.route == selected,
+    target=target,
+)</code></pre></div>
+            </div>
+            <p>Baca <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/source/foundry/workflow.yaml#L23-L42">cabang MCP di YAML</a> dan <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/official-migration/a-codegen/workflow.py#L86-L115">graph codegen di Python</a>.</p>
+          </div>
+          <p id="pair-load-error" class="note warn" role="alert" hidden>Penjelajah tidak bisa memuat data. Contoh kondisi dan tautan ke kedua file masih bisa dibaca di atas.</p>
+          <div class="pair-inspector" id="pair-inspector" hidden>
+            <div class="pair-controls">
+              <label for="pair-action">Bagian YAML
+                <select id="pair-action"></select>
+              </label>
+              <label for="pair-target">Padanan Python
+                <select id="pair-target"></select>
+              </label>
+            </div>
+            <div class="source-pair">
+              <div class="source-window">
+                <div class="source-heading"><h3>YAML · Source Foundry</h3><a id="pair-yaml-source" href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/source/foundry/workflow.yaml">Buka source YAML</a></div>
+                <div class="pair-code" id="pair-yaml" role="group" aria-label="Baris YAML yang dapat dipilih. Gunakan tombol panah untuk pindah baris."></div>
+              </div>
+              <div class="source-window">
+                <div class="source-heading"><h3>Python · Code-first</h3><a id="pair-python-source" href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/official-migration/a-codegen/workflow.py">Buka source Python</a></div>
+                <div class="pair-code" id="pair-python" tabindex="0" role="region" aria-label="Potongan Python untuk pilihan YAML"></div>
+              </div>
+            </div>
+            <div class="pair-reading" role="status"><p class="eyebrow" id="pair-selection"></p><p id="pair-explanation"></p></div>
+          </div>
+        </section>
+
         <section class="panel" id="mapping">
           <h2>YAML adalah sumber; Python menjalankan graph</h2>
           <figure>

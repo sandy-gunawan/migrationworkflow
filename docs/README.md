@@ -13,7 +13,7 @@ Azure Logic Apps. Pakai indeks ini untuk mencari referensi teknisnya.
 | [Materi HTML](https://sandy-gunawan.github.io/migrationworkflow/) | Tiga jalur migrasi dan langkah interaktif dari pertanyaan sampai jawaban. |
 | [Perbandingan dan setup bersama](https://sandy-gunawan.github.io/migrationworkflow/workshop/workflow-migration-overview.html) | Persiapan sandbox, perbedaan saat alur berubah, biaya, dan kriteria lulus. |
 | [Logic Apps: setup dan alur](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-alur-request.html) | Dari izin dan WDL hingga POST OAuth dan Run history. Lanjut ke [node dan parameter](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-node-walkthrough.html) dan [UI](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-ui-walkthrough.html). |
-| [MAF code-first](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html) | Mapping JSON, graph Python, profil sandbox, dan cara memeriksa UI. |
+| [MAF code-first](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html#padanan) | Padanan YAML ↔ Python yang bisa dipilih per baris, mapping JSON runtime, graph Python, dan profil sandbox. |
 | [MAF workflow YAML](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-declarative-walkthrough.html) | `WorkflowFactory`, environment terpisah, dan cara membaca snapshot. |
 | [Video demo](videos/README.md) | Rekaman tiga UI serta [alur MCP di Designer](videos/README.md#4-logic-apps-designer-satu-jalur-mcp). |
 

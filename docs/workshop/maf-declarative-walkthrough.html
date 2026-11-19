@@ -46,6 +46,20 @@
           <details open>
             <summary>Lihat YAML yang memang dibaca oleh loader</summary>
             <p><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/official-migration/b-declarative/source.workflow.yaml">File <code>source.workflow.yaml</code></a> memakai action seperti <code>SetVariable</code>, <code>InvokeAzureAgent</code>, dan <code>ConditionGroup</code>. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/declarative_ui/loader.py"><code>WorkflowFile.create()</code></a> menyerahkan teks dan agent bindings ke <code>WorkflowFactory</code>. Ini bukan YAML tampilan hasil mapping di <code>targets/maf</code> dan bukan graph code-first.</p>
+            <div class="source-pair">
+              <div class="source-window">
+                <h3>YAML · Simpan kondisi</h3>
+                <pre><code>- id: route_mcp
+  condition: =Local.RouterDecision.route = "mcp"</code></pre>
+              </div>
+              <div class="source-window">
+                <h3>Python · Muat definisi</h3>
+                <pre><code>return factory.create_workflow_from_yaml(
+    self.text, base_path=self.path.parent
+)</code></pre>
+              </div>
+            </div>
+            <p>Potongan di kanan hanya memuat teks YAML. Untuk melihat kondisi MCP yang ditulis ulang menjadi <code>Case</code> dalam Python, buka <a href="maf-code-first-walkthrough.html#padanan">penjelajah YAML ↔ Python code-first</a>.</p>
           </details>
           <details>
             <summary>Kenapa file yang diedit bisa ditolak?</summary>

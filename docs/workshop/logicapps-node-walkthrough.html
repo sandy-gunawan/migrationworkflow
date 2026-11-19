@@ -54,8 +54,8 @@
         </section>
 
         <section class="panel" id="jelajah">
-          <h2>Pilih node, lalu lihat gambar dan datanya</h2>
-          <p>Setiap node punya potongan kanvas Designer asli. Panel <strong>Parameters</strong> tersedia untuk 11 node yang terekam. Contoh pada halaman ini memakai data sintetis serta placeholder untuk nilai environment. <a href="assets/designer/main-workflow.png">Buka kanvas lengkap</a>.</p>
+          <h2>Pilih node, lalu ikuti sambungan dan datanya</h2>
+          <p>Peta interaktif menunjukkan action yang memicu atau menunggu node ini. Cuplikan kanvas asli tetap tersedia untuk semua node, dan screenshot <strong>Parameters</strong> untuk 11 node yang terekam. Contoh memakai data sintetis dan placeholder untuk nilai environment. <a href="assets/designer/main-workflow.png">Buka kanvas lengkap</a>.</p>
           <noscript><p class="note">Aktifkan JavaScript untuk menjelajah tiap node, atau baca panduan per tahap di bawah.</p></noscript>
           <p id="node-load-error" class="note warn" role="alert" hidden>Data penjelajah tidak bisa dimuat. Buka kembali berkas dari folder workshop lengkap, atau baca panduan per tahap di bawah.</p>
           <div class="node-explorer" id="node-explorer" hidden>
@@ -79,18 +79,40 @@
                 <p id="node-purpose"></p>
                 <p class="muted" id="node-why"></p>
                 <details open>
-                  <summary>Posisi di Designer dan screenshot Parameters</summary>
+                  <summary>Posisi di workflow dan screenshot Parameters</summary>
                   <div class="node-visuals" id="node-visuals">
+                    <figure class="node-context" aria-labelledby="node-context-title">
+                      <h4 id="node-context-title">Sambungan node</h4>
+                      <div class="context-lane">
+                        <div class="context-stop">
+                          <span class="context-label">Masuk dari</span>
+                          <div id="node-incoming"></div>
+                        </div>
+                        <div class="context-stop context-current">
+                          <span class="context-label">Node terpilih</span>
+                          <strong id="node-context-current"></strong>
+                          <span id="node-context-parent"></span>
+                        </div>
+                        <div class="context-stop">
+                          <span class="context-label">Dilanjutkan ke</span>
+                          <div id="node-outgoing"></div>
+                        </div>
+                      </div>
+                      <figcaption>Diagram dari definisi workflow, bukan hasil run. Klik nama action untuk pindah node.</figcaption>
+                    </figure>
+                    <div id="node-shots"></div>
+                  </div>
+                  <details class="node-native">
+                    <summary>Cuplikan kanvas Designer asli</summary>
                     <figure class="node-canvas">
                       <svg id="node-canvas" role="img" aria-labelledby="node-canvas-label" xmlns="http://www.w3.org/2000/svg">
                         <title id="node-canvas-label"></title>
                         <image id="node-canvas-image" x="0" y="0"></image>
                         <rect id="node-canvas-mark" fill="none" stroke="#862654" stroke-width="2.5" vector-effect="non-scaling-stroke" rx="2"></rect>
                       </svg>
-                      <figcaption>Kotak menandai node pada rekaman kanvas, bukan status eksekusi.</figcaption>
+                      <figcaption>Potongan overview pada ukuran piksel aslinya. Kotak menandai node terpilih; teks kecil pada rekaman tidak disulap menjadi detail baru.</figcaption>
                     </figure>
-                    <div id="node-shots"></div>
-                  </div>
+                  </details>
                 </details>
                 <details>
                   <summary>Parameter, method, dan endpoint contoh</summary>
@@ -142,6 +164,11 @@
 
         <section class="panel" id="cabang">
           <h2>Tidak semua route harus mengembalikan data</h2>
+          <figure class="workshop-chart" id="node-group-chart" hidden>
+            <h3>Berapa node dalam tiap kelompok?</h3>
+            <ol class="branch-chart" id="node-group-bars" role="list"></ol>
+            <figcaption>50 node dari snapshot workflow, dikelompokkan seperti penjelajah di atas. Batang menunjukkan jumlah node, bukan frekuensi eksekusi, performa, atau biaya. Pilih batang untuk membuka kelompoknya.</figcaption>
+          </figure>
           <dl class="terms">
             <dt>Pencarian data</dt>
             <dd><code>mcp</code>, <code>rest_api</code>, <code>knowledge</code>, <code>foundry_iq</code>, dan <code>fabric_data</code>. Masing-masing memakai specialist dan koneksi demo yang sesuai. Nama route bukan bukti jenis koneksi yang dipakai; lihat evidence tool.</dd>

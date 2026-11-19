@@ -29,7 +29,7 @@ test("public workshop diagrams follow keyboard selection and fit narrow viewport
   } finally { await engine.close(); }
 });
 
-test("public node workshop deep links show the right screenshots and searchable branches", async () => {
+test("public node workshop shows clear dependency links, native captures and searchable branches", async () => {
   const engine = await browser();
   try {
     const page = await engine.newPage({offline: true});
@@ -39,8 +39,20 @@ test("public node workshop deep links show the right screenshots and searchable 
     assert.match(await page.locator("#node-kind").textContent(), /invoke_mcp/);
     assert.equal(await images.count(), 2);
     await images.evaluateAll(items => Promise.all(items.map(img => img.decode())));
+    assert.equal(await page.locator("#node-incoming button").getAttribute("data-connected-node"), "mark_mcp");
+    const original = page.locator(".node-native");
+    assert.equal(await original.evaluate(element => element.open), false);
+    await original.locator("summary").click();
+    const actual = await page.locator("#node-canvas").evaluate(svg =>
+      [svg.getBoundingClientRect().width, svg.viewBox.baseVal.width]);
+    assert.ok(actual[0] <= actual[1], "The native screenshot should not be enlarged");
 
-    await page.locator("#node-group").selectOption({label: "Stok REST API (5)"});
+    await page.locator('#node-outgoing button[data-connected-node="normalize_mcp"]').click();
+    assert.match(await page.locator("#node-kind").textContent(), /normalize_mcp/);
+    assert.equal(await page.locator("#node-detail").evaluate(element => element === document.activeElement), true);
+
+    await page.locator("#node-group-chart").getByRole("button", {name: "Stok REST API 5 node"}).click();
+    assert.match(await page.locator("#node-kind").textContent(), /mark_rest_api/);
     assert.match(await page.locator("#node-shots").textContent(), /belum ada cuplikan/);
     await page.locator("#node-search").fill("normalize");
     await page.locator("#node-rail button").press("Enter");
@@ -48,6 +60,29 @@ test("public node workshop deep links show the right screenshots and searchable 
     await page.locator("#node-search").fill("no matching node");
     assert.match(await page.locator("#node-match-count").textContent(), /Tidak ada/);
     assert.equal(await page.locator("#node-next").isDisabled(), true);
+  } finally { await engine.close(); }
+});
+
+test("public MAF code-first shows the matching implementation when a YAML line is selected", async () => {
+  const engine = await browser();
+  try {
+    const page = await engine.newPage({offline: true, viewport: {width: 390, height: 900}});
+    await page.goto(pathToFileURL(path.join(docs, "workshop", "maf-code-first-walkthrough.html")).href + "#padanan");
+    const selected = page.locator('#pair-yaml [aria-pressed="true"]');
+    const code = page.locator("#pair-python [data-highlight]");
+    await selected.waitFor();
+    assert.match(await selected.textContent(), /Local\.RouterDecision\.route = "mcp"/);
+    assert.match(await code.first().textContent(), /run\.route == selected/);
+    const agentVersion = page.locator('#pair-yaml button[data-line="14"]');
+    await agentVersion.click();
+    assert.match(await code.first().textContent(), /kppdemo-router/);
+    await page.locator("#pair-target").selectOption({label: "Koneksi dan identity"});
+    assert.match((await code.allTextContents()).join(" "), /FoundryAgent/);
+    assert.match(await page.locator("#pair-python-source").getAttribute("href"), /trial_support\.py#L\d+-L\d+$/);
+    await agentVersion.press("ArrowDown");
+    assert.match(await selected.textContent(), /conversationId/);
+    const size = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+    assert.ok(size[0] <= size[1], "The paired code columns should stack on a phone");
   } finally { await engine.close(); }
 });
 

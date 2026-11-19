@@ -111,6 +111,12 @@ sintetis dan placeholder. Jangan menggantinya dengan HTML atau dump JSON dari
 generator operator. Tinjau gambar Designer dan pertahankan teks yang
 membedakan potongan kanvas dari cuplikan Parameters.
 
+[Data padanan MAF](docs/workshop/maf-pair-data.js) memakai source YAML dan
+kode contoh codegen yang sudah ada di Git. Jika source itu berubah, perbarui
+kutipan serta rentang highlight. Jangan membawa bukti run, konfigurasi, atau
+endpoint dari penjelajah lokal. Grafik status harus mengikuti `expected_status`
+di [korpus uji](tests/golden/cases.json), bukan disajikan sebagai hasil live.
+
 GitHub Pages menyajikan `main:/docs` sebagai situs statis; pertahankan
 [.nojekyll](docs/.nojekyll). Tinjau HTML, teks dan metadata screenshot baru
 sebelum push. Crop atau redaksi permanen jika diperlukan; hiasan kotak nomor

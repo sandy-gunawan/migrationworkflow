@@ -35,17 +35,17 @@
         <section class="panel" id="pilihan">
           <h2>Kalau kondisi berubah, file apa yang ditinjau?</h2>
           <div class="grid">
-            <article class="card">
+            <article class="card" data-path="code">
               <h3>MAF code-first</h3>
               <p>Review mapping dan graph Python. Kendali atas kondisi dan state ada di kode; tim juga memelihara host, pengujian, dan trace.</p>
-              <a href="maf-code-first-walkthrough.html">Ikuti code-first</a>
+              <a href="maf-code-first-walkthrough.html#padanan">Coba padanan YAML ↔ Python</a>
             </article>
-            <article class="card">
+            <article class="card" data-path="yaml">
               <h3>MAF workflow YAML</h3>
               <p>Review langkah dan kondisi di YAML, binding agent pada Python, dan kompatibilitas loader. Runtime tetap Python; tidak ada Designer native dari launcher demo.</p>
               <a href="maf-declarative-walkthrough.html">Ikuti declarative</a>
             </article>
-            <article class="card">
+            <article class="card" data-path="logic">
               <h3>Logic Apps</h3>
               <p>Review action dan koneksi di WDL atau Designer. Azure menjalankan alur dan menyimpan Run history; normalizer tetap API terpisah.</p>
               <a href="logicapps-alur-request.html">Ikuti Logic Apps</a>
@@ -102,6 +102,22 @@ $env:DEMO_ENVIRONMENT_FILE = (Resolve-Path .\config\runtime.local.json).Path</co
             <div><dt>Fakta</dt><dd><code>WO001</code> untuk <code>TRK001</code></dd></div>
             <div><dt>Sumber</dt><dd><code>urn:kppdemo:maintenance/TRK001</code></dd></div>
           </dl>
+          <figure class="workshop-chart" id="status-corpus">
+            <h3>Apa yang diharapkan dari 50 kasus uji?</h3>
+            <div class="stack-chart" aria-hidden="true">
+              <span data-band="main" style="flex-grow: 30"></span>
+              <span data-band="alt" style="flex-grow: 12"></span>
+              <span data-band="state" style="flex-grow: 4"></span>
+              <span data-band="scope" style="flex-grow: 4"></span>
+            </div>
+            <ul class="chart-key" role="list">
+              <li data-band="main"><code>success</code> <strong>30</strong></li>
+              <li data-band="alt"><code>blocked</code> <strong>12</strong></li>
+              <li data-band="state"><code>clarification</code> <strong>4</strong></li>
+              <li data-band="scope"><code>unsupported</code> <strong>4</strong></li>
+            </ul>
+            <figcaption>Jumlah kasus per status <em>yang diharapkan</em> dalam <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/tests/golden/cases.json">korpus uji</a>. Ini bukan hasil pengujian live atau persentase keberhasilan layanan.</figcaption>
+          </figure>
           <details>
             <summary>Kalau health hijau tapi data tidak ditemukan?</summary>
             <p>Health hanya memastikan server siap menerima HTTP. Lihat hasil bisnis dan bukti tool pada run yang sama. Jika rute harus <code>blocked</code>, itu bukan retrieval yang sukses. Catat kasus yang belum diuji, alih-alih menganggap satu run mewakili semua route.</p>

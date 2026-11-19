@@ -24,7 +24,7 @@ ekstrak, lalu buka [index.html](docs/index.html) dengan folder asetnya tetap utu
 |---|---|
 | Memilih jalur dan menyiapkan sandbox | [Perbandingan, setup bersama, dan contoh biaya](https://sandy-gunawan.github.io/migrationworkflow/workshop/workflow-migration-overview.html) |
 | Mencoba Azure Logic Apps | [Alur request dan setup](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-alur-request.html) · [Peta 50 node dan screenshot](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-node-walkthrough.html#jelajah) · [UI dan Run history](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-ui-walkthrough.html) |
-| Mencoba MAF code-first | [Dari mapping ke graph Python, setup, dan uji UI](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html) |
+| Mencoba MAF code-first | [Padanan YAML ↔ Python yang bisa diklik per baris](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html#padanan) · [Mapping runtime dan setup](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html#mapping) |
 | Mencoba MAF workflow YAML | [Loader YAML, dependency terpisah, dan uji UI](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-declarative-walkthrough.html) |
 | Mencari detail implementasi atau tes | [Indeks dokumentasi](docs/README.md) · [Menjalankan di environment sendiri](docs/how-to/run-in-your-environment.md) |
 
