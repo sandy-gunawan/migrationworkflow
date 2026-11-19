@@ -6,8 +6,11 @@
   <meta name="description" content="Baca parameter, input, dan output node Azure Logic Apps pada jalur MCP.">
   <title>Logic Apps: node dan parameter</title>
   <link rel="stylesheet" href="workshop.css">
+  <script defer src="walkthrough.js"></script>
+  <script defer src="logicapps-nodes.js"></script>
+  <script defer src="node-explorer.js"></script>
 </head>
-<body>
+<body data-track="logic">
   <a class="skip" href="#main">Lewati ke materi</a>
   <header class="bar">
     <nav class="wrap" aria-label="Navigasi workshop">
@@ -22,6 +25,7 @@
       <p class="eyebrow">Jalur C · Logic Apps · 02 / 03</p>
       <h1>Baca input dan output tiap node Logic Apps</h1>
       <p class="lead">Untuk mencari sumber error atau data, lihat parameter node yang sedang dipakai, lalu cocokkan dengan input dan output pada satu run.</p>
+      <nav class="intro-paths" aria-label="Mulai jelajah node"><a href="#jelajah">Jelajahi 50 node</a><a href="#peta">Lihat jalur MCP</a></nav>
       <ol class="steps"><li>1. Baca Request</li><li>2. Ikuti keputusan router</li><li>3. Periksa specialist dan normalizer</li><li>4. Baca Response</li></ol>
     </header>
     <nav class="links" aria-label="Modul Logic Apps">
@@ -32,7 +36,7 @@
     <div class="layout">
       <nav class="toc" aria-label="Di halaman ini">
         <p class="eyebrow">Di halaman ini</p>
-        <ul><li><a href="#peta">Peta node</a></li><li><a href="#parameter">Parameter per tahap</a></li><li><a href="#cabang">Pilihan cabang</a></li><li><a href="#cek">Praktik di Designer</a></li></ul>
+        <ul><li><a href="#peta">Peta node</a></li><li><a href="#jelajah">Jelajah 50 node</a></li><li><a href="#parameter">Parameter per tahap</a></li><li><a href="#cabang">Pilihan cabang</a></li><li><a href="#cek">Praktik di Designer</a></li></ul>
       </nav>
       <div class="content">
         <section class="panel" id="peta">
@@ -47,6 +51,66 @@
             </ol>
             <figcaption>Ilustrasi dari <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/targets/logicapps/workflow.json">workflow.json</a>. Setelah <code>Execute</code> selesai, Response membaca variabel yang diisi cabang, bukan output Scope sebagai jawaban.</figcaption>
           </figure>
+        </section>
+
+        <section class="panel" id="jelajah">
+          <h2>Pilih node, lalu lihat gambar dan datanya</h2>
+          <p>Setiap node punya potongan kanvas Designer asli. Panel <strong>Parameters</strong> tersedia untuk 11 node yang terekam. Contoh pada halaman ini memakai data sintetis serta placeholder untuk nilai environment. <a href="assets/designer/main-workflow.png">Buka kanvas lengkap</a>.</p>
+          <noscript><p class="note">Aktifkan JavaScript untuk menjelajah tiap node, atau baca panduan per tahap di bawah.</p></noscript>
+          <p id="node-load-error" class="note warn" role="alert" hidden>Data penjelajah tidak bisa dimuat. Buka kembali berkas dari folder workshop lengkap, atau baca panduan per tahap di bawah.</p>
+          <div class="node-explorer" id="node-explorer" hidden>
+            <div class="node-workbench">
+              <div class="node-rails">
+                <label for="node-group">Cabang</label>
+                <select id="node-group"></select>
+                <label for="node-search">Cari node di cabang ini</label>
+                <input id="node-search" type="search" placeholder="Contoh: invoke">
+                <p class="muted" id="node-match-count"></p>
+                <ol class="node-rail" id="node-rail" role="list" aria-label="Node dalam cabang"></ol>
+                <div class="controls">
+                  <button type="button" id="node-prev">Sebelumnya</button>
+                  <button type="button" id="node-next">Berikutnya</button>
+                  <button type="button" id="node-focus">Baca detail</button>
+                </div>
+              </div>
+              <div class="node-detail" id="node-detail" tabindex="-1">
+                <p class="eyebrow" id="node-kind"></p>
+                <h3 id="node-title"></h3>
+                <p id="node-purpose"></p>
+                <p class="muted" id="node-why"></p>
+                <details open>
+                  <summary>Posisi di Designer dan screenshot Parameters</summary>
+                  <div class="node-visuals" id="node-visuals">
+                    <figure class="node-canvas">
+                      <svg id="node-canvas" role="img" aria-labelledby="node-canvas-label" xmlns="http://www.w3.org/2000/svg">
+                        <title id="node-canvas-label"></title>
+                        <image id="node-canvas-image" x="0" y="0"></image>
+                        <rect id="node-canvas-mark" fill="none" stroke="#862654" stroke-width="2.5" vector-effect="non-scaling-stroke" rx="2"></rect>
+                      </svg>
+                      <figcaption>Kotak menandai node pada rekaman kanvas, bukan status eksekusi.</figcaption>
+                    </figure>
+                    <div id="node-shots"></div>
+                  </div>
+                </details>
+                <details>
+                  <summary>Parameter, method, dan endpoint contoh</summary>
+                  <dl id="node-parameters" class="terms"></dl>
+                </details>
+                <details>
+                  <summary>Contoh input dan output</summary>
+                  <div class="node-io">
+                    <div><h4 id="node-input-label">Input</h4><pre><code id="node-input"></code></pre></div>
+                    <div><h4 id="node-output-label">Output</h4><pre><code id="node-output"></code></pre></div>
+                  </div>
+                </details>
+                <details>
+                  <summary>JSON definisi node dengan placeholder</summary>
+                  <pre><code id="node-json"></code></pre>
+                </details>
+              </div>
+            </div>
+            <p class="sr-only" id="node-announcement" role="status"></p>
+          </div>
         </section>
 
         <section class="panel" id="parameter">
@@ -92,7 +156,7 @@
           <h2>Praktik: temukan tiga node dalam case MCP</h2>
           <p>Buka <strong>Development Tools → Logic app designer</strong> pada workflow sandbox yang disiapkan. Di bawah Switch, pilih case <code>mcp</code>. Lihat kanvas terlebih dahulu, baru panel <strong>Parameters</strong> pada masing-masing node.</p>
           <figure class="shot">
-            <a href="assets/logicapps-nodes.png"><img src="assets/logicapps-nodes.png" width="501" height="670" loading="lazy" alt="Dua cabang di Designer: MCP di kiri dan REST API di kanan; mark, invoke, dan normalize MCP diberi nomor."></a>
+            <a href="assets/logicapps-nodes.png"><img src="assets/logicapps-nodes.png" width="214" height="287" loading="lazy" alt="Cabang MCP di Designer: mark, invoke, dan normalize MCP diberi nomor."></a>
             <figcaption>Screenshot Azure Designer. Panah menunjukkan urutan konfigurasi, bukan bukti bahwa action sudah berjalan. <a class="full-size" href="assets/logicapps-nodes.png">Perbesar screenshot</a></figcaption>
           </figure>
           <ol>

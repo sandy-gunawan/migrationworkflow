@@ -23,6 +23,10 @@
       <p class="eyebrow">Workshop · Microsoft Foundry · Data sintetis</p>
       <h1>Tiga opsi migrasi workflow Foundry</h1>
       <p class="lead">Pilih siapa yang menjalankan alurnya. Pertanyaan dan hasil yang kita cek tetap sama: cari work order untuk <code>TRK001</code> dan temukan <code>WO001</code> beserta sumbernya.</p>
+      <nav class="intro-paths" aria-label="Mulai belajar">
+        <a href="#alur">Ikuti satu request</a>
+        <a href="#bandingkan">Bandingkan tiga jalur</a>
+      </nav>
       <ol class="steps"><li>1. Pilih jalur</li><li>2. Ikuti request</li><li>3. Siapkan sandbox dan cek hasil</li></ol>
     </header>
     <div class="layout">
@@ -72,11 +76,11 @@
           <h2>Ikuti satu pertanyaan sampai jawabannya kembali</h2>
           <figure data-trace>
             <ol class="flow" aria-label="Jalur request contoh">
-              <li data-role="actor"><strong>1. Browser</strong><span>TRK001</span><span class="hop">Kirim pertanyaan</span></li>
-              <li><strong>2. Runtime dan router</strong><span>Pilih cabang <code>mcp</code></span><span class="hop">Panggil specialist</span></li>
-              <li data-role="agent"><strong>3. Specialist</strong><span>Di Foundry</span><span class="hop">Baca work order</span></li>
-              <li data-role="data"><strong>4. Data dan runtime</strong><span>Data MCP kembali ke runtime untuk diperiksa</span><span class="hop">Kirim hasil</span></li>
-              <li data-role="actor"><strong>5. Browser</strong><span>WO001 dan sumber</span></li>
+              <li data-role="actor"><strong>Browser</strong><span>TRK001</span><span class="hop">Kirim pertanyaan</span></li>
+              <li><strong>Runtime dan router</strong><span>Pilih cabang <code>mcp</code></span><span class="hop">Panggil specialist</span></li>
+              <li data-role="agent"><strong>Specialist</strong><span>Di Foundry</span><span class="hop">Baca work order</span></li>
+              <li data-role="data"><strong>Data dan runtime</strong><span>Data MCP kembali ke runtime untuk diperiksa</span><span class="hop">Kirim hasil</span></li>
+              <li data-role="actor"><strong>Browser</strong><span>WO001 dan sumber</span></li>
             </ol>
             <ol class="trace" aria-live="polite">
               <li value="1"><b>Klien mengirim pertanyaan.</b> Alur menerima <code>question</code>. Di Logic Apps, request masuk lewat trigger HTTP.</li>
@@ -91,7 +95,7 @@
               <button type="button" data-next>Berikutnya</button>
               <button type="button" data-play>Putar alur</button>
             </div>
-            <figcaption>Simulasi belajar. Memilih langkah tidak memanggil Azure atau membuat run baru.</figcaption>
+            <figcaption>Ketuk titik di diagram, gunakan tombol panah pada keyboard, atau geser langkah. Ini simulasi belajar, bukan panggilan ke Azure.</figcaption>
           </figure>
         </section>
         <section class="panel" id="cek">

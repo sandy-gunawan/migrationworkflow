@@ -104,6 +104,13 @@ Jangan tambah font, stylesheet, atau script CDN agar clone/ZIP tetap bisa
 dipakai offline. Uji tautan, interaksi keyboard, dan diagram di desktop dan
 ponsel.
 
+Diagram titik dan garis dibangun oleh [walkthrough.js](docs/workshop/walkthrough.js)
+dari daftar HTML, sehingga urutannya tetap bisa dibaca tanpa JavaScript.
+Data [penjelajah node](docs/workshop/logicapps-nodes.js) hanya berisi contoh
+sintetis dan placeholder. Jangan menggantinya dengan HTML atau dump JSON dari
+generator operator. Tinjau gambar Designer dan pertahankan teks yang
+membedakan potongan kanvas dari cuplikan Parameters.
+
 GitHub Pages menyajikan `main:/docs` sebagai situs statis; pertahankan
 [.nojekyll](docs/.nojekyll). Tinjau HTML, teks dan metadata screenshot baru
 sebelum push. Crop atau redaksi permanen jika diperlukan; hiasan kotak nomor

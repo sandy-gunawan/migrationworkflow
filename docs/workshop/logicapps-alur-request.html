@@ -6,8 +6,9 @@
   <meta name="description" content="Setup Logic Apps dan ikuti alur lengkap dari request TRK001 hingga jawaban WO001.">
   <title>Logic Apps: setup dan alur request</title>
   <link rel="stylesheet" href="workshop.css">
+  <script defer src="walkthrough.js"></script>
 </head>
-<body>
+<body data-track="logic">
   <a class="skip" href="#main">Lewati ke materi</a>
   <header class="bar">
     <nav class="wrap" aria-label="Navigasi workshop">
@@ -22,6 +23,7 @@
       <p class="eyebrow">Jalur C · Logic Apps · 01 / 03</p>
       <h1>Logic Apps: dari setup sampai jawaban</h1>
       <p class="lead">Azure menjalankan workflow. Python lokal hanya meneruskan pertanyaan dan membaca hasil. Pilih jalur ini kalau tim perlu menelusuri node dan riwayat run di Azure Portal.</p>
+      <nav class="intro-paths" aria-label="Mulai Logic Apps"><a href="#alur">Ikuti alur request</a><a href="#setup">Siapkan sandbox</a></nav>
       <ol class="steps"><li>1. Kenali alur</li><li>2. Siapkan workflow dan izin</li><li>3. Kirim POST</li><li>4. Cek Run history</li></ol>
     </header>
     <nav class="links" aria-label="Modul Logic Apps">
@@ -40,10 +42,10 @@
           <figure>
             <ol class="flow" aria-label="Alur Logic Apps untuk TRK001">
               <li data-role="actor"><strong>Klien / Python gateway</strong><span>Menyiapkan <code>question</code></span><span class="hop">Kirim POST dengan OAuth</span></li>
-              <li><strong>Logic Apps</strong><span>Validasi request, simpan input, jalankan Switch</span><span class="hop">Panggil router dan specialist</span></li>
+              <li data-read="Request memeriksa Body, lalu Compose menyiapkan pertanyaan dan run_id. Workflow memakai keputusan router untuk memilih case pada Switch."><strong>Logic Apps</strong><span>Validasi request, simpan input, jalankan Switch</span><span class="hop">Panggil router dan specialist</span></li>
               <li data-role="agent"><strong>Foundry</strong><span>Router memilih <code>mcp</code></span><span class="hop">Specialist minta work order</span></li>
               <li data-role="data"><strong>MCP / backing API</strong><span>Membaca fixture <code>WO001</code></span><span class="hop">Kembalikan bukti lewat Foundry</span></li>
-              <li><strong>Normalizer dan Response</strong><span>Periksa bukti; kembalikan jawaban dan sumber ke klien</span></li>
+              <li data-read="Normalizer memastikan work order dan sumber benar-benar berasal dari respons tool. Response membaca Result, lalu mengirim jawaban dan status ke pemanggil."><strong>Normalizer dan Response</strong><span>Periksa bukti; kembalikan jawaban dan sumber ke klien</span></li>
             </ol>
             <figcaption>Ilustrasi runtime. Logic Apps menjalankan node. Agent di Foundry yang memakai tool MCP, bukan browser, Switch, atau normalizer.</figcaption>
           </figure>
@@ -107,7 +109,7 @@ try {
 }</code></pre>
           <p><code>question</code> wajib; <code>run_id</code> boleh dikosongkan agar workflow membuat ID korelasi. ID tersebut berbeda dari ID run native Azure. Pada rekaman demo, tombol <strong>Run with payload</strong> tanpa OAuth ditolak dengan HTTP 401 sebelum workflow berjalan; jangan membuka SAS untuk mengakalinya.</p>
           <figure class="shot">
-            <a href="assets/logicapps-request.png"><img src="assets/logicapps-request.png" width="510" height="421" alt="Azure Designer: Request trigger kpp mining start diikuti Validate request dan cabang penolakan."></a>
+            <a href="assets/logicapps-request.png"><img src="assets/logicapps-request.png" width="330" height="218" alt="Azure Designer: Request trigger kpp mining start diikuti Validate request."></a>
             <figcaption>Screenshot Azure Designer, hanya area kanvas. <strong>1.</strong> Temukan Request trigger. <strong>2.</strong> Lihat <em>Validate request</em> yang memeriksa Body, bukan URL. <a class="full-size" href="assets/logicapps-request.png">Perbesar screenshot</a></figcaption>
           </figure>
         </section>

@@ -5,6 +5,52 @@ const { test } = require("node:test");
 const { pathToFileURL } = require("node:url");
 const { browser, targets, guide } = require("./helpers.cjs");
 
+const docs = path.resolve(__dirname, "..", "..", "..", "..", "docs");
+
+test("public workshop diagrams follow keyboard selection and fit narrow viewports offline", async () => {
+  const engine = await browser();
+  try {
+    const page = await engine.newPage({offline: true, viewport: {width: 390, height: 900}});
+    const outbound = [];
+    page.on("request", request => { if (/^https?:/.test(request.url())) outbound.push(request.method()); });
+    const files = [path.join(docs, "index.html"), ...fs.readdirSync(path.join(docs, "workshop"))
+      .filter(name => name.endsWith(".html")).map(name => path.join(docs, "workshop", name))];
+    for (const file of files) {
+      await page.goto(pathToFileURL(file).href);
+      const stage = page.locator(".flow-stage").first();
+      const steps = stage.locator(".flow-choice");
+      await steps.first().press("End");
+      assert.equal(await steps.last().evaluate(button => button === document.activeElement), true);
+      assert.equal(await stage.locator("path[data-visited]").count(), (await steps.count()) - 1);
+      const size = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+      assert.ok(size[0] <= size[1], `Diagram overflow: ${path.basename(file)}`);
+    }
+    assert.deepEqual(outbound, []);
+  } finally { await engine.close(); }
+});
+
+test("public node workshop deep links show the right screenshots and searchable branches", async () => {
+  const engine = await browser();
+  try {
+    const page = await engine.newPage({offline: true});
+    const url = pathToFileURL(path.join(docs, "workshop", "logicapps-node-walkthrough.html")).href;
+    await page.goto(url + "#node=invoke_mcp");
+    const images = page.locator("#node-shots img");
+    assert.match(await page.locator("#node-kind").textContent(), /invoke_mcp/);
+    assert.equal(await images.count(), 2);
+    await images.evaluateAll(items => Promise.all(items.map(img => img.decode())));
+
+    await page.locator("#node-group").selectOption({label: "Stok REST API (5)"});
+    assert.match(await page.locator("#node-shots").textContent(), /belum ada cuplikan/);
+    await page.locator("#node-search").fill("normalize");
+    await page.locator("#node-rail button").press("Enter");
+    assert.match(await page.locator("#node-kind").textContent(), /normalize_rest_api/);
+    await page.locator("#node-search").fill("no matching node");
+    assert.match(await page.locator("#node-match-count").textContent(), /Tidak ada/);
+    assert.equal(await page.locator("#node-next").isDisabled(), true);
+  } finally { await engine.close(); }
+});
+
 for(const kind of targets())test(kind+" HTML teaches preparation, source mapping and quizzes offline",async()=>{
   const engine=await browser(),page=await engine.newPage({viewport:{width:1500,height:1000}});
   const errors=[],outbound=[];

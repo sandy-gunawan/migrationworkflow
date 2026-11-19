@@ -6,8 +6,9 @@
   <meta name="description" content="Ikuti mapping YAML Foundry, graph Python MAF, setup lokal, dan verifikasi work order.">
   <title>MAF code-first: dari mapping ke Python</title>
   <link rel="stylesheet" href="workshop.css">
+  <script defer src="walkthrough.js"></script>
 </head>
-<body>
+<body data-track="code">
   <a class="skip" href="#main">Lewati ke materi</a>
   <header class="bar">
     <nav class="wrap" aria-label="Navigasi workshop">
@@ -22,6 +23,7 @@
       <p class="eyebrow">Jalur A · MAF code-first</p>
       <h1>Dari mapping Foundry ke graph Python MAF</h1>
       <p class="lead">Pilih code-first kalau tim ingin mengelola kondisi, state, dan pengujian di kode Python. YAML Foundry dipakai untuk membuat mapping; runtime membaca mapping dan menjalankan graph, bukan me-load YAML sumber.</p>
+      <nav class="intro-paths" aria-label="Mulai MAF code-first"><a href="#mapping">Ikuti perubahan YAML ke Python</a><a href="#runtime">Ikuti request TRK001</a></nav>
       <ol class="steps"><li>1. Baca mapping</li><li>2. Siapkan runtime</li><li>3. Coba satu pertanyaan</li><li>4. Cek dan hentikan UI</li></ol>
     </header>
     <div class="layout">
@@ -54,6 +56,15 @@
 
         <section class="panel" id="runtime">
           <h2>Satu request: TRK001 → MCP → WO001</h2>
+          <figure>
+            <ol class="flow" aria-label="Jalur eksekusi MAF code-first">
+              <li data-role="actor"><strong>Browser</strong><span>Input TRK001</span><span class="hop">Kirim request</span></li>
+              <li data-read="MiningWorkflow menjalankan graph Python. Executor router memanggil Foundry, lalu edge bersyarat mengarahkan route mcp ke specialist maintenance."><strong>Graph Python</strong><span>Executor dan edge bersyarat</span><span class="hop">Pilih specialist</span></li>
+              <li data-role="agent" data-read="Specialist memanggil get_work_orders melalui MCP, bukan melalui browser. Output tool menyertakan WO001 dan sumbernya."><strong>Foundry dan MCP</strong><span>Specialist membaca work order</span><span class="hop">Kirim bukti</span></li>
+              <li data-role="data"><strong>Python dan UI</strong><span>Periksa bukti, tampilkan WO001 dan sumber</span></li>
+            </ol>
+            <figcaption>Klik titik untuk melihat tugas tiap bagian. Ini diagram, bukan run live.</figcaption>
+          </figure>
           <ol>
             <li>Browser mengirim pertanyaan ke server Python; MAF menjalankan graph untuk request itu.</li>
             <li>Router Foundry membaca pertanyaan dan mengembalikan <code>route: mcp</code>. Edge bersyarat Python memilih cabang maintenance berdasarkan nilai tersebut.</li>

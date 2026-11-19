@@ -6,8 +6,9 @@
   <meta name="description" content="Cara MAF memuat workflow YAML dengan WorkflowFactory, setup terpisah, dan verifikasi hasil.">
   <title>MAF declarative: menjalankan workflow YAML</title>
   <link rel="stylesheet" href="workshop.css">
+  <script defer src="walkthrough.js"></script>
 </head>
-<body>
+<body data-track="yaml">
   <a class="skip" href="#main">Lewati ke materi</a>
   <header class="bar">
     <nav class="wrap" aria-label="Navigasi workshop">
@@ -22,6 +23,7 @@
       <p class="eyebrow">Jalur B · MAF declarative</p>
       <h1>Jalankan alur langsung dari workflow YAML</h1>
       <p class="lead">Pilih jalur ini kalau tim ingin meninjau langkah dan kondisi sebagai file YAML. Python menyiapkan agent, lalu loader resmi MAF membentuk graph dari YAML yang kompatibel.</p>
+      <nav class="intro-paths" aria-label="Mulai MAF YAML"><a href="#alur">Ikuti file sampai workflow</a><a href="#praktik">Coba ikuti request</a></nav>
       <ol class="steps"><li>1. Kenali file yang dimuat</li><li>2. Buat environment terpisah</li><li>3. Periksa snapshot</li><li>4. Cocokkan hasil</li></ol>
     </header>
     <div class="layout">
@@ -70,6 +72,15 @@
 
         <section class="panel" id="praktik">
           <h2>Praktik: buka snapshot sebelum mengirim pertanyaan</h2>
+          <figure>
+            <ol class="flow" aria-label="Jalur request MAF declarative">
+              <li data-role="actor"><strong>TRK001</strong><span>UI mengirim pertanyaan asli</span><span class="hop">Mulai graph</span></li>
+              <li data-read="WorkflowFactory membentuk graph dari snapshot yang dimuat saat startup, dengan binding agent untuk request ini. File yang berubah di disk tidak mengganti run."><strong>Graph dari YAML</strong><span>Snapshot + binding agent</span><span class="hop">Jalankan kondisi</span></li>
+              <li data-role="agent"><strong>Router dan specialist</strong><span>ConditionGroup memilih MCP</span><span class="hop">Kembalikan bukti</span></li>
+              <li data-role="data"><strong>Hasil di UI</strong><span>Periksa WO001, sumber, dan activity</span></li>
+            </ol>
+            <figcaption>Berbeda dari code-first, kondisi diambil dari YAML yang dimuat loader. Membuka diagram tidak memanggil Foundry.</figcaption>
+          </figure>
           <figure class="shot">
             <a href="assets/maf-yaml-snapshot.png"><img src="assets/maf-yaml-snapshot.png" width="310" height="277" loading="lazy" alt="Panel File workflow yang dipakai dan tombol Baca snapshot file pada UI declarative."></a>
             <figcaption><strong>1.</strong> Cuplikan UI asli dari rekaman sebelumnya. Tombol pada screenshot tidak menjalankan workflow. <a class="full-size" href="assets/maf-yaml-snapshot.png">Perbesar screenshot</a></figcaption>

@@ -6,8 +6,9 @@
   <meta name="description" content="Cara menjalankan demo UI Logic Apps, membaca status native, dan mencocokkan hasil dengan run history.">
   <title>Logic Apps: UI, trace, dan Run history</title>
   <link rel="stylesheet" href="workshop.css">
+  <script defer src="walkthrough.js"></script>
 </head>
-<body>
+<body data-track="logic">
   <a class="skip" href="#main">Lewati ke materi</a>
   <header class="bar">
     <nav class="wrap" aria-label="Navigasi workshop">
@@ -22,6 +23,7 @@
       <p class="eyebrow">Jalur C · Logic Apps · 03 / 03</p>
       <h1>Ikuti satu run Logic Apps dari UI ke portal</h1>
       <p class="lead">UI demo membantu melihat langkah yang berjalan. Untuk memastikan apa yang benar-benar terjadi di Azure, baca Run history dengan ID yang sama.</p>
+      <nav class="intro-paths" aria-label="Belajar dari UI"><a href="#alur">Ikuti alur UI</a><a href="#praktik">Lihat langkah di layar</a></nav>
       <ol class="steps"><li>1. Isi pertanyaan</li><li>2. Jalankan di sandbox berizin</li><li>3. Cocokkan hasil dan run</li></ol>
     </header>
     <nav class="links" aria-label="Modul Logic Apps">
@@ -40,7 +42,7 @@
           <figure>
             <ol class="flow" aria-label="Alur pengamatan UI hingga Run history">
               <li data-role="actor"><strong>Browser lokal</strong><span>Uji pertanyaan sintetis</span><span class="hop">POST ke <code>/ui/runs</code></span></li>
-              <li><strong>Python gateway</strong><span>Token Azure CLI tetap di backend</span><span class="hop">POST ke trigger</span></li>
+              <li data-read="Gateway mengambil akses lewat Azure CLI, lalu POST ke trigger. Browser hanya menerima stream lokal, bukan token dan bukan URL trigger."><strong>Python gateway</strong><span>Token Azure CLI tetap di backend</span><span class="hop">POST ke trigger</span></li>
               <li><strong>Logic Apps</strong><span>Menjalankan action dan memanggil Foundry</span><span class="hop">Kembalikan respons dan ID run</span></li>
               <li data-role="actor"><strong>Gateway dan browser</strong><span>Gateway baca status Azure; UI tampilkan hasil dan trace</span></li>
             </ol>
