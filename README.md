@@ -15,20 +15,18 @@ bukan opsi keempat; pada demo ini router dan specialist tetap bekerja di Foundry
 
 **[Mulai belajar dari HTML interaktif](https://sandy-gunawan.github.io/migrationworkflow/)** —
 bandingkan ketiga jalur dari persiapan, siapa yang menjalankan, sampai hasil
-`TRK001` → `WO001`. Untuk salinan offline, unduh [index.html](docs/index.html)
-dengan **Download raw file** lalu buka di browser.
+`TRK001` → `WO001`. Untuk belajar offline, clone atau unduh ZIP repository,
+ekstrak, lalu buka [index.html](docs/index.html) dengan folder asetnya tetap utuh.
 
 ## Mulai dari sini
 
 | Kebutuhan | Bacaan |
 |---|---|
-| Belum mengenal demo ini | [Materi HTML: tiga opsi migrasi](https://sandy-gunawan.github.io/migrationworkflow/) |
-| Ingin menyiapkan salinan lokal | [Persiapan dan batas demo](docs/how-to/setup-and-source.md) |
-| Ingin memakai lingkungan Azure sendiri | [Menjalankan di environment sendiri](docs/how-to/run-in-your-environment.md) |
-| Ingin mencari detail implementasi MAF | [YAML Foundry ke MAF](docs/how-to/foundry-yaml-to-maf-newbie.md) |
-| Ingin melihat siapa memanggil siapa | [Arsitektur dan satu alur request](docs/how-to/maf-internals-newbie.md) |
-| Ingin menjalankan UI pada lingkungan yang sudah siap | [Panduan UI lokal](docs/how-to/maf-ui.md) |
-| Ingin menelusuri semua materi | [Indeks dokumentasi](docs/README.md) |
+| Memilih jalur dan menyiapkan sandbox | [Perbandingan, setup bersama, dan contoh biaya](https://sandy-gunawan.github.io/migrationworkflow/workshop/workflow-migration-overview.html) |
+| Mencoba Azure Logic Apps | [Alur request dan setup](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-alur-request.html) · [Node dan parameter](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-node-walkthrough.html) · [UI dan Run history](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-ui-walkthrough.html) |
+| Mencoba MAF code-first | [Dari mapping ke graph Python, setup, dan uji UI](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html) |
+| Mencoba MAF workflow YAML | [Loader YAML, dependency terpisah, dan uji UI](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-declarative-walkthrough.html) |
+| Mencari detail implementasi atau tes | [Indeks dokumentasi](docs/README.md) · [Menjalankan di environment sendiri](docs/how-to/run-in-your-environment.md) |
 
 ## Video demo tiga UI
 
@@ -84,10 +82,11 @@ tiap folder.
 
 ## Batas versi publik
 
-- Materi utama adalah HTML di GitHub Pages; Markdown dipakai untuk indeks dan
-  referensi teknis.
-- Konfigurasi lingkungan, bukti mentah, catatan operator, dan workshop HTML lama
-  beserta screenshot/generator-nya tetap lokal. File aslinya tidak dihapus.
+- Workshop HTML publik menyertakan setup, contoh, diagram, screenshot yang sudah
+  ditinjau, serta langkah verifikasi. Markdown untuk referensi teknis.
+- Nama dan cara mengisi pengaturan boleh dicantumkan. File env, profil operasional,
+  credential, dan URL bertanda tangan tidak ikut. Paket lama yang bergantung pada
+  environment operator tetap lokal; file aslinya tidak dihapus.
 - Salinan publik **bukan installer Azure sekali jalan**. UI live dan beberapa
   tes live memerlukan konfigurasi, baseline, izin, serta layanan demo yang disiapkan
   operator. Lihat [persiapan](docs/how-to/setup-and-source.md).

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cara MAF memuat workflow YAML dengan WorkflowFactory, setup terpisah, dan verifikasi hasil.">
+  <title>MAF declarative: menjalankan workflow YAML</title>
+  <link rel="stylesheet" href="workshop.css">
+</head>
+<body>
+  <a class="skip" href="#main">Lewati ke materi</a>
+  <header class="bar">
+    <nav class="wrap" aria-label="Navigasi workshop">
+      <a class="brand" href="../index.html">Workshop migrasi</a>
+      <a href="logicapps-alur-request.html">Logic Apps</a>
+      <a href="maf-code-first-walkthrough.html">MAF code-first</a>
+      <a href="maf-declarative-walkthrough.html" aria-current="page">MAF workflow YAML</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">Jalur B · MAF declarative</p>
+      <h1>Jalankan alur langsung dari workflow YAML</h1>
+      <p class="lead">Pilih jalur ini kalau tim ingin meninjau langkah dan kondisi sebagai file YAML. Python menyiapkan agent, lalu loader resmi MAF membentuk graph dari YAML yang kompatibel.</p>
+      <ol class="steps"><li>1. Kenali file yang dimuat</li><li>2. Buat environment terpisah</li><li>3. Periksa snapshot</li><li>4. Cocokkan hasil</li></ol>
+    </header>
+    <div class="layout">
+      <nav class="toc" aria-label="Di halaman ini">
+        <p class="eyebrow">Di halaman ini</p>
+        <ul><li><a href="#alur">File dan runtime</a></li><li><a href="#setup">Setup SDK</a></li><li><a href="#praktik">Praktik UI</a></li><li><a href="#cek">Cek hasil</a></li><li><a href="#stop">Berhenti dan biaya</a></li></ul>
+      </nav>
+      <div class="content">
+        <section class="panel" id="alur">
+          <h2>File dibaca saat startup, graph dibangun untuk request</h2>
+          <figure>
+            <ol class="flow" aria-label="Dari file YAML ke jawaban MAF declarative">
+              <li data-role="data"><strong>File YAML</strong><span>Langkah, kondisi, dan agent reference</span><span class="hop">Baca snapshot saat startup</span></li>
+              <li><strong>Python + WorkflowFactory</strong><span>Pasangkan agent dan bangun graph</span><span class="hop">Jalankan pertanyaan</span></li>
+              <li data-role="agent"><strong>Foundry dan tool MCP</strong><span>Router memilih MCP; specialist membaca work order</span><span class="hop">Kembalikan bukti</span></li>
+              <li data-role="actor"><strong>UI</strong><span>Fakta, sumber, dan activity yang teramati</span></li>
+            </ol>
+            <figcaption>Ilustrasi. Startup menyimpan snapshot YAML; ketika pertanyaan masuk, runtime memakai snapshot tersebut dengan pool agent dan graph baru. Resource agent tidak dibuat ketika loader membaca file.</figcaption>
+          </figure>
+          <details open>
+            <summary>Lihat YAML yang memang dibaca oleh loader</summary>
+            <p><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/official-migration/b-declarative/source.workflow.yaml">File <code>source.workflow.yaml</code></a> memakai action seperti <code>SetVariable</code>, <code>InvokeAzureAgent</code>, dan <code>ConditionGroup</code>. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/declarative_ui/loader.py"><code>WorkflowFile.create()</code></a> menyerahkan teks dan agent bindings ke <code>WorkflowFactory</code>. Ini bukan YAML tampilan hasil mapping di <code>targets/maf</code> dan bukan graph code-first.</p>
+          </details>
+          <details>
+            <summary>Kenapa file yang diedit bisa ditolak?</summary>
+            <p>UI demo memeriksa SHA-256 file terhadap baseline agar perbandingan memakai source yang sama. Itu guard demo, bukan syarat umum <code>WorkflowFactory</code>. Untuk versi baru, review kompatibilitas action, binding, dan baseline; jangan mengubah hash hanya supaya loader menerima file.</p>
+          </details>
+        </section>
+
+        <section class="panel" id="setup">
+          <h2>Pakai dependency terpisah dari code-first</h2>
+          <p>Jalankan dari root repository di PowerShell dengan Python 3.13. Pasang <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/declarative_ui/requirements.lock.txt">dependency yang dipin untuk UI declarative</a> pada venv sendiri; jangan upgrade venv baseline dengan paket ini.</p>
+          <pre><code>py -3.13 -m venv .venv\declarative
+.\.venv\declarative\Scripts\python.exe -m pip install -r .\spikes\declarative_ui\requirements.lock.txt
+.\.venv\declarative\Scripts\python.exe -m pip check
+.\.venv\declarative\Scripts\python.exe -m pytest -c .\spikes\declarative_ui\pytest.ini .\spikes\declarative_ui\tests -q</code></pre>
+          <p>Tes loader memakai fixture, tanpa run baru di Foundry. Jika Power Fx gagal dimuat, cek prasyarat runtime Python/.NET yang sesuai paket sebelum mengubah versi SDK.</p>
+          <p class="note"><strong>Untuk live:</strong> siapkan <a href="workflow-migration-overview.html#setup-bersama">sandbox dan koneksi agent</a>, lalu cek binding nama dan versi. Endpoint Foundry dapat mengikuti profil, tetapi launcher demo masih mengikat subscription Azure CLI pada konstanta snapshot. Untuk subscription lain, review binding dan credential scope pada salinan sendiri sebelum uji; profil saja belum membuat eksperimen ini portabel penuh.</p>
+          <details>
+            <summary>Operator: mulai UI setelah binding dan akses sesuai</summary>
+            <pre><code>.\.venv\declarative\Scripts\python.exe -X utf8 -m spikes.declarative_ui `
+    --workflow .\spikes\official-migration\b-declarative\source.workflow.yaml --port 8767</code></pre>
+            <p>Buka <code>http://127.0.0.1:8767/</code> setelah <code>/health</code> menampilkan <code>local-maf-declarative-ui</code>. Restart proses jika ingin membaca snapshot lain yang telah disetujui; perubahan di disk tidak mengubah run yang sudah berjalan.</p>
+          </details>
+        </section>
+
+        <section class="panel" id="praktik">
+          <h2>Praktik: buka snapshot sebelum mengirim pertanyaan</h2>
+          <figure class="shot">
+            <a href="assets/maf-yaml-snapshot.png"><img src="assets/maf-yaml-snapshot.png" width="310" height="277" loading="lazy" alt="Panel File workflow yang dipakai dan tombol Baca snapshot file pada UI declarative."></a>
+            <figcaption><strong>1.</strong> Cuplikan UI asli dari rekaman sebelumnya. Tombol pada screenshot tidak menjalankan workflow. <a class="full-size" href="assets/maf-yaml-snapshot.png">Perbesar screenshot</a></figcaption>
+          </figure>
+          <ol>
+            <li>Pada UI yang berjalan, pilih <strong>Baca snapshot file</strong>. Periksa path, hash, dan branch <code>mcp</code> pada YAML yang dimuat.</li>
+            <li>Isi <code>Show work orders for equipment TRK001.</code> lalu jalankan sekali di sandbox berizin. Router mengembalikan <code>mcp</code>; kondisi pada YAML memilih specialist. Specialist yang meminta data MCP.</li>
+            <li>Cek <strong>Jawaban dan sumber</strong> serta activity. Harapkan <code>mcp / success</code>, <code>WO001</code> untuk <code>TRK001</code>, dan <code>urn:kppdemo:maintenance/TRK001</code>.</li>
+          </ol>
+          <p>Video memperlihatkan snapshot YAML dan hasil run yang sudah direkam. Menontonnya tidak mengirim request ke Foundry.</p>
+        </section>
+
+        <section class="panel" id="cek">
+          <h2>Pastikan yang diuji benar-benar file yang dimuat</h2>
+          <details>
+            <summary>Dependency berbeda, hash gagal, atau data tidak cocok?</summary>
+            <p>Untuk dependency, pakai venv declarative dan lock yang sesuai. Untuk hash, cek path dan byte file sumber yang telah disetujui. Jika panggilan cloud gagal, cek scope identitas, agent reference, izin, dan tool evidence. Jangan merendahkan error menjadi hasil sukses.</p>
+          </details>
+          <p>Bandingkan fakta dan sumber dengan <a href="maf-code-first-walkthrough.html#praktik">jalur code-first</a>; kesamaan jawaban tidak berarti graph yang dipakai sama. Rujuk <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/declarative_ui/runtime.py">runtime declarative</a> untuk startup, binding, dan eksekusi.</p>
+        </section>
+        <section class="panel" id="stop">
+          <h2>Hentikan UI setelah run selesai</h2>
+          <pre><code>.\.venv\declarative\Scripts\python.exe -X utf8 -m spikes.declarative_ui --port 8767 --stop</code></pre>
+          <p>Perintah ini hanya menutup UI lokal. Biaya yang perlu dihitung datang dari host dan layanan yang dipanggil, bukan dari format YAML-nya. Lihat <a href="workflow-migration-overview.html#biaya">contoh biaya dan batasnya</a>.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="wrap footer"><a href="../index.html#bandingkan">Bandingkan tiga jalur</a> · <a href="../videos/declarative.mp4">Video MAF workflow YAML</a></footer>
+</body>
+</html>

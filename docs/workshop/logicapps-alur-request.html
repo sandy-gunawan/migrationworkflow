@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Setup Logic Apps dan ikuti alur lengkap dari request TRK001 hingga jawaban WO001.">
+  <title>Logic Apps: setup dan alur request</title>
+  <link rel="stylesheet" href="workshop.css">
+</head>
+<body>
+  <a class="skip" href="#main">Lewati ke materi</a>
+  <header class="bar">
+    <nav class="wrap" aria-label="Navigasi workshop">
+      <a class="brand" href="../index.html">Workshop migrasi</a>
+      <a href="logicapps-alur-request.html" aria-current="page">Logic Apps</a>
+      <a href="maf-code-first-walkthrough.html">MAF code-first</a>
+      <a href="maf-declarative-walkthrough.html">MAF workflow YAML</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">Jalur C · Logic Apps · 01 / 03</p>
+      <h1>Logic Apps: dari setup sampai jawaban</h1>
+      <p class="lead">Azure menjalankan workflow. Python lokal hanya meneruskan pertanyaan dan membaca hasil. Pilih jalur ini kalau tim perlu menelusuri node dan riwayat run di Azure Portal.</p>
+      <ol class="steps"><li>1. Kenali alur</li><li>2. Siapkan workflow dan izin</li><li>3. Kirim POST</li><li>4. Cek Run history</li></ol>
+    </header>
+    <nav class="links" aria-label="Modul Logic Apps">
+      <a href="logicapps-alur-request.html" aria-current="page">01 Alur dan setup</a>
+      <a href="logicapps-node-walkthrough.html">02 Node dan parameter</a>
+      <a href="logicapps-ui-walkthrough.html">03 UI dan verifikasi</a>
+    </nav>
+    <div class="layout">
+      <nav class="toc" aria-label="Di halaman ini">
+        <p class="eyebrow">Di halaman ini</p>
+        <ul><li><a href="#alur">Alur request</a></li><li><a href="#setup">Setup Azure</a></li><li><a href="#izin">Izin per sambungan</a></li><li><a href="#uji">Uji manual</a></li><li><a href="#hasil">Baca hasil dan error</a></li></ul>
+      </nav>
+      <div class="content">
+        <section class="panel" id="alur">
+          <h2>Browser bukan yang memilih cabang</h2>
+          <figure>
+            <ol class="flow" aria-label="Alur Logic Apps untuk TRK001">
+              <li data-role="actor"><strong>Klien / Python gateway</strong><span>Menyiapkan <code>question</code></span><span class="hop">Kirim POST dengan OAuth</span></li>
+              <li><strong>Logic Apps</strong><span>Validasi request, simpan input, jalankan Switch</span><span class="hop">Panggil router dan specialist</span></li>
+              <li data-role="agent"><strong>Foundry</strong><span>Router memilih <code>mcp</code></span><span class="hop">Specialist minta work order</span></li>
+              <li data-role="data"><strong>MCP / backing API</strong><span>Membaca fixture <code>WO001</code></span><span class="hop">Kembalikan bukti lewat Foundry</span></li>
+              <li><strong>Normalizer dan Response</strong><span>Periksa bukti; kembalikan jawaban dan sumber ke klien</span></li>
+            </ol>
+            <figcaption>Ilustrasi runtime. Logic Apps menjalankan node. Agent di Foundry yang memakai tool MCP, bukan browser, Switch, atau normalizer.</figcaption>
+          </figure>
+          <details open>
+            <summary>Dari mana <code>WO001</code> berasal?</summary>
+            <p>Data work order memang ada di <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/data/seed/mining.json">fixture mining sintetis</a>. <code>get_work_orders</code> mencarinya untuk <code>TRK001</code>; <code>Set variable</code> hanya menyimpan hasil yang sudah diperiksa, bukan membuat data work order.</p>
+          </details>
+          <details>
+            <summary>Apa bedanya URL trigger dengan URL Foundry?</summary>
+            <p>URL HTTPS trigger dipakai klien untuk mengirim POST ke Logic Apps. URL project Foundry dipakai workflow untuk endpoint seperti <code>/openai/v1/conversations</code> dan <code>/openai/v1/responses</code>. Normalizer punya endpoint API sendiri. Ketiga URL itu tidak bisa saling menggantikan.</p>
+          </details>
+        </section>
+
+        <section class="panel" id="setup">
+          <h2>Siapkan resource dulu, baru jalankan request</h2>
+          <p>Mulai dari <a href="workflow-migration-overview.html#setup-bersama">checklist sandbox bersama</a>. JSON workflow bukan installer: tidak membuat agent, tidak memberi izin, dan tidak mengisi data.</p>
+          <ol>
+            <li><strong>Siapkan layanan yang dipanggil.</strong> Di project Foundry milikmu, sediakan router <code>kppdemo-router:1</code> dan specialist yang dirujuk workflow (untuk MCP01: <code>kppdemo-mcp:1</code>), model deployment, dan koneksi MCP ke backing API. Isi fixture sintetis. Siapkan Search, knowledge, atau Fabric hanya jika akan menguji rute yang menggunakannya.</li>
+            <li><strong>Siapkan normalizer.</strong> Host API normalizer dari <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/src/maf_service/app.py">layanan MAF</a> dengan profil sandbox dan audience API yang sesuai. Logic Apps memakai API ini untuk memeriksa hasil specialist; alurnya tetap di Azure.</li>
+            <li><strong>Review WDL untuk sandbox.</strong> Baca <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/targets/logicapps/workflow.json">workflow.json</a> dan <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/infra/logicapps.bicep">template Logic Apps Consumption</a>. Pada checkout dengan baseline lengkap, jalankan compiler dari root repo setelah mengaktifkan profil runtime sendiri:</li>
+          </ol>
+          <pre><code>.\.venv\Scripts\python.exe -m tools.migrate_workflow --target logicapps</code></pre>
+          <p>Compiler menulis target lokal, bukan deploy. Review URI Foundry dan normalizer, audience, versi agent, serta setiap action. Template Bicep dan hasil ekspor historis masih mencatat identitas serta penamaan demo asal; <strong>jangan deploy apa adanya ke sandbox baru</strong>.</p>
+          <ol start="4">
+            <li><strong>Siapkan deployment.</strong> Terapkan definisi yang sudah direview di resource Consumption milik tim. Aktifkan system-assigned managed identity (identitas Azure milik workflow) dan atur izin per sambungan di bawah. Preview perubahan dengan <em>what-if</em> atau review setara sebelum menerapkannya.</li>
+            <li><strong>Cek versi yang akan dites.</strong> Setelah perubahan disetujui, pastikan workflow sudah tersimpan/terdeploy dan statusnya <strong>Enabled</strong>. Draft di Designer bukan versi yang sedang melayani trigger. Ambil URL trigger untuk autentikasi OAuth dari resource sendiri; jangan simpan URL bertanda tangan ke dokumen.</li>
+          </ol>
+        </section>
+
+        <section class="panel" id="izin">
+          <h2>Periksa izin di setiap sambungan</h2>
+          <dl class="terms">
+            <dt>Caller atau gateway → trigger Logic Apps</dt>
+            <dd>Policy Microsoft Entra di Request trigger memeriksa issuer (<code>iss</code>), audience (<code>aud</code>), dan identitas caller (<code>oid</code>) yang disetujui. Demo memakai audience Azure Resource Manager. Biarkan SAS (akses dengan signature pada URL) nonaktif. Izin membaca run history terpisah dari izin memanggil trigger.</dd>
+            <dt>Managed identity Logic Apps → project Foundry</dt>
+            <dd>Beri <strong>Foundry User</strong> pada scope project yang benar untuk managed identity workflow. Di action HTTP, pilih Managed identity dengan audience <code>https://ai.azure.com</code>. Role pada akun manusia bukan izin yang dipakai runtime.</dd>
+            <dt>Managed identity Logic Apps → API normalizer</dt>
+            <dd>Gunakan audience aplikasi API sendiri (pola <code>api://&lt;APP_ID_API&gt;</code>). Izinkan principal workflow pada konfigurasi caller normalizer. Jangan memakai audience Foundry untuk API ini.</dd>
+            <dt>Agent/tool → data</dt>
+            <dd>Periksa koneksi tool dan izin ke backing service. Izin ke project Foundry saja tidak memberi akses ke semua data atau indeks.</dd>
+          </dl>
+          <p>Lihat <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/infra/logicapps-access.bicep">contoh pengaturan akses demo</a> dan <a href="https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-securing-a-logic-app">panduan autentikasi Logic Apps</a>. Ganti nilai lingkungan dengan milikmu secara lokal; jangan commit token, file env, atau callback bertanda tangan.</p>
+        </section>
+
+        <section class="panel" id="uji">
+          <h2>Uji satu POST dari sandbox sendiri</h2>
+          <p>Gunakan PowerShell 7 dan Azure CLI yang sudah masuk ke tenant/subscription sandbox dengan caller yang diizinkan. Isi <code>$trigger</code> secara lokal dengan URL trigger <strong>OAuth tanpa SAS</strong>. Perintah ini benar-benar menjalankan workflow dan bisa menimbulkan biaya. Tidak perlu UI operator.</p>
+          <pre><code>$trigger = '&lt;URL_TRIGGER_OAUTH_TANPA_SAS&gt;'
+$body = @{ question = 'Show work orders for equipment TRK001.' } | ConvertTo-Json -Compress
+$token = az account get-access-token --resource 'https://management.azure.com' --query accessToken -o tsv
+if ($LASTEXITCODE -ne 0 -or -not $token) { throw 'Token sandbox tidak tersedia.' }
+try {
+    $result = Invoke-RestMethod -Uri $trigger -Method Post `
+        -ContentType 'application/json' -Body $body -Authentication Bearer `
+        -Token (ConvertTo-SecureString $token -AsPlainText -Force) `
+        -ResponseHeadersVariable runHeaders -ErrorAction Stop
+    $result | Select-Object run_id, route, status, answer, sources
+    $runHeaders['x-ms-workflow-run-id']
+} finally {
+    Remove-Variable token
+}</code></pre>
+          <p><code>question</code> wajib; <code>run_id</code> boleh dikosongkan agar workflow membuat ID korelasi. ID tersebut berbeda dari ID run native Azure. Pada rekaman demo, tombol <strong>Run with payload</strong> tanpa OAuth ditolak dengan HTTP 401 sebelum workflow berjalan; jangan membuka SAS untuk mengakalinya.</p>
+          <figure class="shot">
+            <a href="assets/logicapps-request.png"><img src="assets/logicapps-request.png" width="510" height="421" alt="Azure Designer: Request trigger kpp mining start diikuti Validate request dan cabang penolakan."></a>
+            <figcaption>Screenshot Azure Designer, hanya area kanvas. <strong>1.</strong> Temukan Request trigger. <strong>2.</strong> Lihat <em>Validate request</em> yang memeriksa Body, bukan URL. <a class="full-size" href="assets/logicapps-request.png">Perbesar screenshot</a></figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" id="hasil">
+          <h2>Cocokkan hasil dengan run yang sama</h2>
+          <ul>
+            <li>Buka <strong>Overview → Run history</strong>. Cocokkan run dengan header <code>x-ms-workflow-run-id</code> atau korelasi input saat membaca output.</li>
+            <li>Lihat <code>route_question</code> memilih <code>mcp</code>. Cabang lain berstatus <em>Skipped</em> itu normal.</li>
+            <li>Buka <code>kpp_mining_end</code> → <strong>Inputs → Body</strong>. Harapkan <code>status: success</code>, <code>WO001</code> untuk <code>TRK001</code>, dan sumber <code>urn:kppdemo:maintenance/TRK001</code>.</li>
+          </ul>
+          <details>
+            <summary>400, 401/403, atau bukti tidak cocok?</summary>
+            <p><strong>400:</strong> cek POST dan Body sesuai schema. <strong>401/403:</strong> pastikan di sambungan mana request ditolak; periksa token, audience, caller policy, atau RBAC yang terkait. <strong>Gagal setelah router:</strong> cek output router, action specialist, dan evidence native. Jangan mengganti error dengan jawaban buatan.</p>
+          </details>
+          <p class="note">HTTP 200 bukan berarti data ditemukan. <code>blocked</code>, <code>clarification</code>, dan <code>unsupported</code> juga bisa dikembalikan sebagai respons bisnis. Ini panduan dan bukti historis, bukan run baru.</p>
+          <p>Berikutnya: <a href="logicapps-node-walkthrough.html">baca parameter per node</a>, <a href="logicapps-ui-walkthrough.html">ikuti UI dan trace</a>, atau <a href="workflow-migration-overview.html#biaya">cek contoh hitung biaya</a>.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="wrap footer"><a href="../index.html">Kembali ke tiga opsi migrasi</a> · <a href="../videos/logicapps-mcp-designer.mp4">Video Designer (2:13)</a></footer>
+</body>
+</html>

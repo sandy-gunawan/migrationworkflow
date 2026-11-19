@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cara menjalankan demo UI Logic Apps, membaca status native, dan mencocokkan hasil dengan run history.">
+  <title>Logic Apps: UI, trace, dan Run history</title>
+  <link rel="stylesheet" href="workshop.css">
+</head>
+<body>
+  <a class="skip" href="#main">Lewati ke materi</a>
+  <header class="bar">
+    <nav class="wrap" aria-label="Navigasi workshop">
+      <a class="brand" href="../index.html">Workshop migrasi</a>
+      <a href="logicapps-alur-request.html" aria-current="true">Logic Apps</a>
+      <a href="maf-code-first-walkthrough.html">MAF code-first</a>
+      <a href="maf-declarative-walkthrough.html">MAF workflow YAML</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">Jalur C · Logic Apps · 03 / 03</p>
+      <h1>Ikuti satu run Logic Apps dari UI ke portal</h1>
+      <p class="lead">UI demo membantu melihat langkah yang berjalan. Untuk memastikan apa yang benar-benar terjadi di Azure, baca Run history dengan ID yang sama.</p>
+      <ol class="steps"><li>1. Isi pertanyaan</li><li>2. Jalankan di sandbox berizin</li><li>3. Cocokkan hasil dan run</li></ol>
+    </header>
+    <nav class="links" aria-label="Modul Logic Apps">
+      <a href="logicapps-alur-request.html">01 Alur dan setup</a>
+      <a href="logicapps-node-walkthrough.html">02 Node dan parameter</a>
+      <a href="logicapps-ui-walkthrough.html" aria-current="page">03 UI dan verifikasi</a>
+    </nav>
+    <div class="layout">
+      <nav class="toc" aria-label="Di halaman ini">
+        <p class="eyebrow">Di halaman ini</p>
+        <ul><li><a href="#alur">UI dan gateway</a></li><li><a href="#siapkan">Cara mulai</a></li><li><a href="#praktik">Praktik</a></li><li><a href="#cek">Verifikasi</a></li><li><a href="#stop">Berhenti</a></li></ul>
+      </nav>
+      <div class="content">
+        <section class="panel" id="alur">
+          <h2>UI adalah pintu masuk, bukan workflow</h2>
+          <figure>
+            <ol class="flow" aria-label="Alur pengamatan UI hingga Run history">
+              <li data-role="actor"><strong>Browser lokal</strong><span>Uji pertanyaan sintetis</span><span class="hop">POST ke <code>/ui/runs</code></span></li>
+              <li><strong>Python gateway</strong><span>Token Azure CLI tetap di backend</span><span class="hop">POST ke trigger</span></li>
+              <li><strong>Logic Apps</strong><span>Menjalankan action dan memanggil Foundry</span><span class="hop">Kembalikan respons dan ID run</span></li>
+              <li data-role="actor"><strong>Gateway dan browser</strong><span>Gateway baca status Azure; UI tampilkan hasil dan trace</span></li>
+            </ol>
+            <figcaption>Diagram ilustrasi dari <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/spikes/logicapps_ui/client.py">gateway native</a>. Pembaruan status berasal dari polling Run history, bukan pikiran internal agent.</figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" id="siapkan">
+          <h2>Pilih cara mencoba sesuai aksesmu</h2>
+          <p class="note"><strong>Sandbox klien:</strong> gunakan <a href="logicapps-alur-request.html#setup">setup workflow</a>, lalu <a href="logicapps-alur-request.html#uji">uji trigger dengan OAuth</a>. UI historis mengunci resource dan manifest demo asal; menyalin profil publik tidak mengalihkan UI ini. Kuasai langkahnya dari screenshot di bawah tanpa memakai resource asal.</p>
+          <details>
+            <summary>Operator demo: mulai UI di lingkungan yang memang disetujui</summary>
+            <p>Butuh instalasi baseline, login Azure CLI, manifest lokal yang valid, izin trigger dan Run history, serta workflow berstatus Enabled dengan definisi yang cocok. Gunakan port loopback <code>8766</code>.</p>
+            <pre><code>.\.venv\Scripts\python.exe -X utf8 -m spikes.logicapps_ui --port 8766</code></pre>
+            <p>Di terminal lain, <code>Invoke-RestMethod 'http://127.0.0.1:8766/health'</code> seharusnya melaporkan <code>local-logicapps-ui</code>. Buka <code>http://127.0.0.1:8766/</code> di browser. Health hanya memeriksa startup, bukan akses ke layanan data.</p>
+          </details>
+        </section>
+
+        <section class="panel" id="praktik">
+          <h2>Praktik: jalankan contoh Maintenance MCP</h2>
+          <figure class="shot">
+            <a href="assets/logicapps-ui.png"><img src="assets/logicapps-ui.png" width="319" height="309" loading="lazy" alt="Form UI Logic Apps dengan pertanyaan TRK001 dan tombol Jalankan Logic Apps."></a>
+            <figcaption>Screenshot UI demo pada rekaman lama, bukan form interaktif di halaman ini. <a class="full-size" href="assets/logicapps-ui.png">Perbesar screenshot</a></figcaption>
+          </figure>
+          <ol>
+            <li>Di kotak <strong>Pertanyaan mining dummy</strong>, masukkan <code>Show work orders for equipment TRK001.</code> Pilihan <strong>Maintenance MCP</strong> juga bisa mengisi contoh tanpa memicu run.</li>
+            <li>Tekan <strong>Jalankan Logic Apps</strong> sekali jika identitas dan sandbox sudah siap. Pada layanan asli, langkah ini memanggil Azure dan Foundry; <a href="workflow-migration-overview.html#biaya">pemakaian bisa berbiaya</a>.</li>
+            <li>Di <strong>Jawaban dan sumber</strong>, cari <code>WO001</code>, <code>TRK001</code>, dan sumber maintenance. Catat native run ID dari trace untuk membuka run yang sama di Azure.</li>
+          </ol>
+          <figure class="shot">
+            <a href="assets/logicapps-result.png"><img src="assets/logicapps-result.png" width="810" height="505" loading="lazy" alt="Panel Jawaban dan sumber menunjukkan work order WO001 untuk TRK001 dan sumber maintenance sintetis."></a>
+            <figcaption><strong>3.</strong> Screenshot hasil run lama. Data sintetis dan sumber ditampilkan di panel, bukan ditebak dari jawaban agent saja. <a class="full-size" href="assets/logicapps-result.png">Perbesar screenshot</a></figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" id="cek">
+          <h2>Empat indikator, empat arti</h2>
+          <dl class="terms">
+            <dt>HTTP 200 dari UI lokal</dt><dd>Stream lokal diterima; job cloud masih bisa gagal.</dd>
+            <dt>Action berstatus Succeeded</dt><dd>Action selesai di Azure. Cabang lain boleh <em>Skipped</em>.</dd>
+            <dt>HTTP 200 dari Logic Apps</dt><dd>Workflow mengembalikan respons bisnis; belum tentu retrieval.</dd>
+            <dt><code>Result.status</code>, fakta, dan sources</dt><dd>Untuk MCP01, cek <code>success</code>, <code>WO001</code>, <code>TRK001</code>, dan <code>urn:kppdemo:maintenance/TRK001</code>.</dd>
+          </dl>
+          <details>
+            <summary>Trace UI dan Azure tidak cocok?</summary>
+            <p>Cek <strong>Run ID, native evidence dan trace</strong>, lalu buka Run history pada workflow yang sama. Lihat apakah action salah cabang, masih berjalan, atau ditolak. Jika UI menolak definisi, cocokkan snapshot lokal dengan deployment yang disetujui; jangan menonaktifkan pemeriksaan.</p>
+          </details>
+        </section>
+        <section class="panel" id="stop">
+          <h2>Matikan UI, bukan resource Azure</h2>
+          <p>Tunggu run selesai. Dari terminal lain, lakukan shutdown layanan demo lokal:</p>
+          <pre><code>.\.venv\Scripts\python.exe -X utf8 -m spikes.logicapps_ui --port 8766 --stop</code></pre>
+          <p>Jika masih ada run aktif, tunggu lalu ulangi. Menutup browser saja tidak menghentikan server. Resource dan biaya cloud perlu ditangani terpisah oleh pemilik sandbox.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="wrap footer"><a href="logicapps-node-walkthrough.html">Kembali ke panduan node</a> · <a href="../videos/logicapps.mp4">Video UI Logic Apps</a></footer>
+</body>
+</html>

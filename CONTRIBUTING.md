@@ -8,15 +8,16 @@
 |---|---|
 | Ringkasan dan pintu masuk | [README utama](README.md) |
 | Daftar bacaan | [Indeks docs](docs/README.md) |
-| Konsep terapan dan langkah mencoba | [how-to](docs/how-to/README.md) |
+| Workshop visual, setup per jalur, dan screenshot yang sudah direview | [Beranda HTML](docs/index.html), [modul workshop](docs/workshop) |
+| Rujukan konsep dan langkah terperinci | [how-to](docs/how-to/README.md) |
 | Peta file serta cara membaca hasil | [reference](docs/reference) |
 | Urutan belajar | [training](docs/training/README.md) |
 | Rencana yang belum dikerjakan | [roadmap](docs/roadmap/README.md) |
 | Nilai lingkungan, hasil historis, dan bukti mentah | Salinan operator; tidak masuk dokumentasi publik. |
 
-Pertahankan nama file panduan yang sudah digunakan. Jika harus memindahkan file,
-perbarui seluruh tautan relatif, generator, rute aset, dan tests pemakainya.
-Jangan memindahkan HTML/screenshot hanya untuk membuat folder terlihat rapi.
+Pertahankan URL workshop publik. Jangan arahkan generator historis ke
+`docs/workshop/`; generator itu bisa membaca nilai environment dan bukti lokal.
+Jika berpindah jalur aset, perbarui tautan dan tes pemakainya.
 
 ## Gaya penulisan
 
@@ -46,16 +47,16 @@ Untuk perubahan Markdown:
 3. Periksa anchor judul, urutan bacaan, serta konsistensi contoh.
 4. Pastikan snippet sesuai kode dan tidak mengklaim hasil tes yang belum dijalankan.
 
-Untuk perubahan HTML lokal, gunakan source generator yang sesuai, jalankan
-tests dokumentasi terkait, lalu periksa browser desktop dan layar kecil.
-Jangan mengedit hasil generate saja jika perubahan akan tertimpa saat regenerate.
-Materi HTML lokal tidak otomatis menjadi bagian publikasi.
+Untuk paket HTML historis, gunakan generator lokal yang sesuai. Untuk workshop
+publik, edit HTML langsung dan ikuti pemeriksaan di bawah; jangan menyalin
+seluruh output generator sebagai jalan pintas.
 
 ## Sebelum masuk GitHub publik
 
 - [ ] Tinjau daftar file yang akan masuk, bukan hanya README.
-- [ ] Pastikan tidak ada konfigurasi operator, bukti mentah, parameter lingkungan,
-  catatan `.local.md`, workshop/capture lama, build output, atau credential.
+- [ ] Publikasikan langkah setup, nama pengaturan, contoh placeholder, dan aset
+  yang sudah ditinjau. Jangan ikutkan file env, profil operator, parameter
+  deployment aktual, credential, atau aset yang masih memuat nilai tersebut.
 - [ ] Tinjau kode, export agent, source/target, dan resource runtime secara terpisah.
   Aturan ignore dokumentasi tidak menjamin isi area tersebut siap dipublikasikan.
 - [ ] Periksa screenshot, metadata gambar, URL bertanda tangan, identitas pribadi,
@@ -95,15 +96,18 @@ agent: checkpoint dapat menyimpan file lokal yang memang tidak untuk publik.
 
 ### Materi belajar HTML publik
 
-Edit [index.src.html](docs/index.src.html), lalu render dengan Visual Explainer
-ke [index.html](docs/index.html). Simpan CSS dan JavaScript di file hasil render.
-Hapus tautan Google Fonts yang ditambahkan renderer agar halaman memakai font
-lokal dan tetap bisa dibuka offline. Cek diagram di desktop dan ponsel; file
-`index.sheet*.png` adalah hasil pemeriksaan, bukan materi publik.
+Edit [index.html](docs/index.html) atau halaman di [workshop](docs/workshop).
+Tidak perlu generator atau bundler. Stylesheet, JavaScript ilustrasi, dan
+screenshot yang sudah dianotasi dilayani dari folder workshop. Gunakan tautan
+relatif antarmodul; untuk kode dan Markdown rujukan, tautkan ke repository.
+Jangan tambah font, stylesheet, atau script CDN agar clone/ZIP tetap bisa
+dipakai offline. Uji tautan, interaksi keyboard, dan diagram di desktop dan
+ponsel.
 
 GitHub Pages menyajikan `main:/docs` sebagai situs statis; pertahankan
-[.nojekyll](docs/.nojekyll). Materi ini tidak boleh memuat konfigurasi, capture,
-atau bukti mentah dari workshop lokal.
+[.nojekyll](docs/.nojekyll). Tinjau HTML, teks dan metadata screenshot baru
+sebelum push. Crop atau redaksi permanen jika diperlukan; hiasan kotak nomor
+bukan redaksi. Buat salinan baru dan jangan mengubah capture asli.
 
 Lihat daftar kandidat tanpa menambahkan file:
 
@@ -115,8 +119,7 @@ git ls-files --others --exclude-standard
 Jika hasil review sudah sesuai, contoh staging **dokumentasi saja**:
 
 ```powershell
-git add -- .gitignore README.md CONTRIBUTING.md docs `
-  config\README.md config\environment.public.example.json
+git add -- .gitignore README.md CONTRIBUTING.md docs\index.html docs\workshop
 git diff --cached --stat
 git diff --cached --name-only
 git diff --cached --check

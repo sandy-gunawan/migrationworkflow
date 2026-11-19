@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Baca parameter, input, dan output node Azure Logic Apps pada jalur MCP.">
+  <title>Logic Apps: node dan parameter</title>
+  <link rel="stylesheet" href="workshop.css">
+</head>
+<body>
+  <a class="skip" href="#main">Lewati ke materi</a>
+  <header class="bar">
+    <nav class="wrap" aria-label="Navigasi workshop">
+      <a class="brand" href="../index.html">Workshop migrasi</a>
+      <a href="logicapps-alur-request.html" aria-current="true">Logic Apps</a>
+      <a href="maf-code-first-walkthrough.html">MAF code-first</a>
+      <a href="maf-declarative-walkthrough.html">MAF workflow YAML</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">Jalur C · Logic Apps · 02 / 03</p>
+      <h1>Baca input dan output tiap node Logic Apps</h1>
+      <p class="lead">Untuk mencari sumber error atau data, lihat parameter node yang sedang dipakai, lalu cocokkan dengan input dan output pada satu run.</p>
+      <ol class="steps"><li>1. Baca Request</li><li>2. Ikuti keputusan router</li><li>3. Periksa specialist dan normalizer</li><li>4. Baca Response</li></ol>
+    </header>
+    <nav class="links" aria-label="Modul Logic Apps">
+      <a href="logicapps-alur-request.html">01 Alur dan setup</a>
+      <a href="logicapps-node-walkthrough.html" aria-current="page">02 Node dan parameter</a>
+      <a href="logicapps-ui-walkthrough.html">03 UI dan verifikasi</a>
+    </nav>
+    <div class="layout">
+      <nav class="toc" aria-label="Di halaman ini">
+        <p class="eyebrow">Di halaman ini</p>
+        <ul><li><a href="#peta">Peta node</a></li><li><a href="#parameter">Parameter per tahap</a></li><li><a href="#cabang">Pilihan cabang</a></li><li><a href="#cek">Praktik di Designer</a></li></ul>
+      </nav>
+      <div class="content">
+        <section class="panel" id="peta">
+          <h2>Data berpindah lewat output node</h2>
+          <figure>
+            <ol class="flow" aria-label="Urutan action jalur MCP">
+              <li data-role="actor"><strong>Request / Compose</strong><span>Body, <code>question</code>, <code>run_id</code></span><span class="hop">Teruskan input</span></li>
+              <li data-role="agent"><strong>Conversation / router</strong><span>ID percakapan dan JSON route</span><span class="hop">Baca keputusan</span></li>
+              <li><strong>Switch / specialist</strong><span>Case <code>mcp</code> memanggil Foundry</span><span class="hop">Kirim respons native</span></li>
+              <li data-role="data"><strong>Normalize / Set result</strong><span>Periksa fakta dan simpan <code>Result</code></span><span class="hop">Balas klien</span></li>
+              <li data-role="actor"><strong>Response</strong><span>Status HTTP, fakta, sumber</span></li>
+            </ol>
+            <figcaption>Ilustrasi dari <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/targets/logicapps/workflow.json">workflow.json</a>. Setelah <code>Execute</code> selesai, Response membaca variabel yang diisi cabang, bukan output Scope sebagai jawaban.</figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" id="parameter">
+          <h2>Buka parameter yang ingin kamu periksa</h2>
+          <details open>
+            <summary>1. Request, Validate request, capture question</summary>
+            <p><code>kpp_mining_start</code> menerima POST dengan <code>question</code> dan <code>run_id</code> opsional. <code>Validate_request</code> membaca Body, bukan URL, dan <code>Reject_invalid_request</code> mengembalikan 400 jika parsing gagal. <code>capture_question</code> (Compose) membentuk satu objek berisi pertanyaan dan ID korelasi yang dibaca action lain.</p>
+          </details>
+          <details>
+            <summary>2. Initialize result, Execute, create conversation</summary>
+            <p><code>Initialize_result</code> menyiapkan <code>NativeResponses</code> untuk catatan respons dan <code>Result</code> untuk hasil akhir saat runtime; keduanya bukan isian manual di portal. <code>Execute</code> adalah Scope, yaitu wadah beberapa action. <code>create_conversation</code> mengirim POST ke <code>/openai/v1/conversations</code> dengan managed identity. ID dari respons dipakai oleh router dan specialist.</p>
+          </details>
+          <details>
+            <summary>3. Classify question, Parse router, dan Switch</summary>
+            <p><code>classify_question</code> memanggil <code>/openai/v1/responses</code>. Body berisi pertanyaan, ID percakapan, dan <code>agent_reference</code> berisi nama serta versi router. <code>record_router_response</code> mencatat respons. <code>Parse_router</code> memeriksa status selesai, mengambil teks dari output pesan, dan mengurai keputusan JSON; hasil yang tidak valid tidak diteruskan ke specialist.</p>
+            <pre><code>@body('router_decision')?['route']</code></pre>
+            <p>Ini ekspresi <strong>On</strong> pada <code>route_question</code>. Untuk pertanyaan <code>TRK001</code>, nilai yang diharapkan <code>mcp</code> dan Switch hanya menjalankan case tersebut.</p>
+          </details>
+          <details>
+            <summary>4. Mark mcp, invoke mcp, normalize mcp</summary>
+            <p><code>mark_mcp</code> menulis penanda <code>KPP_ROUTE:mcp</code> ke konteks percakapan. <code>invoke_mcp</code> mengirim pertanyaan asli, ID percakapan, dan agent reference <code>kppdemo-mcp:1</code> ke Foundry. Agent ini memanggil <code>get_work_orders</code>; WDL tidak memanggil tool langsung.</p>
+            <p><code>normalize_mcp</code> menerima <code>run_id</code>, route, dan respons native untuk memeriksa fakta serta sumber. Setelah respons dicatat, <code>set_result_mcp</code> mengisi <code>Result</code>. Audience ke API normalizer berbeda dari audience ke Foundry; lihat <a href="logicapps-alur-request.html#izin">pengaturan izin</a>.</p>
+          </details>
+          <details>
+            <summary>5. Response di luar scope Execute</summary>
+            <p><code>kpp_mining_end</code> membaca <code>@variables('Result')</code>. WDL mengembalikan HTTP 502 jika <code>Result.status</code> adalah <code>failed</code>; selain itu Response utama memakai 200. Validasi request punya jalur 400 terpisah. Untuk MCP01, cek <code>mcp / success</code>, fakta <code>WO001</code>, dan sumbernya.</p>
+          </details>
+        </section>
+
+        <section class="panel" id="cabang">
+          <h2>Tidak semua route harus mengembalikan data</h2>
+          <dl class="terms">
+            <dt>Pencarian data</dt>
+            <dd><code>mcp</code>, <code>rest_api</code>, <code>knowledge</code>, <code>foundry_iq</code>, dan <code>fabric_data</code>. Masing-masing memakai specialist dan koneksi demo yang sesuai. Nama route bukan bukti jenis koneksi yang dipakai; lihat evidence tool.</dd>
+            <dt>Kapabilitas belum tersedia</dt>
+            <dd><code>fabric_iq</code> dan <code>work_iq</code> tetap menghasilkan <code>blocked</code> dalam snapshot demo, bukan hasil retrieval yang dianggap sukses.</dd>
+            <dt>Input atau cakupan</dt>
+            <dd><code>clarification</code> meminta rincian yang kurang, <code>unsupported</code> menangani permintaan di luar demo, dan <code>default</code> menangani route yang tidak jatuh ke case terdaftar. Baca hasil bisnis pada <code>Result.status</code>.</dd>
+          </dl>
+        </section>
+
+        <section class="panel" id="cek">
+          <h2>Praktik: temukan tiga node dalam case MCP</h2>
+          <p>Buka <strong>Development Tools → Logic app designer</strong> pada workflow sandbox yang disiapkan. Di bawah Switch, pilih case <code>mcp</code>. Lihat kanvas terlebih dahulu, baru panel <strong>Parameters</strong> pada masing-masing node.</p>
+          <figure class="shot">
+            <a href="assets/logicapps-nodes.png"><img src="assets/logicapps-nodes.png" width="501" height="670" loading="lazy" alt="Dua cabang di Designer: MCP di kiri dan REST API di kanan; mark, invoke, dan normalize MCP diberi nomor."></a>
+            <figcaption>Screenshot Azure Designer. Panah menunjukkan urutan konfigurasi, bukan bukti bahwa action sudah berjalan. <a class="full-size" href="assets/logicapps-nodes.png">Perbesar screenshot</a></figcaption>
+          </figure>
+          <ol>
+            <li>Cek <strong>mark mcp</strong>: penanda harus menunjukkan cabang yang kita pilih.</li>
+            <li>Cek <strong>invoke mcp</strong>: cocokkan nama agent, versi, dan ID percakapan.</li>
+            <li>Cek <strong>normalize mcp</strong>: Body mengacu ke respons <code>invoke_mcp</code>. Di Run history, periksa fakta dan sumber dari run yang sama.</li>
+          </ol>
+          <p>Screenshot fokus pada posisi node. Untuk panel Parameters dan Run history, buka <a href="../videos/logicapps-mcp-designer.mp4">rekaman Designer (2:13)</a> atau <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/videos/README.md#4-logic-apps-designer-satu-jalur-mcp">timestamp tiap action</a>. Tampilan portal bisa berubah.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="wrap footer"><a href="logicapps-alur-request.html#uji">Kembali ke uji POST</a> · <a href="logicapps-ui-walkthrough.html">Lanjut ke UI dan trace</a> · <a href="workflow-migration-overview.html#biaya">Biaya</a></footer>
+</body>
+</html>

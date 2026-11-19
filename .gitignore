@@ -36,8 +36,14 @@ service-account*.json
 /infra/*.parameters.json
 /evidence/
 
-# Historical HTML lessons, generators, and captures depend on the local environment.
-/docs/how-to/*.html
+# Historical generators and their local snapshots may include environment values.
+# Reviewed client-facing lessons and screenshots belong in docs/workshop/.
+/docs/how-to/logicapps-alur-request.html
+/docs/how-to/logicapps-alur-request.src.html
+/docs/how-to/logicapps-node-walkthrough.html
+/docs/how-to/logicapps-ui-walkthrough.html
+/docs/how-to/maf-code-first-walkthrough.html
+/docs/how-to/maf-declarative-walkthrough.html
 /docs/how-to/diagrams/
 /docs/how-to/execution-walkthrough/
 /docs/how-to/logicapps-walkthrough/

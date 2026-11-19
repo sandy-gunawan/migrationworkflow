@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Checklist setup sandbox, perbandingan tiga pilihan migrasi, pengujian, dan contoh hitung harga.">
+  <title>Workshop: bandingkan jalur dan siapkan sandbox</title>
+  <link rel="stylesheet" href="workshop.css">
+</head>
+<body>
+  <a class="skip" href="#main">Lewati ke materi</a>
+  <header class="bar">
+    <nav class="wrap" aria-label="Navigasi workshop">
+      <a class="brand" href="../index.html">Workshop migrasi</a>
+      <a href="logicapps-alur-request.html">Logic Apps</a>
+      <a href="maf-code-first-walkthrough.html">MAF code-first</a>
+      <a href="maf-declarative-walkthrough.html">MAF workflow YAML</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">Workshop · Persiapan bersama</p>
+      <h1>Bandingkan jalur migrasi sebelum mencoba</h1>
+      <p class="lead">Pilih jalur berdasarkan siapa yang akan memelihara alur. Setelah itu, siapkan satu sandbox dan gunakan contoh pertanyaan, fakta, serta sumber yang sama untuk membandingkan hasil.</p>
+      <ol class="steps"><li>1. Pilih pemilik alur</li><li>2. Siapkan sandbox</li><li>3. Hitung pemakaian</li><li>4. Tentukan kriteria lulus</li></ol>
+    </header>
+    <div class="layout">
+      <nav class="toc" aria-label="Di halaman ini">
+        <p class="eyebrow">Di halaman ini</p>
+        <ul><li><a href="#pilihan">Pilih jalur</a></li><li><a href="#setup-bersama">Setup bersama</a></li><li><a href="#biaya">Biaya dan batasnya</a></li><li><a href="#uji">Tolok ukur hasil</a></li></ul>
+      </nav>
+      <div class="content">
+        <section class="panel" id="pilihan">
+          <h2>Kalau kondisi berubah, file apa yang ditinjau?</h2>
+          <div class="grid">
+            <article class="card">
+              <h3>MAF code-first</h3>
+              <p>Review mapping dan graph Python. Kendali atas kondisi dan state ada di kode; tim juga memelihara host, pengujian, dan trace.</p>
+              <a href="maf-code-first-walkthrough.html">Ikuti code-first</a>
+            </article>
+            <article class="card">
+              <h3>MAF workflow YAML</h3>
+              <p>Review langkah dan kondisi di YAML, binding agent pada Python, dan kompatibilitas loader. Runtime tetap Python; tidak ada Designer native dari launcher demo.</p>
+              <a href="maf-declarative-walkthrough.html">Ikuti declarative</a>
+            </article>
+            <article class="card">
+              <h3>Logic Apps</h3>
+              <p>Review action dan koneksi di WDL atau Designer. Azure menjalankan alur dan menyimpan Run history; normalizer tetap API terpisah.</p>
+              <a href="logicapps-alur-request.html">Ikuti Logic Apps</a>
+            </article>
+          </div>
+          <figure>
+            <ol class="flow" aria-label="Persiapan hingga perbandingan hasil">
+              <li data-role="agent"><strong>Source Foundry</strong><span>Versi, data, dan perilaku acuan</span><span class="hop">Bekukan baseline</span></li>
+              <li><strong>Satu runtime target</strong><span>Pilih representasi dan siapkan izin</span><span class="hop">Jalankan prompt MCP01</span></li>
+              <li data-role="data"><strong>Hasil dan bukti</strong><span>Route, status, fakta, sumber</span><span class="hop">Cocokkan dengan acuan</span></li>
+              <li data-role="actor"><strong>Reviewer</strong><span>Catat yang lulus dan yang belum diuji</span></li>
+            </ol>
+            <figcaption>Ilustrasi urutan kerja, bukan arsitektur runtime. Agent, data, dan izin tidak ikut pindah hanya karena definisinya disalin.</figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" id="setup-bersama">
+          <h2>Setup bersama untuk mencoba dengan aman</h2>
+          <h3>1. Buat environment Python dari root repository</h3>
+          <p>Untuk baseline code-first dan alat konversi, gunakan PowerShell dan Python 3.13. Jalur declarative punya <a href="maf-declarative-walkthrough.html#setup">lock dan venv terpisah</a>.</p>
+          <pre><code>py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m pytest tests\unit tests\contract -q</code></pre>
+          <p>Unit dan contract tests memakai fixture, tidak butuh Azure. Jangan menjalankan suite <code>tests/live</code> sebelum prasyarat serta akses disetujui.</p>
+          <h3>2. Isi profil sendiri, jangan memakai konfigurasi operator</h3>
+          <pre><code>Copy-Item .\config\runtime.public.example.json .\config\runtime.local.json
+# Isi profil lokal dengan identifier sandbox sebelum langkah berikut.
+$env:DEMO_ENVIRONMENT_FILE = (Resolve-Path .\config\runtime.local.json).Path</code></pre>
+          <p>Isi resource group, subscription, tenant, Foundry project, backing/MAF/Search, audience API, Logic Apps, dan scope Fabric sesuai <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/config/runtime.public.example.json">template placeholder</a>. Nilai profil runtime harus lengkap. Jangan memasukkan token, password, key, atau SAS ke profil. Restart server setelah mengubahnya; pada host Azure gunakan file profil non-publik dan konfigurasi host, bukan path laptop.</p>
+          <h3>3. Siapkan resource dan izin sandbox</h3>
+          <ol>
+            <li>Gunakan Azure CLI pada tenant/subscription sendiri. Untuk proses hosted, gunakan managed identity yang disetujui.</li>
+            <li>Bekukan versi <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/source/foundry/workflow.yaml">workflow sumber</a> dan agent yang dipakai. Sediakan project Foundry, model deployment, dan koneksi tool.</li>
+            <li>Siapkan backing API/MCP, isi <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/data/seed/mining.json">data sintetis</a>, lalu beri akses pada caller yang sesuai. Search, native knowledge retrieval, dan Fabric hanya relevan ketika rute yang menggunakannya diuji.</li>
+            <li>Ikuti setup khusus pada workshop yang dipilih. Jangan memakai template deploy historis tanpa review scope, nama resource, dan identitas. Profil memilih resource; tidak memprovision, membuat izin, atau menghapus guard.</li>
+          </ol>
+          <p>Nama field, setup, pola izin, dan contoh boleh dibagikan. File env, profil operasional, secret, token, dan URL bertanda tangan disimpan di luar Git. Lihat <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/how-to/run-in-your-environment.md">panduan lingkungan sendiri</a> untuk konfigurasi host dan batas portabilitas.</p>
+        </section>
+
+        <section class="panel" id="biaya">
+          <h2>Hitung per meter, jangan bandingkan tarif dari nama jalur</h2>
+          <p><strong>Logic Apps Consumption:</strong> biaya built-in action mengikuti eksekusi yang ditagih. Misal 100 run menambah 10 eksekusi action yang ditagih per run <em>setelah jatah gratis terpakai</em>. Hitungannya <strong>100 × 10 × USD 0,000025 = USD 0,025</strong> untuk meter itu saja. Ini ilustrasi hitung, bukan jumlah action hasil pengukuran MCP01 atau tagihan.</p>
+          <p class="muted">Sumber: <a href="https://prices.azure.com/api/retail/prices?currencyCode=USD&amp;$filter=serviceName%20eq%20%27Logic%20Apps%27%20and%20armRegionName%20eq%20%27southeastasia%27">Azure Retail Prices API</a>, diperiksa 19 November 2026, SKU Consumption, Southeast Asia, meter <em>Consumption Built-in Actions</em>, USD per eksekusi berbayar. Harga kontrak, connector, penyimpanan, retry, model, dan layanan data bisa mengubah total.</p>
+          <p><strong>MAF code-first dan YAML:</strong> hitung waktu host dan pemakaian layanan yang sama-sama dipanggil. Misalnya 100 pertanyaan yang masing-masing memanggil router dan satu specialist berarti 200 panggilan model pada asumsi tanpa retry; untuk menghitung USD, pakai token input/output dan tarif model terpilih. Tarif model dan host sandbox belum ditentukan di sini, bukan berarti nol. Logic Apps juga membayar model/tool bila memanggil layanan tersebut.</p>
+          <p>Logic Apps <strong>Standard</strong> memakai model hosting berbeda, bukan angka Consumption di atas. Cek <a href="https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-pricing">meter Logic Apps</a>, <a href="https://azure.microsoft.com/en-us/pricing/details/logic-apps/">harga Logic Apps</a>, dan <a href="https://azure.microsoft.com/en-us/pricing/details/ai-foundry/">harga Foundry</a> untuk model, region, dan billing yang akan dipakai.</p>
+        </section>
+
+        <section class="panel" id="uji">
+          <h2>Kriteria lulus: route, status, fakta, dan sumber</h2>
+          <p>Untuk latihan, kirim pertanyaan <code>Show work orders for equipment TRK001.</code>. UI, API, dan graph berbeda, tetapi hasil yang diperiksa sama.</p>
+          <dl class="facts">
+            <div><dt>Route / status</dt><dd><code>mcp / success</code></dd></div>
+            <div><dt>Fakta</dt><dd><code>WO001</code> untuk <code>TRK001</code></dd></div>
+            <div><dt>Sumber</dt><dd><code>urn:kppdemo:maintenance/TRK001</code></dd></div>
+          </dl>
+          <details>
+            <summary>Kalau health hijau tapi data tidak ditemukan?</summary>
+            <p>Health hanya memastikan server siap menerima HTTP. Lihat hasil bisnis dan bukti tool pada run yang sama. Jika rute harus <code>blocked</code>, itu bukan retrieval yang sukses. Catat kasus yang belum diuji, alih-alih menganggap satu run mewakili semua route.</p>
+          </details>
+          <p>Untuk membandingkan hasil lama, <a href="../videos/logicapps-mcp-designer.mp4">lihat satu run native di Designer</a>. Untuk latihan lain, buka <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/how-to/test-prompts.md">katalog prompt dan ekspektasi</a>.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="wrap footer"><a href="../index.html">Kembali ke beranda workshop</a></footer>
+</body>
+</html>

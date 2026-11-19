@@ -6,20 +6,23 @@
 Bandingkan MAF mapping ke kode Python, MAF yang memuat workflow YAML, dan
 Azure Logic Apps. Pakai indeks ini untuk mencari referensi teknisnya.
 
-## 1. Kenali demo
+## 1. Pilih workshop HTML
 
 | Materi | Yang akan dipahami |
 |---|---|
 | [Materi HTML](https://sandy-gunawan.github.io/migrationworkflow/) | Tiga jalur migrasi dan langkah interaktif dari pertanyaan sampai jawaban. |
-| [Alur belajar](training/README.md) | Urutan bacaan pendamping dari konsep sampai pengujian. |
-| [Persiapan dan batas demo](how-to/setup-and-source.md) | Isi salinan publik, kebutuhan Python, dan prasyarat lingkungan live. |
-| [YAML Foundry ke MAF](how-to/foundry-yaml-to-maf-newbie.md) | Pilihan migrasi dan bagian yang tidak otomatis ikut pindah. |
-| [Video demo](videos/README.md) | Tiga UI dan [alur MCP di Logic Apps Designer](videos/README.md#4-logic-apps-designer-satu-jalur-mcp), dari posisi node sampai hasil di Run history. |
+| [Perbandingan dan setup bersama](https://sandy-gunawan.github.io/migrationworkflow/workshop/workflow-migration-overview.html) | Persiapan sandbox, perbedaan saat alur berubah, biaya, dan kriteria lulus. |
+| [Logic Apps: setup dan alur](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-alur-request.html) | Dari izin dan WDL hingga POST OAuth dan Run history. Lanjut ke [node dan parameter](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-node-walkthrough.html) dan [UI](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-ui-walkthrough.html). |
+| [MAF code-first](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html) | Mapping JSON, graph Python, profil sandbox, dan cara memeriksa UI. |
+| [MAF workflow YAML](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-declarative-walkthrough.html) | `WorkflowFactory`, environment terpisah, dan cara membaca snapshot. |
+| [Video demo](videos/README.md) | Rekaman tiga UI serta [alur MCP di Designer](videos/README.md#4-logic-apps-designer-satu-jalur-mcp). |
 
 ## 2. Pahami cara kerjanya
 
 | Materi | Yang akan dipahami |
 |---|---|
+| [Alur belajar](training/README.md) | Urutan bacaan dari memilih jalur sampai memeriksa hasil. |
+| [YAML Foundry ke MAF](how-to/foundry-yaml-to-maf-newbie.md) | Bagian definisi yang bisa dipetakan dan batas compiler. |
 | [Arsitektur dan satu alur request](how-to/maf-internals-newbie.md) | Browser, Python, Foundry, tools, dan perjalanan jawaban kembali. |
 | [Peta repository](reference/repository-map.md) | Folder sumber, hasil konversi, runtime, eksperimen, dan dokumentasi. |
 | [Cara membaca hasil pengujian](reference/validation.md) | Perbedaan expected result, tes lokal, bukti live, dan cakupan pengujian. |
@@ -28,6 +31,7 @@ Azure Logic Apps. Pakai indeks ini untuk mencari referensi teknisnya.
 
 | Materi | Yang akan dilakukan |
 |---|---|
+| [Persiapan dan batas demo](how-to/setup-and-source.md) | Menyiapkan Python dan memeriksa prasyarat live. |
 | [Panduan UI lokal](how-to/maf-ui.md) | Menyalakan, memeriksa health, mencoba satu prompt, dan menghentikan UI. |
 | [Environment sendiri](how-to/run-in-your-environment.md) | Menjalankan tes bersih dan mengarahkan runtime ke sandbox sendiri tanpa mengganti source. |
 | [Katalog prompt](how-to/test-prompts.md) | Memilih contoh input dan memeriksa route, fakta, status, serta sumber. |
@@ -47,24 +51,24 @@ Membuka dokumentasi atau melihat health belum membuktikan retrieval data.
 ```text
 docs/
   README.md                 Indeks utama
-  index.html                Materi belajar visual, juga bisa dibuka offline
-  how-to/                   Panduan konsep terapan dan langkah praktik
+  index.html                Beranda workshop, bisa dibuka offline dari clone/ZIP
+  workshop/                 Workshop HTML, gaya, interaksi, dan screenshot
+  how-to/                   Rujukan teknis dan perintah terperinci
   reference/                Peta repository dan cara membaca bukti
   roadmap/                  Rencana, bukan fitur yang sudah selesai
   training/                 Urutan belajar dari nol
   videos/                   MP4, preview, subtitle, dan batas bukti rekaman
 ```
 
-Nama file panduan lama dipertahankan agar tautan yang sudah dipakai tidak perlu
-berubah. Setiap topik mempunyai satu halaman rujukan; README cukup mengarahkan
-pembaca, bukan mengulang semua langkah teknis.
+Workshop adalah jalur utama untuk belajar. Rujukan Markdown melengkapi langkah
+yang butuh detail implementasi, batas sandbox, atau validasi.
 
 ## Publik dan lokal
 
-Panduan publik memakai contoh sintetis dan tidak bergantung pada tautan bukti
-lingkungan. Versi panjang yang memuat nilai resource serta hasil historis
-disimpan sebagai catatan `.local.md`. Workshop HTML lama, screenshot, dan
-generator-nya juga tetap berada di salinan operator, tetapi tidak ikut Git.
+Panduan publik memuat setup, nama field, kode, serta screenshot yang sudah
+ditinjau. Nilai environment aktual, credential, dan bukti mentah yang mungkin
+memuatnya tidak ikut. Generator dan hasil workshop lama yang membaca data
+operator tetap lokal, terpisah dari [workshop publik](workshop).
 
 Jangan menjadikan status atau biaya historis sebagai status cloud saat ini.
 Aturan pemisahannya dijelaskan di

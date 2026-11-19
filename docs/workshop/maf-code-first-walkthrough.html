@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ikuti mapping YAML Foundry, graph Python MAF, setup lokal, dan verifikasi work order.">
+  <title>MAF code-first: dari mapping ke Python</title>
+  <link rel="stylesheet" href="workshop.css">
+</head>
+<body>
+  <a class="skip" href="#main">Lewati ke materi</a>
+  <header class="bar">
+    <nav class="wrap" aria-label="Navigasi workshop">
+      <a class="brand" href="../index.html">Workshop migrasi</a>
+      <a href="logicapps-alur-request.html">Logic Apps</a>
+      <a href="maf-code-first-walkthrough.html" aria-current="page">MAF code-first</a>
+      <a href="maf-declarative-walkthrough.html">MAF workflow YAML</a>
+    </nav>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">Jalur A · MAF code-first</p>
+      <h1>Dari mapping Foundry ke graph Python MAF</h1>
+      <p class="lead">Pilih code-first kalau tim ingin mengelola kondisi, state, dan pengujian di kode Python. YAML Foundry dipakai untuk membuat mapping; runtime membaca mapping dan menjalankan graph, bukan me-load YAML sumber.</p>
+      <ol class="steps"><li>1. Baca mapping</li><li>2. Siapkan runtime</li><li>3. Coba satu pertanyaan</li><li>4. Cek dan hentikan UI</li></ol>
+    </header>
+    <div class="layout">
+      <nav class="toc" aria-label="Di halaman ini">
+        <p class="eyebrow">Di halaman ini</p>
+        <ul><li><a href="#mapping">Dari YAML ke graph</a></li><li><a href="#runtime">Saat request masuk</a></li><li><a href="#setup">Setup Python</a></li><li><a href="#praktik">Praktik UI</a></li><li><a href="#cek">Error dan shutdown</a></li></ul>
+      </nav>
+      <div class="content">
+        <section class="panel" id="mapping">
+          <h2>YAML adalah sumber; Python menjalankan graph</h2>
+          <figure>
+            <ol class="flow" aria-label="Dari YAML Foundry ke graph code-first">
+              <li data-role="agent"><strong>YAML sumber Foundry</strong><span>Agent, kondisi, dan urutan</span><span class="hop">Compiler membaca subset</span></li>
+              <li data-role="data"><strong>Mapping JSON</strong><span>Aturan dan agent yang dipakai runtime</span><span class="hop">Python membaca mapping</span></li>
+              <li><strong><code>WorkflowBuilder</code></strong><span>Buat executor dan edge bersyarat</span><span class="hop">Jalankan graph</span></li>
+              <li data-role="actor"><strong>Hasil</strong><span>Klien menerima jawaban dan sumber</span></li>
+            </ol>
+            <figcaption>Ilustrasi dua waktu: konversi menghasilkan mapping saat persiapan, lalu runtime memakai mapping tersebut saat melayani request.</figcaption>
+          </figure>
+          <details open>
+            <summary>Buka tiga file yang menjelaskan perpindahannya</summary>
+            <ol>
+              <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/source/foundry/workflow.yaml">YAML sumber</a> menyimpan <code>classify_question</code> dan kondisi <code>route_question</code>.</li>
+              <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/src/maf_service/resources/mapping.json">Mapping JSON runtime</a> menyimpan informasi tentang route dan specialist. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/targets/maf/workflow.yaml">YAML target MAF</a> membantu membaca hasil mapping, tapi bukan file yang di-load oleh code-first.</li>
+              <li><a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/src/maf_service/workflow.py">Python workflow</a> memasang executor untuk menerima data dan edge untuk memilih langkah berikutnya. Mulai dari <code>MiningWorkflow.build()</code> dan <code>MiningWorkflow.run()</code>.</li>
+            </ol>
+          </details>
+          <p>Kalau kondisi berubah, review perubahan source, mapping, dan graph sebagai satu kesatuan. Compiler demo hanya menerima subset dan baseline yang didukung; jangan mengganti hash demi membuat konversi lolos. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/how-to/foundry-yaml-to-maf-newbie.md">Baca langkah konversi lengkap</a>.</p>
+        </section>
+
+        <section class="panel" id="runtime">
+          <h2>Satu request: TRK001 → MCP → WO001</h2>
+          <ol>
+            <li>Browser mengirim pertanyaan ke server Python; MAF menjalankan graph untuk request itu.</li>
+            <li>Router Foundry membaca pertanyaan dan mengembalikan <code>route: mcp</code>. Edge bersyarat Python memilih cabang maintenance berdasarkan nilai tersebut.</li>
+            <li>Specialist Foundry memakai <code>get_work_orders</code> melalui MCP. Tool mencari <code>TRK001</code> dan menemukan <code>WO001</code> pada data sintetis.</li>
+            <li>Python memeriksa bukti specialist, membentuk hasil, dan mengirim jawaban, sumber, serta trace kembali ke UI.</li>
+          </ol>
+          <p>UI tidak memilih specialist, dan router tidak membaca tabel work order. Agent, tool, dan model tetap bekerja di Foundry dan layanan data yang sudah disiapkan.</p>
+        </section>
+
+        <section class="panel" id="setup">
+          <h2>Siapkan Python dan profil sandbox</h2>
+          <p>Ikuti <a href="workflow-migration-overview.html#setup-bersama">setup bersama</a> untuk Python 3.13, paket baseline, dan profil runtime lokal. Code-first memakai environment baseline, bukan environment eksperimen declarative.</p>
+          <details open>
+            <summary>Tes graph dulu tanpa Azure</summary>
+            <pre><code>.\.venv\Scripts\python.exe -m pytest tests\unit\test_maf_workflow.py tests\contract\test_maf_ui.py -q</code></pre>
+            <p>Tes ini memakai fixture lokal. Hasilnya menunjukkan graph dan kontrak UI dapat diuji, bukan bukti panggilan agent berhasil.</p>
+          </details>
+          <details>
+            <summary>Sebelum tes live: identitas, agent, dan backing API</summary>
+            <p>Login Azure CLI sebagai pengguna sandbox yang disetujui. Di profil lokal, arahkan Foundry dan backing service ke milikmu. Pastikan model, versi router/specialist, izin Foundry dan data, serta policy API cocok. Pada host Azure, gunakan managed identity dan pengaturan aplikasi non-publik. <a href="https://github.com/sandy-gunawan/migrationworkflow/blob/main/docs/how-to/run-in-your-environment.md#4-api-hosted-dan-target-logic-apps">Panduan pengaturan host dan audience</a>.</p>
+          </details>
+          <pre><code>.\.venv\Scripts\python.exe .\tools\run_maf_ui.py --port 8765</code></pre>
+          <p>Buka <code>http://127.0.0.1:8765/</code> setelah <code>/health</code> melaporkan <code>ready</code> dan <code>local-maf-ui</code>. Server di loopback saja. Health bukan bukti koneksi model atau hasil retrieval.</p>
+        </section>
+
+        <section class="panel" id="praktik">
+          <h2>Praktik: cocokkan trace, jawaban, dan sumber</h2>
+          <ol>
+            <li>Pilih <strong>Maintenance MCP</strong> atau masukkan <code>Show work orders for equipment TRK001.</code></li>
+            <li>Jalankan sekali pada sandbox siap. Di <strong>Jalur eksekusi</strong>, periksa router dan specialist MCP; lihat panel kode untuk langkah yang dipilih.</li>
+            <li>Di <strong>Jawaban dan sumber</strong>, periksa <code>mcp / success</code>, <code>WO001</code> untuk <code>TRK001</code>, dan <code>urn:kppdemo:maintenance/TRK001</code>. Buka detail trace untuk mengecek bukti tool.</li>
+          </ol>
+          <figure class="shot">
+            <a href="assets/maf-code-first-result.png"><img src="assets/maf-code-first-result.png" width="811" height="370" loading="lazy" alt="Panel Jawaban dan sumber pada MAF code-first: fakta WO001 untuk TRK001 dan sumber maintenance."></a>
+            <figcaption><strong>3.</strong> Cuplikan UI asli dari rekaman satu run dengan data sintetis. Ini bukan tes baru. <a class="full-size" href="assets/maf-code-first-result.png">Perbesar screenshot</a></figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" id="cek">
+          <h2>Jangan samakan kegagalan dan hasil kosong</h2>
+          <p>Jika startup gagal, cek port, Python, dan profil. Jika panggilan ditolak, cek tenant, izin, dan audience. Jika data belum terverifikasi, cek bukti dan versi agent; teks yang terdengar meyakinkan bukan evidence.</p>
+          <p>Setelah run dan cleanup selesai, hentikan UI lokal dari terminal kedua:</p>
+          <pre><code>.\.venv\Scripts\python.exe .\tools\run_maf_ui.py --port 8765 --stop</code></pre>
+          <p>Jika UI menolak karena run masih aktif, tunggu lalu ulangi. Menutup UI tidak menghentikan resource Azure. Lihat <a href="workflow-migration-overview.html#biaya">biaya host, model, dan data</a> sebelum mengetes live.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="wrap footer"><a href="../index.html#bandingkan">Bandingkan tiga jalur</a> · <a href="../videos/maf.mp4">Video MAF code-first</a></footer>
+</body>
+</html>

@@ -4,8 +4,8 @@
 
 **[Buka materi belajar HTML di browser](https://sandy-gunawan.github.io/migrationworkflow/).**
 Mulai dari perbandingan MAF mapping ke kode Python, MAF pakai workflow YAML,
-dan Azure Logic Apps. Untuk offline, unduh [index.html](../index.html) dan buka
-file itu di browser. Daftar di bawah ini adalah bacaan pendamping.
+dan Azure Logic Apps. Untuk offline, clone atau unduh ZIP repository, ekstrak,
+dan buka [index.html](../index.html) di browser bersama asetnya.
 
 Cerita yang dipakai sepanjang materi: operator menanyakan work order untuk
 `TRK001`; alur memilih specialist maintenance; specialist membaca data sintetis;
@@ -16,10 +16,10 @@ aplikasi memeriksa `WO001` dan sumbernya sebelum menampilkan jawaban.
 | Tahap | Baca | Setelah itu kamu bisa menjelaskan |
 |---|---|---|
 | 1. Tujuan | [Beranda demo](../../README.md) | Apa yang dipindahkan dan apa yang tetap berjalan di Foundry. |
-| 2. Persiapan | [Setup dan batas](../how-to/setup-and-source.md) | Perbedaan membaca repository, menyiapkan Python, dan mengakses Azure. |
-| 3. Pilihan | [Tiga opsi migrasi dalam HTML](https://sandy-gunawan.github.io/migrationworkflow/#opsi) | Bedanya mapping Python, workflow YAML, dan Logic Apps. |
-| 4. Perjalanan data | [Satu request sampai pulang](../how-to/maf-internals-newbie.md) | Siapa memanggil siapa, input/output-nya, dan siapa memakai hasilnya. |
-| 5. Praktik | [UI lokal](../how-to/maf-ui.md) dan [prompt](../how-to/test-prompts.md) | Cara mencoba satu pertanyaan jika lingkungan live sudah tersedia. |
+| 2. Pilihan dan persiapan | [Perbandingan, setup, dan biaya](https://sandy-gunawan.github.io/migrationworkflow/workshop/workflow-migration-overview.html) | Siapa yang menjalankan alur, apa yang disiapkan terpisah, dan apa yang bisa menimbulkan biaya. |
+| 3. Perjalanan data | [Satu request sampai pulang](https://sandy-gunawan.github.io/migrationworkflow/#alur) | Siapa memanggil siapa, input/output-nya, dan siapa memakai hasilnya. |
+| 4. Praktik | [Logic Apps](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-alur-request.html) · [MAF code-first](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html) · [MAF YAML](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-declarative-walkthrough.html) | Cara menyiapkan dan mencoba jalur yang dipilih, sesuai akses sandbox. |
+| 5. Perluas contoh | [Katalog prompt](../how-to/test-prompts.md) | Memilih route lain dan membedakan hasil yang sukses atau memang diblokir. |
 | 6. Bukti | [Cara membaca pengujian](../reference/validation.md) | Kenapa health, unit test, dan retrieval live adalah bukti yang berbeda. |
 
 ## Tiga hal yang harus dibedakan
@@ -32,9 +32,8 @@ aplikasi memeriksa `WO001` dan sumbernya sebelum menampilkan jawaban.
 Browser mengirim request ke server yang sudah hidup. Browser tidak menjalankan
 file Python secara langsung.
 
-## Tentang materi workshop lama
+## Versi workshop publik
 
-Salinan operator juga mempunyai pelajaran HTML interaktif, diagram editable,
-dan capture portal. Paket tersebut memakai detail lingkungan serta bukti
-historis, sehingga tidak ikut versi publik ini. Materinya tetap disimpan lokal.
-Halaman HTML publik di atas berdiri sendiri dan tidak memuat paket tersebut.
+Workshop publik memuat langkah setup dan screenshot yang sudah ditinjau. Salinan
+operator yang membutuhkan nilai environment, manifest, atau bukti mentah tetap
+lokal, dan tidak dibutuhkan untuk membuka workshop.

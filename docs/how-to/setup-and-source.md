@@ -18,9 +18,10 @@ resource cloud, memberi izin, atau mengaktifkan koneksi agent.
 - [Profil runtime publik](../../config/runtime.public.example.json) untuk
   menyiapkan runtime utama pada sandbox sendiri.
 
-Konfigurasi Azure aktual, bukti mentah, catatan operator, dan screenshot
-lingkungan tidak disertakan. Tes live serta generator workshop lama memang membutuhkannya;
-salinan publik bukan reproduksi lengkap lingkungan live.
+Konfigurasi Azure aktual, bukti mentah, dan catatan operator tidak disertakan.
+[Workshop publik](https://sandy-gunawan.github.io/migrationworkflow/) memuat
+langkah setup dan screenshot yang sudah ditinjau. Tes live dan generator workshop
+lama tetap memerlukan prasyarat lingkungan sendiri.
 
 ## 2. Siapkan Python lokal
 

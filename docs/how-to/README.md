@@ -2,6 +2,10 @@
 
 [Indeks dokumentasi](../README.md)
 
+Mulai dari **[workshop HTML](https://sandy-gunawan.github.io/migrationworkflow/)** untuk
+memilih Logic Apps, MAF code-first, atau MAF workflow YAML. Tabel di bawah adalah
+rujukan Markdown jika kamu perlu detail kode, setup, atau pengujian.
+
 | Urutan | Panduan | Kapan dipakai |
 |---|---|---|
 | 1 | [Persiapan dan batas demo](setup-and-source.md) | Baru membuka repository atau menyiapkan Python lokal. |

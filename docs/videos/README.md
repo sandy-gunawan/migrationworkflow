@@ -18,7 +18,7 @@ maintenance sintetis yang lolos pemeriksaan.
 [![Preview MAF code-first](maf.png)](maf.mp4)
 
 [Buka MP4](maf.mp4) | [Subtitle SRT](maf.srt) |
-[Panduan MAF](../how-to/maf-ui.md)
+[Workshop MAF code-first](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-code-first-walkthrough.html)
 
 Python MAF menjalankan graph, memilih branch dari keputusan router, memanggil
 specialist, lalu memeriksa evidence. Video juga membuka kode langkah dan trace.
@@ -28,7 +28,7 @@ specialist, lalu memeriksa evidence. Video juga membuka kode langkah dan trace.
 [![Preview Logic Apps native](logicapps.png)](logicapps.mp4)
 
 [Buka MP4](logicapps.mp4) | [Subtitle SRT](logicapps.srt) |
-[Penjelasan arsitektur](../how-to/maf-internals-newbie.md)
+[Workshop UI Logic Apps](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-ui-walkthrough.html)
 
 Orkestrasi berlangsung di workflow native Azure. Python lokal menjadi gateway
 dan pengamat; normalizer tidak mengambil alih pemilihan branch.
@@ -39,7 +39,7 @@ Video memperlihatkan definisi JSON dan korelasi run native.
 [![Preview MAF declarative YAML](declarative.png)](declarative.mp4)
 
 [Buka MP4](declarative.mp4) | [Subtitle SRT](declarative.srt) |
-[Pilihan migrasi](../how-to/foundry-yaml-to-maf-newbie.md)
+[Workshop MAF workflow YAML](https://sandy-gunawan.github.io/migrationworkflow/workshop/maf-declarative-walkthrough.html)
 
 YAML tetap menjadi file terpisah. Loader resmi membacanya saat startup,
 lalu membuat workflow untuk request yang masuk. Agent dan model tetap Foundry.
@@ -51,7 +51,8 @@ Video membuka snapshot YAML sebelum menjalankan pertanyaan.
 
 [![Preview kotak invoke mcp di antara mark mcp dan normalize mcp](logicapps-mcp-designer.png)](logicapps-mcp-designer.mp4)
 
-[Buka MP4 — 2:13](logicapps-mcp-designer.mp4) | [Subtitle SRT](logicapps-mcp-designer.srt)
+[Buka MP4 — 2:13](logicapps-mcp-designer.mp4) | [Subtitle SRT](logicapps-mcp-designer.srt) |
+[Workshop node dan parameter Logic Apps](https://sandy-gunawan.github.io/migrationworkflow/workshop/logicapps-node-walkthrough.html)
 
 Mulai dari **Development Tools → Logic app designer**. Untuk tiap langkah,
 lihat dulu **kotak node yang dibingkai emas**, panah, dan node tetangganya.
